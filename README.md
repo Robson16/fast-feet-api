@@ -3,7 +3,7 @@
 ![Node.js](https://img.shields.io/badge/Node.js-%3E%3D20.10.0-green)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
-API desenvolvida para o controle de encomendas de uma transportadora fictícia, a **FastFeet**. Este projeto foi desenvolvido como parte do programa **Ignite** da **Rocketseat** em 2023.
+API desenvolvida para o controle de encomendas de uma transportadora fictícia, a **FastFeet**. Este projeto foi o **5º Desafio** desenvolvido como parte do programa **Ignite** da **Rocketseat** em 2023.
 
 ## 📝 Descrição
 
