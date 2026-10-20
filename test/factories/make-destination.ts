@@ -1,9 +1,10 @@
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
+import { faker } from "@faker-js/faker";
+
+import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import {
   Destination,
   DestinationProps,
-} from '@/domain/order/enterprise/entities/destination'
-import { faker } from '@faker-js/faker'
+} from "@/domain/order/enterprise/entities/destination";
 
 export function makeDestination(
   override: Partial<DestinationProps> = {},
@@ -25,7 +26,7 @@ export function makeDestination(
       ...override,
     },
     id,
-  )
+  );
 
-  return destination
+  return destination;
 }

@@ -1,28 +1,30 @@
-import { Either, left, right } from '@/core/either'
-import { HashGenerator } from '@/domain/user/application/cryptography/hash-generator'
-import { UsersRepository } from '@/domain/user/application/repositories/users-repository'
-import { User } from '@/domain/user/enterprise/entities/user'
-import { CPF } from '@/domain/user/enterprise/entities/value-objects/cpf'
-import { Role } from '@/domain/user/enterprise/entities/value-objects/role'
-import { Injectable } from '@nestjs/common'
-import { InvalidCPFError } from './errors/invalid-cpf-error'
-import { InvalidUserRole } from './errors/invalid-user-role'
-import { UserAlreadyExistsError } from './errors/user-already-exists-error'
+import { Injectable } from "@nestjs/common";
+
+import { Either, left, right } from "@/core/either";
+import { HashGenerator } from "@/domain/user/application/cryptography/hash-generator";
+import { UsersRepository } from "@/domain/user/application/repositories/users-repository";
+import { User } from "@/domain/user/enterprise/entities/user";
+import { CPF } from "@/domain/user/enterprise/entities/value-objects/cpf";
+import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
+
+import { InvalidCPFError } from "./errors/invalid-cpf-error";
+import { InvalidUserRole } from "./errors/invalid-user-role";
+import { UserAlreadyExistsError } from "./errors/user-already-exists-error";
 
 interface RegisterUserUseCaseRequest {
-  name: string
-  cpf: string
-  email: string
-  password: string
-  role?: string
+  name: string;
+  cpf: string;
+  email: string;
+  password: string;
+  role?: string;
 }
 
 type RegisterUserUseCaseResponse = Either<
   UserAlreadyExistsError | InvalidCPFError | InvalidUserRole,
   {
-    user: User
+    user: User;
   }
->
+>;
 
 @Injectable()
 export class RegisterUserUseCase {
@@ -32,23 +34,23 @@ export class RegisterUserUseCase {
   ) {}
 
   private async isCPFValid(cpf: string): Promise<boolean> {
-    return CPF.validate(cpf)
+    return CPF.validate(cpf);
   }
 
   private async userExistsWithCPF(cpf: string): Promise<boolean> {
-    const user = await this.usersRepository.findByCPF(cpf)
+    const user = await this.usersRepository.findByCPF(cpf);
 
-    return !!user
+    return !!user;
   }
 
   private async userExistsWithEmail(email: string): Promise<boolean> {
-    const user = await this.usersRepository.findByEmail(email)
+    const user = await this.usersRepository.findByEmail(email);
 
-    return !!user
+    return !!user;
   }
 
   private isValidRole(role: string): boolean {
-    return Role.validate(role)
+    return Role.validate(role);
   }
 
   async execute({
@@ -59,22 +61,22 @@ export class RegisterUserUseCase {
     role,
   }: RegisterUserUseCaseRequest): Promise<RegisterUserUseCaseResponse> {
     if (!(await this.isCPFValid(cpf))) {
-      return left(new InvalidCPFError())
+      return left(new InvalidCPFError());
     }
 
     if (await this.userExistsWithCPF(cpf)) {
-      return left(new UserAlreadyExistsError(cpf))
+      return left(new UserAlreadyExistsError(cpf));
     }
 
     if (await this.userExistsWithEmail(email)) {
-      return left(new UserAlreadyExistsError(email))
+      return left(new UserAlreadyExistsError(email));
     }
 
     if (role && !this.isValidRole(role)) {
-      return left(new InvalidUserRole(role))
+      return left(new InvalidUserRole(role));
     }
 
-    const hashedPassword = await this.hashGenerator.hash(password)
+    const hashedPassword = await this.hashGenerator.hash(password);
 
     const user = User.create({
       name,
@@ -82,12 +84,12 @@ export class RegisterUserUseCase {
       email,
       password: hashedPassword,
       role: role ? new Role(role) : undefined,
-    })
+    });
 
-    await this.usersRepository.create(user)
+    await this.usersRepository.create(user);
 
     return right({
       user,
-    })
+    });
   }
 }

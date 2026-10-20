@@ -1,6 +1,6 @@
 export interface Coordinate {
-  latitude: number
-  longitude: number
+  latitude: number;
+  longitude: number;
 }
 
 export function getDistanceBetweenCoordinates(
@@ -8,28 +8,28 @@ export function getDistanceBetweenCoordinates(
   to: Coordinate,
 ) {
   if (from.latitude === to.latitude && from.longitude === to.longitude) {
-    return 0
+    return 0;
   }
 
-  const fromRadian = (Math.PI * from.latitude) / 180
-  const toRadian = (Math.PI * to.latitude) / 180
+  const fromRadian = (Math.PI * from.latitude) / 180;
+  const toRadian = (Math.PI * to.latitude) / 180;
 
-  const theta = from.longitude - to.longitude
-  const radTheta = (Math.PI * theta) / 180
+  const theta = from.longitude - to.longitude;
+  const radTheta = (Math.PI * theta) / 180;
 
   let dist =
     Math.sin(fromRadian) * Math.sin(toRadian) +
-    Math.cos(fromRadian) * Math.cos(toRadian) * Math.cos(radTheta)
+    Math.cos(fromRadian) * Math.cos(toRadian) * Math.cos(radTheta);
 
   if (dist > 1) {
-    dist = 1
+    dist = 1;
   }
 
-  dist = Math.acos(dist)
-  dist = (dist * 180) / Math.PI // from radians to degrees
-  dist = dist * 60 * 1.1515 // from degrees to miles
-  dist = dist * 1.609344 // from miles to kilometers
-  dist = dist * 1000 // from kilometers to meters
+  dist = Math.acos(dist);
+  dist = (dist * 180) / Math.PI; // from radians to degrees
+  dist = dist * 60 * 1.1515; // from degrees to miles
+  dist = dist * 1.609344; // from miles to kilometers
+  dist = dist * 1000; // from kilometers to meters
 
-  return dist
+  return dist;
 }

@@ -1,21 +1,23 @@
-import { Either, left, right } from '@/core/either'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { User } from '@/domain/user/enterprise/entities/user'
-import { Injectable } from '@nestjs/common'
-import { HashGenerator } from '../cryptography/hash-generator'
-import { UsersRepository } from '../repositories/users-repository'
+import { Injectable } from "@nestjs/common";
+
+import { Either, left, right } from "@/core/either";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
+import { User } from "@/domain/user/enterprise/entities/user";
+
+import { HashGenerator } from "../cryptography/hash-generator";
+import { UsersRepository } from "../repositories/users-repository";
 
 interface UpdateUserPasswordUseCaseRequest {
-  userId: string
-  password: string
+  userId: string;
+  password: string;
 }
 
 type UpdateUserPasswordUseCaseResponse = Either<
   ResourceNotFoundError,
   {
-    user: User
+    user: User;
   }
->
+>;
 
 @Injectable()
 export class UpdateUserPasswordUseCase {
@@ -28,20 +30,20 @@ export class UpdateUserPasswordUseCase {
     userId,
     password,
   }: UpdateUserPasswordUseCaseRequest): Promise<UpdateUserPasswordUseCaseResponse> {
-    const user = await this.usersRepository.findById(userId)
+    const user = await this.usersRepository.findById(userId);
 
     if (!user) {
-      return left(new ResourceNotFoundError('User not found.'))
+      return left(new ResourceNotFoundError("User not found."));
     }
 
-    const hashedPassword = await this.hashGenerator.hash(password)
+    const hashedPassword = await this.hashGenerator.hash(password);
 
-    user.password = hashedPassword
+    user.password = hashedPassword;
 
-    await this.usersRepository.save(user)
+    await this.usersRepository.save(user);
 
     return right({
       user,
-    })
+    });
   }
 }

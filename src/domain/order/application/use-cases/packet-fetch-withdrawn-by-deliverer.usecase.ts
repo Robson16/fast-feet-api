@@ -1,23 +1,24 @@
-import { Either, right } from '@/core/either'
+import { Injectable } from "@nestjs/common";
+
+import { Either, right } from "@/core/either";
 import {
   PacketsFilters,
   PacketsRepository,
-} from '@/domain/order/application/repositories/packets-repository'
-import { Packet } from '@/domain/order/enterprise/entities/packet'
-import { Injectable } from '@nestjs/common'
+} from "@/domain/order/application/repositories/packets-repository";
+import { Packet } from "@/domain/order/enterprise/entities/packet";
 
 interface FetchPacketsWithdrawnByDelivererUseCaseRequest {
-  delivererId: string
-  page: number
-  filters?: PacketsFilters
+  delivererId: string;
+  page: number;
+  filters?: PacketsFilters;
 }
 
 type FetchPacketsWithdrawnByDelivererUseCaseResponse = Either<
   null,
   {
-    packets: Packet[]
+    packets: Packet[];
   }
->
+>;
 
 @Injectable()
 export class FetchPacketsWithdrawnByDelivererUseCase {
@@ -29,14 +30,14 @@ export class FetchPacketsWithdrawnByDelivererUseCase {
     filters,
   }: FetchPacketsWithdrawnByDelivererUseCaseRequest): Promise<FetchPacketsWithdrawnByDelivererUseCaseResponse> {
     const packets = await this.packetsRepository.findManyByStatusAndDelivererId(
-      'WITHDRAWN',
+      "WITHDRAWN",
       delivererId,
       { page },
       filters,
-    )
+    );
 
     return right({
       packets,
-    })
+    });
   }
 }

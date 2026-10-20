@@ -13,3 +13,4 @@ services:
       PGDATA: /data/postgres
     volumes:
       - ./data/pg:/data/postgres
+ 

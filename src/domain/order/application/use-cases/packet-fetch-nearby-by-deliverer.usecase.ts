@@ -1,22 +1,23 @@
-import { Either, right } from '@/core/either'
-import { PacketsRepository } from '@/domain/order/application/repositories/packets-repository'
-import { Packet } from '@/domain/order/enterprise/entities/packet'
-import { Injectable } from '@nestjs/common'
+import { Injectable } from "@nestjs/common";
+
+import { Either, right } from "@/core/either";
+import { PacketsRepository } from "@/domain/order/application/repositories/packets-repository";
+import { Packet } from "@/domain/order/enterprise/entities/packet";
 
 interface FetchPacketsNearbyByDelivererRequest {
-  delivererId: string
-  distance: number
-  latitude: number
-  longitude: number
-  page: number
+  delivererId: string;
+  distance: number;
+  latitude: number;
+  longitude: number;
+  page: number;
 }
 
 type FetchPacketsNearbyByDelivererResponse = Either<
   null,
   {
-    packets: Packet[]
+    packets: Packet[];
   }
->
+>;
 
 @Injectable()
 export class FetchPacketsNearbyByDeliverer {
@@ -32,15 +33,15 @@ export class FetchPacketsNearbyByDeliverer {
     const packets =
       await this.packetsRepository.findManyNearbyByStatusAndDelivererId({
         delivererId,
-        status: 'WITHDRAWN',
+        status: "WITHDRAWN",
         distance,
         latitude,
         longitude,
         pagination: { page },
-      })
+      });
 
     return right({
       packets,
-    })
+    });
   }
 }

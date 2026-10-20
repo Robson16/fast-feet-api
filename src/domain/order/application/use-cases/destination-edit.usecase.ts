@@ -1,29 +1,29 @@
-import { Either, left, right } from '@/core/either'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { DestinationsRepository } from '@/domain/order/application/repositories/destinations-repository'
-import { Destination } from '@/domain/order/enterprise/entities/destination'
+import { Either, left, right } from "@/core/either";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
+import { DestinationsRepository } from "@/domain/order/application/repositories/destinations-repository";
+import { Destination } from "@/domain/order/enterprise/entities/destination";
 
 interface EditDestinationUseCaseRequest {
-  destinationId: string
-  title: string
-  addressStreet: string
-  addressNumber: string
-  addressComplement: string
-  addressZipCode: string
-  addressNeighborhood: string
-  addressCity: string
-  addressState: string
-  addressCountry?: string
-  latitude: number
-  longitude: number
+  destinationId: string;
+  title: string;
+  addressStreet: string;
+  addressNumber: string;
+  addressComplement: string;
+  addressZipCode: string;
+  addressNeighborhood: string;
+  addressCity: string;
+  addressState: string;
+  addressCountry?: string;
+  latitude: number;
+  longitude: number;
 }
 
 type EditDestinationUseCaseResponse = Either<
   ResourceNotFoundError,
   {
-    destination: Destination
+    destination: Destination;
   }
->
+>;
 
 export class EditDestinationUseCase {
   constructor(private destinationsRepository: DestinationsRepository) {}
@@ -43,28 +43,28 @@ export class EditDestinationUseCase {
     longitude,
   }: EditDestinationUseCaseRequest): Promise<EditDestinationUseCaseResponse> {
     const destination =
-      await this.destinationsRepository.findById(destinationId)
+      await this.destinationsRepository.findById(destinationId);
 
     if (!destination) {
-      return left(new ResourceNotFoundError('Destination not found.'))
+      return left(new ResourceNotFoundError("Destination not found."));
     }
 
-    destination.title = title
-    destination.addressStreet = addressStreet
-    destination.addressNumber = addressNumber
-    destination.addressComplement = addressComplement
-    destination.addressZipCode = addressZipCode
-    destination.addressNeighborhood = addressNeighborhood
-    destination.addressCity = addressCity
-    destination.addressState = addressState
-    destination.addressCountry = addressCountry
-    destination.latitude = latitude
-    destination.longitude = longitude
+    destination.title = title;
+    destination.addressStreet = addressStreet;
+    destination.addressNumber = addressNumber;
+    destination.addressComplement = addressComplement;
+    destination.addressZipCode = addressZipCode;
+    destination.addressNeighborhood = addressNeighborhood;
+    destination.addressCity = addressCity;
+    destination.addressState = addressState;
+    destination.addressCountry = addressCountry;
+    destination.latitude = latitude;
+    destination.longitude = longitude;
 
-    await this.destinationsRepository.save(destination)
+    await this.destinationsRepository.save(destination);
 
     return right({
       destination,
-    })
+    });
   }
 }

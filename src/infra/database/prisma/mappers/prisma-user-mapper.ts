@@ -1,8 +1,9 @@
-import { UniqueEntityID } from '@/core/entities/unique-entity-id'
-import { User } from '@/domain/user/enterprise/entities/user'
-import { CPF } from '@/domain/user/enterprise/entities/value-objects/cpf'
-import { Role } from '@/domain/user/enterprise/entities/value-objects/role'
-import { Prisma, User as PrismaUser } from '@prisma/client'
+import { Prisma, User as PrismaUser } from "@prisma/client";
+
+import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { User } from "@/domain/user/enterprise/entities/user";
+import { CPF } from "@/domain/user/enterprise/entities/value-objects/cpf";
+import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
 
 export class PrismaUserMapper {
   static toDomain(raw: PrismaUser): User {
@@ -15,7 +16,7 @@ export class PrismaUserMapper {
         role: Role.create(raw.role),
       },
       new UniqueEntityID(raw.id),
-    )
+    );
   }
 
   static toPrisma(user: User): Prisma.UserUncheckedCreateInput {
@@ -26,6 +27,6 @@ export class PrismaUserMapper {
       email: user.email,
       password: user.password,
       role: user.role.value,
-    }
+    };
   }
 }

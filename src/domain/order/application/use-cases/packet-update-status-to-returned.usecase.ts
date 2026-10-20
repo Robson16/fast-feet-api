@@ -1,20 +1,21 @@
-import { Either, left, right } from '@/core/either'
-import { NotAllowedError } from '@/core/errors/not-allowed-error'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { PacketsRepository } from '@/domain/order/application/repositories/packets-repository'
-import { Packet } from '@/domain/order/enterprise/entities/packet'
-import { Injectable } from '@nestjs/common'
+import { Injectable } from "@nestjs/common";
+
+import { Either, left, right } from "@/core/either";
+import { NotAllowedError } from "@/core/errors/not-allowed-error";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
+import { PacketsRepository } from "@/domain/order/application/repositories/packets-repository";
+import { Packet } from "@/domain/order/enterprise/entities/packet";
 
 interface UpdatePacketStatusToReturnedUseCaseRequest {
-  packetId: string
+  packetId: string;
 }
 
 type UpdatePacketStatusToReturnedUseCaseResponse = Either<
   ResourceNotFoundError,
   {
-    packet: Packet
+    packet: Packet;
   }
->
+>;
 
 @Injectable()
 export class UpdatePacketStatusToReturnedUseCase {
@@ -23,23 +24,23 @@ export class UpdatePacketStatusToReturnedUseCase {
   async execute({
     packetId,
   }: UpdatePacketStatusToReturnedUseCaseRequest): Promise<UpdatePacketStatusToReturnedUseCaseResponse> {
-    const packet = await this.packetsRepository.findById(packetId)
+    const packet = await this.packetsRepository.findById(packetId);
 
     if (!packet) {
-      return left(new ResourceNotFoundError('Packet not found.'))
+      return left(new ResourceNotFoundError("Packet not found."));
     }
 
-    if (packet.status === 'RETURNED' && packet.delivererId === undefined) {
-      return left(new NotAllowedError('Packet already returned.'))
+    if (packet.status === "RETURNED" && packet.delivererId === undefined) {
+      return left(new NotAllowedError("Packet already returned."));
     }
 
-    packet.delivererId = undefined
-    packet.status = 'RETURNED'
+    packet.delivererId = undefined;
+    packet.status = "RETURNED";
 
-    await this.packetsRepository.save(packet)
+    await this.packetsRepository.save(packet);
 
     return right({
       packet,
-    })
+    });
   }
 }

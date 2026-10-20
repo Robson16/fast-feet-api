@@ -1,43 +1,45 @@
-import { CPF } from '@/domain/user/enterprise/entities/value-objects/cpf'
-import { FakeEncrypter } from 'test/cryptography/fake-encrypter'
-import { FakeHasher } from 'test/cryptography/fake-hasher'
-import { makeUser } from 'test/factories/make-user'
-import { InMemoryUsersRepository } from 'test/repositories/in-memory-users-repository'
-import { AuthenticateUserUseCase } from './user-authenticate.usecase'
+import { FakeEncrypter } from "test/cryptography/fake-encrypter";
+import { FakeHasher } from "test/cryptography/fake-hasher";
+import { makeUser } from "test/factories/make-user";
+import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
-let inMemoryUsersRepository: InMemoryUsersRepository
-let fakeHasher: FakeHasher
-let fakeEncrypter: FakeEncrypter
-let sut: AuthenticateUserUseCase // Subject Under Test
+import { CPF } from "@/domain/user/enterprise/entities/value-objects/cpf";
 
-describe('Authenticate User', () => {
+import { AuthenticateUserUseCase } from "./user-authenticate.usecase";
+
+let inMemoryUsersRepository: InMemoryUsersRepository;
+let fakeHasher: FakeHasher;
+let fakeEncrypter: FakeEncrypter;
+let sut: AuthenticateUserUseCase; // Subject Under Test
+
+describe("Authenticate User", () => {
   beforeEach(() => {
-    inMemoryUsersRepository = new InMemoryUsersRepository()
-    fakeHasher = new FakeHasher()
-    fakeEncrypter = new FakeEncrypter()
+    inMemoryUsersRepository = new InMemoryUsersRepository();
+    fakeHasher = new FakeHasher();
+    fakeEncrypter = new FakeEncrypter();
     sut = new AuthenticateUserUseCase(
       inMemoryUsersRepository,
       fakeHasher,
       fakeEncrypter,
-    )
-  })
+    );
+  });
 
-  it('should be able to authenticate a user', async () => {
+  it("should be able to authenticate a user", async () => {
     const user = makeUser({
-      cpf: CPF.create('267.859.975-26'),
-      password: await fakeHasher.hash('123456'),
-    })
+      cpf: CPF.create("267.859.975-26"),
+      password: await fakeHasher.hash("123456"),
+    });
 
-    inMemoryUsersRepository.items.push(user)
+    inMemoryUsersRepository.items.push(user);
 
     const result = await sut.execute({
-      cpf: '267.859.975-26',
-      password: '123456',
-    })
+      cpf: "267.859.975-26",
+      password: "123456",
+    });
 
-    expect(result.isRight()).toBe(true)
+    expect(result.isRight()).toBe(true);
     expect(result.value).toEqual({
       accessToken: expect.any(String),
-    })
-  })
-})
+    });
+  });
+});

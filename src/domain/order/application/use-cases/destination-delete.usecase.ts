@@ -1,12 +1,12 @@
-import { Either, left, right } from '@/core/either'
-import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
-import { DestinationsRepository } from '@/domain/order/application/repositories/destinations-repository'
+import { Either, left, right } from "@/core/either";
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
+import { DestinationsRepository } from "@/domain/order/application/repositories/destinations-repository";
 
 interface DeleteDestinationUseCaseRequest {
-  destinationId: string
+  destinationId: string;
 }
 
-type DeleteDestinationUseCaseResponse = Either<ResourceNotFoundError, null>
+type DeleteDestinationUseCaseResponse = Either<ResourceNotFoundError, null>;
 
 export class DeleteDestinationUseCase {
   constructor(private destinationsRepository: DestinationsRepository) {}
@@ -15,14 +15,14 @@ export class DeleteDestinationUseCase {
     destinationId,
   }: DeleteDestinationUseCaseRequest): Promise<DeleteDestinationUseCaseResponse> {
     const destination =
-      await this.destinationsRepository.findById(destinationId)
+      await this.destinationsRepository.findById(destinationId);
 
     if (!destination) {
-      return left(new ResourceNotFoundError('Destination not found.'))
+      return left(new ResourceNotFoundError("Destination not found."));
     }
 
-    await this.destinationsRepository.delete(destination)
+    await this.destinationsRepository.delete(destination);
 
-    return right(null)
+    return right(null);
   }
 }
