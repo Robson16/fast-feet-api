@@ -7,6 +7,14 @@ import {
   Post,
   UsePipes,
 } from "@nestjs/common";
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiOperation,
+  ApiTags,
+} from "@nestjs/swagger";
 import { z } from "zod";
 
 import { UserAlreadyExistsError } from "@/domain/user/application/use-cases/errors/user-already-exists-error";
@@ -25,12 +33,46 @@ const createAccountBodySchema = z.object({
 type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>;
 
 @Controller("/accounts")
+@ApiTags("Accounts")
 @Public()
 export class CreateAccountController {
   constructor(private registerUser: RegisterUserUseCase) {}
 
   @Post()
   @HttpCode(201)
+  @ApiOperation({
+    summary: "Create a user account",
+    description:
+      "Creates an account with a name, CPF, email, password, and role.",
+  })
+  @ApiBody({
+    schema: {
+      type: "object",
+      required: ["name", "cpf", "email", "password"],
+      properties: {
+        name: { type: "string", example: "John Doe" },
+        cpf: { type: "string", example: "529.982.247-25" },
+        email: {
+          type: "string",
+          format: "email",
+          example: "john.doe@example.com",
+        },
+        password: { type: "string", example: "strong-password" },
+        role: {
+          type: "string",
+          enum: ["ADMIN", "DELIVERER", "RECIPIENT"],
+          default: "DELIVERER",
+        },
+      },
+    },
+  })
+  @ApiCreatedResponse({ description: "Account created successfully." })
+  @ApiBadRequestResponse({
+    description: "Invalid data, invalid CPF, or unsupported role.",
+  })
+  @ApiConflictResponse({
+    description: "An account with the provided details already exists.",
+  })
   @UsePipes(new ZodValidationPipe(createAccountBodySchema))
   async handle(@Body() body: CreateAccountBodySchema) {
     const { name, cpf, email, password, role } = body;
