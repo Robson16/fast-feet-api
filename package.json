@@ -32,7 +32,7 @@
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "test:debug": "vitest --inspect-brk --inspect --logHeapUsage --threads=false",
-    "test:e2e": "vitest run --config ./vitest.config.e2e.ts"
+    "test:e2e": "vitest run --config ./vitest.config.e2e.mts"
   },
   "dependencies": {
     "@nestjs/common": "^12.2.0",
@@ -41,9 +41,11 @@
     "@nestjs/jwt": "^12.0.3",
     "@nestjs/passport": "^12.0.0",
     "@nestjs/platform-express": "^12.2.0",
+    "@prisma/adapter-pg": "7.10.1",
     "@prisma/client": "7.10.1",
     "bcryptjs": "^3.0.3",
     "passport-jwt": "^4.0.1",
+    "pg": "8.23.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "zod": "^4.6.7",
@@ -60,6 +62,7 @@
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.5",
     "@types/passport-jwt": "^4.0.1",
+    "@types/pg": "8.23.1",
     "@types/supertest": "^7.2.1",
     "@vitest/coverage-v8": "^5.0.5",
     "dotenv": "^18.0.8",
@@ -75,7 +78,11 @@
     "typescript": "6.0.3",
     "typescript-eslint": "^8.72.0",
     "unplugin-swc": "^2.0.0",
-    "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^5.0.5"
+  },
+  "allowScripts": {
+    "@prisma/engines": true,
+    "@swc/core": true,
+    "prisma": true
   }
 }
