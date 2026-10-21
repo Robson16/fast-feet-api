@@ -5,7 +5,7 @@ import request from "supertest";
 import { AppModule } from "@/infra/app.module";
 import { PrismaService } from "@/infra/database/prisma/prisma.service";
 
-describe("Create account (E2E)", () => {
+describe("POST /accounts (E2E)", () => {
   let app: INestApplication;
   let prisma: PrismaService;
 
@@ -21,7 +21,7 @@ describe("Create account (E2E)", () => {
     await app.init();
   });
 
-  test("[POST] /accounts", async () => {
+  test("[POST] /accounts - creates a DELIVERER account by default", async () => {
     const response = await request(app.getHttpServer()).post("/accounts").send({
       name: "John Doe",
       cpf: "267.859.975-26",
@@ -41,7 +41,7 @@ describe("Create account (E2E)", () => {
     expect(userOnDatabase?.role).toBe("DELIVERER");
   });
 
-  test("[POST] /accounts - should ignore role in payload and always create a DELIVERER", async () => {
+  test("[POST] /accounts - assigns DELIVERER when the request asks for ADMIN", async () => {
     const response = await request(app.getHttpServer()).post("/accounts").send({
       name: "Admin Hacker",
       cpf: "267.859.975-26",
@@ -60,5 +60,26 @@ describe("Create account (E2E)", () => {
 
     expect(userOnDatabase).toBeTruthy();
     expect(userOnDatabase?.role).toEqual("DELIVERER");
+  });
+
+  test("[POST] /accounts - assigns DELIVERER when the request asks for RECIPIENT", async () => {
+    const response = await request(app.getHttpServer()).post("/accounts").send({
+      name: "Recipient Hacker",
+      cpf: "267.859.975-26",
+      email: "recipient-hacker@example.com",
+      password: "123456",
+      role: "RECIPIENT",
+    });
+
+    expect(response.statusCode).toBe(201);
+
+    const userOnDatabase = await prisma.user.findUnique({
+      where: {
+        email: "recipient-hacker@example.com",
+      },
+    });
+
+    expect(userOnDatabase).toBeTruthy();
+    expect(userOnDatabase?.role).toBe("DELIVERER");
   });
 });

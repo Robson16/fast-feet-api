@@ -15,16 +15,16 @@
 As a system owner, I want public account registration to assign only a safe default role so that anonymous users cannot create administrator or recipient accounts. 
 
 - [x] Ignore or reject `role` in public registration requests and always assign `DELIVERER`.
-- [ ] Provide a separate, authenticated administrator workflow for assigning elevated roles.
+- [x] Provide a separate, authenticated administrator workflow for assigning elevated roles.
 - [x] Add tests proving an anonymous request cannot create an `ADMIN` or `RECIPIENT` account.
 
 ### Story 1.2: Add a secure administrator provisioning path (P1)
 
 As an operator, I want a secure way to create the first administrator so that role restrictions do not leave the system without an administrator.
 
-- [ ] Provide a documented seed, CLI command, or deployment-time provisioning mechanism.
-- [ ] Never expose initial administrator creation through the public registration endpoint.
-- [ ] Verify that credentials are hashed and provisioning is safe to repeat or fails clearly when an administrator already exists.
+- [x] Provide a documented seed, CLI command, or deployment-time provisioning mechanism.
+- [x] Never expose initial administrator creation through the public registration endpoint.
+- [x] Verify that credentials are hashed and provisioning is safe to repeat or fails clearly when an administrator already exists.
 
 ### Story 1.3: Expose user authentication (P1)
 
