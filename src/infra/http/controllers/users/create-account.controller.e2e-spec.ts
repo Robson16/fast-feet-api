@@ -38,5 +38,27 @@ describe("Create account (E2E)", () => {
     });
 
     expect(userOnDatabase).toBeTruthy();
+    expect(userOnDatabase?.role).toBe("DELIVERER");
+  });
+
+  test("[POST] /accounts - should ignore role in payload and always create a DELIVERER", async () => {
+    const response = await request(app.getHttpServer()).post("/accounts").send({
+      name: "Admin Hacker",
+      cpf: "267.859.975-26",
+      email: "hacker@example.com",
+      password: "123456",
+      role: "ADMIN",
+    });
+
+    expect(response.statusCode).toBe(201);
+
+    const userOnDatabase = await prisma.user.findUnique({
+      where: {
+        email: "hacker@example.com",
+      },
+    });
+
+    expect(userOnDatabase).toBeTruthy();
+    expect(userOnDatabase?.role).toEqual("DELIVERER");
   });
 });

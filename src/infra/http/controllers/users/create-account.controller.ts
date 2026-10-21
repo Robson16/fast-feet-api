@@ -27,7 +27,6 @@ const createAccountBodySchema = z.object({
   cpf: z.string(),
   email: z.string().email(),
   password: z.string(),
-  role: z.string().optional().default("DELIVERER"),
 });
 
 type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>;
@@ -42,8 +41,7 @@ export class CreateAccountController {
   @HttpCode(201)
   @ApiOperation({
     summary: "Create a user account",
-    description:
-      "Creates an account with a name, CPF, email, password, and role.",
+    description: "Creates an account with a name, CPF, email, password.",
   })
   @ApiBody({
     schema: {
@@ -58,31 +56,26 @@ export class CreateAccountController {
           example: "john.doe@example.com",
         },
         password: { type: "string", example: "strong-password" },
-        role: {
-          type: "string",
-          enum: ["ADMIN", "DELIVERER", "RECIPIENT"],
-          default: "DELIVERER",
-        },
       },
     },
   })
   @ApiCreatedResponse({ description: "Account created successfully." })
   @ApiBadRequestResponse({
-    description: "Invalid data, invalid CPF, or unsupported role.",
+    description: "Invalid data, invalid CPF.",
   })
   @ApiConflictResponse({
     description: "An account with the provided details already exists.",
   })
   @UsePipes(new ZodValidationPipe(createAccountBodySchema))
   async handle(@Body() body: CreateAccountBodySchema) {
-    const { name, cpf, email, password, role } = body;
+    const { name, cpf, email, password } = body;
 
     const result = await this.registerUser.execute({
       name,
       cpf,
       email,
       password,
-      role,
+      role: "DELIVERER",
     });
 
     if (result.isLeft()) {

@@ -13,4 +13,5 @@ services:
       PGDATA: /data/postgres
     volumes:
       - ./data/pg:/data/postgres
+      - ./scripts/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql
  

@@ -8,6 +8,7 @@ export default defineConfig({
   test: {
     globals: true,
     root: "./",
+    exclude: ["**/*.e2e-spec.ts", "**/*.e2e.spec.ts", "node_modules"],
   },
   plugins: [
     swc.vite({

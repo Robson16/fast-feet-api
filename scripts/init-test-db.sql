@@ -1,0 +1,1 @@
+CREATE DATABASE "fast-feet-test";

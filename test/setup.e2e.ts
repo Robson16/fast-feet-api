@@ -1,44 +1,45 @@
-import "dotenv/config";
-
 import { execSync } from "node:child_process";
-import { randomUUID } from "node:crypto";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
+import { config } from "dotenv";
 import { Pool } from "pg";
+
+config({ path: ".env" });
+config({ path: ".env.test.local", override: true });
 
 let prisma: PrismaClient;
 let pool: Pool;
 
-function generateUniqueDatabaseURL(schemaId: string) {
-  if (!process.env.DATABASE_URL) {
-    throw new Error("Please provider a DATABASE_URL environment variable");
+beforeAll(async () => {
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    throw new Error("DATABASE_URL must be set in .env.test.local");
   }
 
-  const url = new URL(process.env.DATABASE_URL);
+  const databaseName = new URL(connectionString).pathname.slice(1);
 
-  url.searchParams.set("schema", schemaId);
+  if (!databaseName.endsWith("-test")) {
+    throw new Error("E2E tests require a dedicated database ending in '-test'");
+  }
 
-  return url.toString();
-}
-
-const schemaId = randomUUID();
-
-beforeAll(async () => {
-  const databaseURL = generateUniqueDatabaseURL(schemaId);
-
-  process.env.DATABASE_URL = databaseURL;
-
-  pool = new Pool({ connectionString: databaseURL });
+  pool = new Pool({ connectionString });
   const adapter = new PrismaPg(pool);
 
   prisma = new PrismaClient({ adapter });
 
-  execSync("npx prisma migrate deploy");
+  execSync("npx prisma migrate deploy", { env: process.env });
+});
+
+beforeEach(async () => {
+  await prisma.packet.deleteMany();
+  await prisma.notification.deleteMany();
+  await prisma.destination.deleteMany();
+  await prisma.user.deleteMany();
 });
 
 afterAll(async () => {
-  await prisma.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${schemaId}" CASCADE`);
   await prisma.$disconnect();
   await pool.end();
 });
