@@ -3,11 +3,16 @@ import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { z } from "zod";
 
+import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
+
 import { EnvService } from "../env/env.service";
 
 const tokenPayloadSchema = z.object({
   sub: z.string().uuid(),
-  role: z.enum(["ADMIN", "DELIVERER", "RECIPIENT"]).default("DELIVERER"),
+  role: z
+    .string()
+    .refine(Role.validate, { message: "Invalid Role" })
+    .default("DELIVERER"),
 });
 
 export type UserPayload = z.infer<typeof tokenPayloadSchema>;

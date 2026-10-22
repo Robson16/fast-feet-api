@@ -22,20 +22,20 @@ import { UserRegisterUseCase } from "@/domain/user/application/use-cases/user-re
 import { Public } from "@/infra/auth/public";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
 
-const userRegisterBodySchema = z.object({
+const accountRegisterBodySchema = z.object({
   name: z.string(),
   cpf: z.string(),
   email: z.string().email(),
   password: z.string(),
 });
 
-type UserRegisterBodySchema = z.infer<typeof userRegisterBodySchema>;
+type AccountRegisterBodySchema = z.infer<typeof accountRegisterBodySchema>;
 
 @Controller("/accounts")
 @ApiTags("Accounts")
 @Public()
-export class UserRegisterController {
-  constructor(private userRegister: UserRegisterUseCase) {}
+export class AccountRegisterController {
+  constructor(private accountRegister: UserRegisterUseCase) {}
 
   @Post()
   @HttpCode(201)
@@ -66,11 +66,11 @@ export class UserRegisterController {
   @ApiConflictResponse({
     description: "An account with the provided details already exists.",
   })
-  @UsePipes(new ZodValidationPipe(userRegisterBodySchema))
-  async handle(@Body() body: UserRegisterBodySchema) {
+  @UsePipes(new ZodValidationPipe(accountRegisterBodySchema))
+  async handle(@Body() body: AccountRegisterBodySchema) {
     const { name, cpf, email, password } = body;
 
-    const result = await this.userRegister.execute({
+    const result = await this.accountRegister.execute({
       name,
       cpf,
       email,

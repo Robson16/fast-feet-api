@@ -20,6 +20,7 @@ import { z } from "zod";
 
 import { UserAlreadyExistsError } from "@/domain/user/application/use-cases/errors/user-already-exists-error";
 import { UserRegisterUseCase } from "@/domain/user/application/use-cases/user-register.usecase";
+import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
 import { Roles } from "@/infra/auth/roles-decorator";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
 
@@ -28,7 +29,10 @@ const userCreateBodySchema = z.object({
   cpf: z.string(),
   email: z.string().email(),
   password: z.string(),
-  role: z.enum(["ADMIN", "DELIVERER", "RECIPIENT"]).default("DELIVERER"),
+  role: z
+    .string()
+    .refine(Role.validate, { message: "Invalid Role" })
+    .default("DELIVERER"),
 });
 
 type UserCreateBodySchema = z.infer<typeof userCreateBodySchema>;

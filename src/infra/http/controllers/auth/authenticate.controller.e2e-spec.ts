@@ -8,7 +8,7 @@ import { CPF } from "@/domain/user/enterprise/entities/value-objects/cpf";
 import { AppModule } from "@/infra/app.module";
 import { DatabaseModule } from "@/infra/database/database.module";
 
-describe("POST /sessions (E2E)", () => {
+describe("POST /auth (E2E)", () => {
   let app: INestApplication;
   let userFactory: UserFactory;
 
@@ -25,7 +25,7 @@ describe("POST /sessions (E2E)", () => {
     await app.init();
   });
 
-  test("[POST] /sessions - should authenticate and return a JWT token", async () => {
+  test("[POST] /auth - should authenticate and return a JWT token", async () => {
     const fakeCPF = CPF.generate();
     const passwordHash = await hash("123456", 8);
 
@@ -34,7 +34,7 @@ describe("POST /sessions (E2E)", () => {
       password: passwordHash,
     });
 
-    const response = await request(app.getHttpServer()).post("/sessions").send({
+    const response = await request(app.getHttpServer()).post("/auth").send({
       cpf: fakeCPF.value,
       password: "123456",
     });
@@ -45,7 +45,7 @@ describe("POST /sessions (E2E)", () => {
     });
   });
 
-  test("[POST] /sessions - should return 401 with wrong password", async () => {
+  test("[POST] /auth - should return 401 with wrong password", async () => {
     const fakeCPF = CPF.generate();
     const passwordHash = await hash("123456", 8);
 
@@ -54,7 +54,7 @@ describe("POST /sessions (E2E)", () => {
       password: passwordHash,
     });
 
-    const response = await request(app.getHttpServer()).post("/sessions").send({
+    const response = await request(app.getHttpServer()).post("/auth").send({
       cpf: fakeCPF.value,
       password: "wrong-password",
     });
@@ -62,10 +62,10 @@ describe("POST /sessions (E2E)", () => {
     expect(response.statusCode).toBe(401);
   });
 
-  test("[POST] /sessions - should return 401 with non-existent CPF", async () => {
+  test("[POST] /auth - should return 401 with non-existent CPF", async () => {
     const fakeCPF = CPF.generate();
 
-    const response = await request(app.getHttpServer()).post("/sessions").send({
+    const response = await request(app.getHttpServer()).post("/auth").send({
       cpf: fakeCPF.value,
       password: "123456",
     });

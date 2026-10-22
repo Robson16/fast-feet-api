@@ -48,7 +48,10 @@ As a system owner, I want routes to enforce the user's role so that users can on
 As an administrator or account owner, I want the existing user operations available through HTTP so that user accounts can be managed safely.
 
 - [ ] Add authenticated endpoints for editing and deleting users, backed by the existing use cases.
-- [ ] Add user lookup/listing support for the required read operations; the current repository has no list method or list use case.
+- [ ] Implement `GET /users` in `src/infra/http/controllers/user/user-list.controller.ts`, restricted to administrators; add repository and use-case support for listing users, including pagination if the result set can grow.
+- [ ] Implement `GET /users/:id` in `src/infra/http/controllers/user/user-get.controller.ts`, restricted to administrators, and return only fields safe for administrative viewing.
+- [ ] Implement `GET /profile` in `src/infra/http/controllers/profile/profile-get.controller.ts`, deriving the user ID from the authenticated JWT and returning only the current user's safe profile fields.
+- [ ] Register the user-list, user-get, and profile-get controllers in `HttpModule` when their handlers are implemented.
 - [ ] Add a password-change endpoint backed by `UpdateUserPasswordUseCase`, scoped to the authenticated account unless an administrator is acting.
 - [ ] Validate request payloads, prevent password hashes from appearing in responses, document routes, and test authorization and error cases.
 
@@ -144,6 +147,7 @@ As a recipient, I want to list my notifications and mark them as read so that I 
 As an API consumer, I want accurate OpenAPI documentation so that I can integrate with the available endpoints.
 
 - [ ] Add request, response, authentication, role, and error schemas for every implemented route.
+- [ ] Document `GET /users`, `GET /users/:id`, and `GET /profile` with their respective administrator or authenticated-user access requirements once implemented.
 - [ ] Keep the documented status values and role options aligned with the application domain.
 - [ ] Verify the Swagger UI at `/api` and the generated OpenAPI document in an automated test or smoke check.
 
@@ -152,6 +156,7 @@ As an API consumer, I want accurate OpenAPI documentation so that I can integrat
 As a maintainer, I want E2E coverage for all routes so that regressions in validation, persistence, authentication, and authorization are caught.
 
 - [ ] Add E2E suites for authentication, user management, destinations, parcels, and notifications.
+- [ ] Cover `GET /users`, `GET /users/:id`, and `GET /profile`, including administrator authorization, authenticated identity scoping, not-found behavior, and absence of password hashes in responses.
 - [ ] Cover success paths, validation errors, not-found responses, conflicts, unauthorized access, and forbidden access.
 - [ ] Ensure test data and database cleanup are isolated and deterministic.
 
