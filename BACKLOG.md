@@ -30,9 +30,9 @@ As an operator, I want a secure way to create the first administrator so that ro
 
 As a user, I want to sign in with my CPF and password so that I can receive an access token and use protected endpoints.
 
-- [ ] Add a public session/login endpoint backed by `AuthenticateUserUseCase`.
-- [ ] Return a JWT signed with the existing RS256 configuration and a documented response shape.
-- [ ] Return consistent unauthorized responses for invalid credentials and add E2E coverage.
+- [x] Add a public session/login endpoint backed by `AuthenticateUserUseCase`.
+- [x] Return a JWT signed with the existing RS256 configuration and a documented response shape.
+- [x] Return consistent unauthorized responses for invalid credentials and add E2E coverage.
 
 ### Story 1.4: Add role-based authorization (P1)
 
