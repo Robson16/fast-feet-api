@@ -7,11 +7,11 @@ import { DestinationsRepository } from "@/domain/order/application/repositories/
 import { PacketsRepository } from "@/domain/order/application/repositories/packets-repository";
 import { Packet } from "@/domain/order/enterprise/entities/packet";
 
-interface CreatePacketUseCaseRequest {
+interface PacketCreateUseCaseRequest {
   destinationId: string;
 }
 
-type CreatePacketUseCaseResponse = Either<
+type PacketCreateUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     packet: Packet;
@@ -19,7 +19,7 @@ type CreatePacketUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class CreatePacketUseCase {
+export class PacketCreateUseCase {
   constructor(
     private destinationsRepository: DestinationsRepository,
     private packetsRepository: PacketsRepository,
@@ -34,7 +34,7 @@ export class CreatePacketUseCase {
 
   async execute({
     destinationId,
-  }: CreatePacketUseCaseRequest): Promise<CreatePacketUseCaseResponse> {
+  }: PacketCreateUseCaseRequest): Promise<PacketCreateUseCaseResponse> {
     if (!(await this.isDestinationExistent(destinationId))) {
       return left(new ResourceNotFoundError("Destination not found."));
     }

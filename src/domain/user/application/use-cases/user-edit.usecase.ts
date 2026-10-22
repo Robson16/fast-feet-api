@@ -12,7 +12,7 @@ import { InvalidCPFError } from "./errors/invalid-cpf-error";
 import { InvalidUserRole } from "./errors/invalid-user-role";
 import { UserAlreadyExistsError } from "./errors/user-already-exists-error";
 
-interface EditUserUseCaseRequest {
+interface UserEditUseCaseRequest {
   userId: string;
   name?: string;
   cpf?: string;
@@ -21,7 +21,7 @@ interface EditUserUseCaseRequest {
   role?: string;
 }
 
-type EditUserUseCaseResponse = Either<
+type UserEditUseCaseResponse = Either<
   | ResourceNotFoundError
   | UserAlreadyExistsError
   | InvalidCPFError
@@ -32,7 +32,7 @@ type EditUserUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class EditUserUseCase {
+export class UserEditUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private hashGenerator: HashGenerator,
@@ -65,7 +65,7 @@ export class EditUserUseCase {
     email,
     password,
     role,
-  }: EditUserUseCaseRequest): Promise<EditUserUseCaseResponse> {
+  }: UserEditUseCaseRequest): Promise<UserEditUseCaseResponse> {
     const user = await this.usersRepository.findById(userId);
 
     if (!user) {

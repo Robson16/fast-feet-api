@@ -3,12 +3,12 @@ import { InMemoryDestinationsRepository } from "test/repositories/in-memory-dest
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
-import { FetchPacketsAwaitingUseCase } from "./packet-fetch-awaiting.usecase";
+import { PacketFetchAwaitingUseCase } from "./packet-fetch-awaiting.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
-let sut: FetchPacketsAwaitingUseCase; // Subject Under Test
+let sut: PacketFetchAwaitingUseCase; // Subject Under Test
 
 describe("Fetch Packets Awaiting", () => {
   beforeEach(() => {
@@ -18,7 +18,7 @@ describe("Fetch Packets Awaiting", () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );
-    sut = new FetchPacketsAwaitingUseCase(inMemoryPacketsRepository);
+    sut = new PacketFetchAwaitingUseCase(inMemoryPacketsRepository);
   });
 
   it("should be able to fetch packets", async () => {

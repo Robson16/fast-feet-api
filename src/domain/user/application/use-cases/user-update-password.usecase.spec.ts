@@ -4,17 +4,17 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
-import { UpdateUserPasswordUseCase } from "./user-update-password.usecase";
+import { UserUpdatePasswordUseCase } from "./user-update-password.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let fakeHasher: FakeHasher;
-let sut: UpdateUserPasswordUseCase; // Subject Under Test
+let sut: UserUpdatePasswordUseCase; // Subject Under Test
 
 describe("Update User Password", () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository();
     fakeHasher = new FakeHasher();
-    sut = new UpdateUserPasswordUseCase(inMemoryUsersRepository, fakeHasher);
+    sut = new UserUpdatePasswordUseCase(inMemoryUsersRepository, fakeHasher);
   });
 
   it("should be able to update a user password", async () => {

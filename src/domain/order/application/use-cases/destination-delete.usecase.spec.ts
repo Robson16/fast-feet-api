@@ -3,15 +3,15 @@ import { InMemoryDestinationsRepository } from "test/repositories/in-memory-dest
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
-import { DeleteDestinationUseCase } from "./destination-delete.usecase";
+import { DestinationDeleteUseCase } from "./destination-delete.usecase";
 
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
-let sut: DeleteDestinationUseCase; // Subject Under Test
+let sut: DestinationDeleteUseCase; // Subject Under Test
 
 describe("Delete Destination", () => {
   beforeEach(() => {
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository();
-    sut = new DeleteDestinationUseCase(inMemoryDestinationsRepository);
+    sut = new DestinationDeleteUseCase(inMemoryDestinationsRepository);
   });
 
   it("should be able to delete a destination", async () => {

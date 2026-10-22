@@ -7,12 +7,12 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 import { NotAllowedError } from "@/core/errors/not-allowed-error";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
-import { UpdatePacketStatusToDeliveredUseCase } from "./packet-update-status-to-delivered.usecase";
+import { PacketUpdateStatusToDeliveredUseCase } from "./packet-update-status-to-delivered.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
-let sut: UpdatePacketStatusToDeliveredUseCase; // Subject Under Test
+let sut: PacketUpdateStatusToDeliveredUseCase; // Subject Under Test
 
 describe("Deliver Packet", () => {
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe("Deliver Packet", () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );
-    sut = new UpdatePacketStatusToDeliveredUseCase(inMemoryPacketsRepository);
+    sut = new PacketUpdateStatusToDeliveredUseCase(inMemoryPacketsRepository);
   });
 
   it("should be able to deliver a packet", async () => {

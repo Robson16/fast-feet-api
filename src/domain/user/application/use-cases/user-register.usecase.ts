@@ -11,7 +11,7 @@ import { InvalidCPFError } from "./errors/invalid-cpf-error";
 import { InvalidUserRole } from "./errors/invalid-user-role";
 import { UserAlreadyExistsError } from "./errors/user-already-exists-error";
 
-interface RegisterUserUseCaseRequest {
+interface UserRegisterUseCaseRequest {
   name: string;
   cpf: string;
   email: string;
@@ -19,7 +19,7 @@ interface RegisterUserUseCaseRequest {
   role?: string;
 }
 
-type RegisterUserUseCaseResponse = Either<
+type UserRegisterUseCaseResponse = Either<
   UserAlreadyExistsError | InvalidCPFError | InvalidUserRole,
   {
     user: User;
@@ -27,7 +27,7 @@ type RegisterUserUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class RegisterUserUseCase {
+export class UserRegisterUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private hashGenerator: HashGenerator,
@@ -59,7 +59,7 @@ export class RegisterUserUseCase {
     email,
     password,
     role,
-  }: RegisterUserUseCaseRequest): Promise<RegisterUserUseCaseResponse> {
+  }: UserRegisterUseCaseRequest): Promise<UserRegisterUseCaseResponse> {
     if (!(await this.isCPFValid(cpf))) {
       return left(new InvalidCPFError());
     }

@@ -4,7 +4,7 @@ import { Either, right } from "@/core/either";
 import { PacketsRepository } from "@/domain/order/application/repositories/packets-repository";
 import { Packet } from "@/domain/order/enterprise/entities/packet";
 
-interface FetchPacketsNearbyByDelivererRequest {
+interface PacketFetchNearbyByDelivererUseCaseRequest {
   delivererId: string;
   distance: number;
   latitude: number;
@@ -12,7 +12,7 @@ interface FetchPacketsNearbyByDelivererRequest {
   page: number;
 }
 
-type FetchPacketsNearbyByDelivererResponse = Either<
+type PacketFetchNearbyByDelivererUseCaseResponse = Either<
   null,
   {
     packets: Packet[];
@@ -20,7 +20,7 @@ type FetchPacketsNearbyByDelivererResponse = Either<
 >;
 
 @Injectable()
-export class FetchPacketsNearbyByDeliverer {
+export class PacketFetchNearbyByDelivererUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
@@ -29,7 +29,7 @@ export class FetchPacketsNearbyByDeliverer {
     latitude,
     longitude,
     page,
-  }: FetchPacketsNearbyByDelivererRequest): Promise<FetchPacketsNearbyByDelivererResponse> {
+  }: PacketFetchNearbyByDelivererUseCaseRequest): Promise<PacketFetchNearbyByDelivererUseCaseResponse> {
     const packets =
       await this.packetsRepository.findManyNearbyByStatusAndDelivererId({
         delivererId,

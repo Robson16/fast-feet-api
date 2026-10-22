@@ -4,15 +4,15 @@ import { InMemoryDestinationsRepository } from "test/repositories/in-memory-dest
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
-import { EditDestinationUseCase } from "./destination-edit.usecase";
+import { DestinationEditUseCase } from "./destination-edit.usecase";
 
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
-let sut: EditDestinationUseCase; // Subject Under Test
+let sut: DestinationEditUseCase; // Subject Under Test
 
 describe("Edit Destination", () => {
   beforeEach(() => {
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository();
-    sut = new EditDestinationUseCase(inMemoryDestinationsRepository);
+    sut = new DestinationEditUseCase(inMemoryDestinationsRepository);
   });
 
   it("should be able to edit a destination", async () => {

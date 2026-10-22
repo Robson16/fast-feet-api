@@ -3,15 +3,15 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
-import { DeleteUserUseCase } from "./user-delete.usecase";
+import { UserDeleteUseCase } from "./user-delete.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
-let sut: DeleteUserUseCase; // Subject Under Test
+let sut: UserDeleteUseCase; // Subject Under Test
 
 describe("Delete User", () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository();
-    sut = new DeleteUserUseCase(inMemoryUsersRepository);
+    sut = new UserDeleteUseCase(inMemoryUsersRepository);
   });
 
   it("should be able to delete a user", async () => {

@@ -7,17 +7,17 @@ import { CPF } from "@/domain/user/enterprise/entities/value-objects/cpf";
 import { InvalidCPFError } from "./errors/invalid-cpf-error";
 import { InvalidUserRole } from "./errors/invalid-user-role";
 import { UserAlreadyExistsError } from "./errors/user-already-exists-error";
-import { RegisterUserUseCase } from "./user-register.usecase";
+import { UserRegisterUseCase } from "./user-register.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let fakeHasher: FakeHasher;
-let sut: RegisterUserUseCase; // Subject Under Test
+let sut: UserRegisterUseCase; // Subject Under Test
 
 describe("Register User", () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository();
     fakeHasher = new FakeHasher();
-    sut = new RegisterUserUseCase(inMemoryUsersRepository, fakeHasher);
+    sut = new UserRegisterUseCase(inMemoryUsersRepository, fakeHasher);
   });
 
   it("should be able to register a user", async () => {

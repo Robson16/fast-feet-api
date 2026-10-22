@@ -2,18 +2,18 @@ import { Either, left, right } from "@/core/either";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { DestinationsRepository } from "@/domain/order/application/repositories/destinations-repository";
 
-interface DeleteDestinationUseCaseRequest {
+interface DestinationDeleteUseCaseRequest {
   destinationId: string;
 }
 
-type DeleteDestinationUseCaseResponse = Either<ResourceNotFoundError, null>;
+type DestinationDeleteUseCaseResponse = Either<ResourceNotFoundError, null>;
 
-export class DeleteDestinationUseCase {
+export class DestinationDeleteUseCase {
   constructor(private destinationsRepository: DestinationsRepository) {}
 
   async execute({
     destinationId,
-  }: DeleteDestinationUseCaseRequest): Promise<DeleteDestinationUseCaseResponse> {
+  }: DestinationDeleteUseCaseRequest): Promise<DestinationDeleteUseCaseResponse> {
     const destination =
       await this.destinationsRepository.findById(destinationId);
 

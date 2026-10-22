@@ -6,17 +6,17 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
 import { InvalidCPFError } from "./errors/invalid-cpf-error";
 import { UserAlreadyExistsError } from "./errors/user-already-exists-error";
-import { EditUserUseCase } from "./user-edit.usecase";
+import { UserEditUseCase } from "./user-edit.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let fakeHasher: FakeHasher;
-let sut: EditUserUseCase; // Subject Under Test
+let sut: UserEditUseCase; // Subject Under Test
 
 describe("Edit User", () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository();
     fakeHasher = new FakeHasher();
-    sut = new EditUserUseCase(inMemoryUsersRepository, fakeHasher);
+    sut = new UserEditUseCase(inMemoryUsersRepository, fakeHasher);
   });
 
   it("should be able to edit a user", async () => {

@@ -18,24 +18,24 @@ import {
 import { z } from "zod";
 
 import { UserAlreadyExistsError } from "@/domain/user/application/use-cases/errors/user-already-exists-error";
-import { RegisterUserUseCase } from "@/domain/user/application/use-cases/user-register.usecase";
+import { UserRegisterUseCase } from "@/domain/user/application/use-cases/user-register.usecase";
 import { Public } from "@/infra/auth/public";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
 
-const createAccountBodySchema = z.object({
+const userRegisterBodySchema = z.object({
   name: z.string(),
   cpf: z.string(),
   email: z.string().email(),
   password: z.string(),
 });
 
-type CreateAccountBodySchema = z.infer<typeof createAccountBodySchema>;
+type UserRegisterBodySchema = z.infer<typeof userRegisterBodySchema>;
 
 @Controller("/accounts")
 @ApiTags("Accounts")
 @Public()
-export class CreateAccountController {
-  constructor(private registerUser: RegisterUserUseCase) {}
+export class UserRegisterController {
+  constructor(private userRegister: UserRegisterUseCase) {}
 
   @Post()
   @HttpCode(201)
@@ -66,11 +66,11 @@ export class CreateAccountController {
   @ApiConflictResponse({
     description: "An account with the provided details already exists.",
   })
-  @UsePipes(new ZodValidationPipe(createAccountBodySchema))
-  async handle(@Body() body: CreateAccountBodySchema) {
+  @UsePipes(new ZodValidationPipe(userRegisterBodySchema))
+  async handle(@Body() body: UserRegisterBodySchema) {
     const { name, cpf, email, password } = body;
 
-    const result = await this.registerUser.execute({
+    const result = await this.userRegister.execute({
       name,
       cpf,
       email,

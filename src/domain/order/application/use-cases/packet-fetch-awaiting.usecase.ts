@@ -4,11 +4,11 @@ import { Either, right } from "@/core/either";
 import { PacketsRepository } from "@/domain/order/application/repositories/packets-repository";
 import { Packet } from "@/domain/order/enterprise/entities/packet";
 
-interface FetchPacketsAwaitingUseCaseRequest {
+interface PacketFetchAwaitingUseCaseRequest {
   page: number;
 }
 
-type FetchPacketsAwaitingUseCaseResponse = Either<
+type PacketFetchAwaitingUseCaseResponse = Either<
   null,
   {
     packets: Packet[];
@@ -16,12 +16,12 @@ type FetchPacketsAwaitingUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class FetchPacketsAwaitingUseCase {
+export class PacketFetchAwaitingUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
     page,
-  }: FetchPacketsAwaitingUseCaseRequest): Promise<FetchPacketsAwaitingUseCaseResponse> {
+  }: PacketFetchAwaitingUseCaseRequest): Promise<PacketFetchAwaitingUseCaseResponse> {
     const packets = await this.packetsRepository.findManyByStatus(
       "AWAITING_WITHDRAWAL",
       { page },

@@ -5,17 +5,17 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
-import { CreateDestinationUseCase } from "./destination-create.usecase";
+import { DestinationCreateUseCase } from "./destination-create.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
-let sut: CreateDestinationUseCase; // Subject Under Test
+let sut: DestinationCreateUseCase; // Subject Under Test
 
 describe("Create Destination", () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository();
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository();
-    sut = new CreateDestinationUseCase(
+    sut = new DestinationCreateUseCase(
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );

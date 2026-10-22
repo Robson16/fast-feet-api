@@ -7,12 +7,12 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
 import { UnavailablePacketError } from "./errors/unavailable-packet-error";
-import { UpdatePacketStatusToWithdrawnUseCase } from "./packet-update-status-to-withdrawn.usecase";
+import { PacketUpdateStatusToWithdrawnUseCase } from "./packet-update-status-to-withdrawn.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
-let sut: UpdatePacketStatusToWithdrawnUseCase; // Subject Under Test
+let sut: PacketUpdateStatusToWithdrawnUseCase; // Subject Under Test
 
 describe("Withdrawal Packet", () => {
   beforeEach(() => {
@@ -22,7 +22,7 @@ describe("Withdrawal Packet", () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );
-    sut = new UpdatePacketStatusToWithdrawnUseCase(
+    sut = new PacketUpdateStatusToWithdrawnUseCase(
       inMemoryUsersRepository,
       inMemoryPacketsRepository,
     );

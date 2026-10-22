@@ -5,19 +5,19 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 
 import { CPF } from "@/domain/user/enterprise/entities/value-objects/cpf";
 
-import { AuthenticateUserUseCase } from "./user-authenticate.usecase";
+import { UserAuthenticateUseCase } from "./user-authenticate.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let fakeHasher: FakeHasher;
 let fakeEncrypter: FakeEncrypter;
-let sut: AuthenticateUserUseCase; // Subject Under Test
+let sut: UserAuthenticateUseCase; // Subject Under Test
 
 describe("Authenticate User", () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository();
     fakeHasher = new FakeHasher();
     fakeEncrypter = new FakeEncrypter();
-    sut = new AuthenticateUserUseCase(
+    sut = new UserAuthenticateUseCase(
       inMemoryUsersRepository,
       fakeHasher,
       fakeEncrypter,

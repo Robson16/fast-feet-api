@@ -3,15 +3,15 @@ import { InMemoryDestinationsRepository } from "test/repositories/in-memory-dest
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
-import { GetDestinationUseCase } from "./destination-get.usecase";
+import { DestinationGetUseCase } from "./destination-get.usecase";
 
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
-let sut: GetDestinationUseCase; // Subject Under Test
+let sut: DestinationGetUseCase; // Subject Under Test
 
 describe("Get Destination", () => {
   beforeEach(() => {
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository();
-    sut = new GetDestinationUseCase(inMemoryDestinationsRepository);
+    sut = new DestinationGetUseCase(inMemoryDestinationsRepository);
   });
 
   it("should be able to get a destination", async () => {

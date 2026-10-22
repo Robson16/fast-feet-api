@@ -6,11 +6,11 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { PacketsRepository } from "@/domain/order/application/repositories/packets-repository";
 import { Packet } from "@/domain/order/enterprise/entities/packet";
 
-interface UpdatePacketStatusToReturnedUseCaseRequest {
+interface PacketUpdateStatusToReturnedUseCaseRequest {
   packetId: string;
 }
 
-type UpdatePacketStatusToReturnedUseCaseResponse = Either<
+type PacketUpdateStatusToReturnedUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     packet: Packet;
@@ -18,12 +18,12 @@ type UpdatePacketStatusToReturnedUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class UpdatePacketStatusToReturnedUseCase {
+export class PacketUpdateStatusToReturnedUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
     packetId,
-  }: UpdatePacketStatusToReturnedUseCaseRequest): Promise<UpdatePacketStatusToReturnedUseCaseResponse> {
+  }: PacketUpdateStatusToReturnedUseCaseRequest): Promise<PacketUpdateStatusToReturnedUseCaseResponse> {
     const packet = await this.packetsRepository.findById(packetId);
 
     if (!packet) {

@@ -9,12 +9,12 @@ import { UsersRepository } from "@/domain/user/application/repositories/users-re
 
 import { UnavailablePacketError } from "./errors/unavailable-packet-error";
 
-interface UpdatePacketStatusToWithdrawnUseCaseRequest {
+interface PacketUpdateStatusToWithdrawnUseCaseRequest {
   delivererId: string;
   packetId: string;
 }
 
-type UpdatePacketStatusToWithdrawnUseCaseResponse = Either<
+type PacketUpdateStatusToWithdrawnUseCaseResponse = Either<
   ResourceNotFoundError | UnavailablePacketError,
   {
     packet: Packet;
@@ -22,7 +22,7 @@ type UpdatePacketStatusToWithdrawnUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class UpdatePacketStatusToWithdrawnUseCase {
+export class PacketUpdateStatusToWithdrawnUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private packetsRepository: PacketsRepository,
@@ -31,7 +31,7 @@ export class UpdatePacketStatusToWithdrawnUseCase {
   async execute({
     delivererId,
     packetId,
-  }: UpdatePacketStatusToWithdrawnUseCaseRequest): Promise<UpdatePacketStatusToWithdrawnUseCaseResponse> {
+  }: PacketUpdateStatusToWithdrawnUseCaseRequest): Promise<PacketUpdateStatusToWithdrawnUseCaseResponse> {
     const deliverer = await this.usersRepository.findById(delivererId);
 
     if (!deliverer) {

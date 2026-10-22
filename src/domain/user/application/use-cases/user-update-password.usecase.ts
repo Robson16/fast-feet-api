@@ -7,12 +7,12 @@ import { User } from "@/domain/user/enterprise/entities/user";
 import { HashGenerator } from "../cryptography/hash-generator";
 import { UsersRepository } from "../repositories/users-repository";
 
-interface UpdateUserPasswordUseCaseRequest {
+interface UserUpdatePasswordUseCaseRequest {
   userId: string;
   password: string;
 }
 
-type UpdateUserPasswordUseCaseResponse = Either<
+type UserUpdatePasswordUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     user: User;
@@ -20,7 +20,7 @@ type UpdateUserPasswordUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class UpdateUserPasswordUseCase {
+export class UserUpdatePasswordUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private hashGenerator: HashGenerator,
@@ -29,7 +29,7 @@ export class UpdateUserPasswordUseCase {
   async execute({
     userId,
     password,
-  }: UpdateUserPasswordUseCaseRequest): Promise<UpdateUserPasswordUseCaseResponse> {
+  }: UserUpdatePasswordUseCaseRequest): Promise<UserUpdatePasswordUseCaseResponse> {
     const user = await this.usersRepository.findById(userId);
 
     if (!user) {

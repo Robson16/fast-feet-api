@@ -6,12 +6,12 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 import { NotAllowedError } from "@/core/errors/not-allowed-error";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
-import { UpdatePacketStatusToReturnedUseCase } from "./packet-update-status-to-returned.usecase";
+import { PacketUpdateStatusToReturnedUseCase } from "./packet-update-status-to-returned.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
-let sut: UpdatePacketStatusToReturnedUseCase; // Subject Under Test
+let sut: PacketUpdateStatusToReturnedUseCase; // Subject Under Test
 
 describe("Return Packet", () => {
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe("Return Packet", () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );
-    sut = new UpdatePacketStatusToReturnedUseCase(inMemoryPacketsRepository);
+    sut = new PacketUpdateStatusToReturnedUseCase(inMemoryPacketsRepository);
   });
 
   it("should be able to return a packet", async () => {

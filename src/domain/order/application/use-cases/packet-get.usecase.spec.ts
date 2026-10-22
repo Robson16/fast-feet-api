@@ -8,12 +8,12 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
 
-import { GetPacketUseCase } from "./packet-get.usecase";
+import { PacketGetUseCase } from "./packet-get.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
-let sut: GetPacketUseCase; // Subject Under Test
+let sut: PacketGetUseCase; // Subject Under Test
 
 describe("Get Packet", () => {
   beforeEach(() => {
@@ -23,7 +23,7 @@ describe("Get Packet", () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );
-    sut = new GetPacketUseCase(inMemoryPacketsRepository);
+    sut = new PacketGetUseCase(inMemoryPacketsRepository);
   });
 
   it("should be able to get a packet", async () => {

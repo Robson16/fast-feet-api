@@ -7,13 +7,13 @@ import {
 } from "@/domain/order/application/repositories/packets-repository";
 import { Packet } from "@/domain/order/enterprise/entities/packet";
 
-interface FetchPacketsWithdrawnByDelivererUseCaseRequest {
+interface PacketFetchWithdrawnByDelivererUseCaseRequest {
   delivererId: string;
   page: number;
   filters?: PacketsFilters;
 }
 
-type FetchPacketsWithdrawnByDelivererUseCaseResponse = Either<
+type PacketFetchWithdrawnByDelivererUseCaseResponse = Either<
   null,
   {
     packets: Packet[];
@@ -21,14 +21,14 @@ type FetchPacketsWithdrawnByDelivererUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class FetchPacketsWithdrawnByDelivererUseCase {
+export class PacketFetchWithdrawnByDelivererUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
     delivererId,
     page,
     filters,
-  }: FetchPacketsWithdrawnByDelivererUseCaseRequest): Promise<FetchPacketsWithdrawnByDelivererUseCaseResponse> {
+  }: PacketFetchWithdrawnByDelivererUseCaseRequest): Promise<PacketFetchWithdrawnByDelivererUseCaseResponse> {
     const packets = await this.packetsRepository.findManyByStatusAndDelivererId(
       "WITHDRAWN",
       delivererId,

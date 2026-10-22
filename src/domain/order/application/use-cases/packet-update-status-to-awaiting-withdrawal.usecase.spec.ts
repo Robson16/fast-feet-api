@@ -6,12 +6,12 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 import { NotAllowedError } from "@/core/errors/not-allowed-error";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
-import { UpdatePacketStatusToAwaitingWithdrawalUseCase } from "./packet-update-status-to-awaiting-withdrawal.usecase";
+import { PacketUpdateStatusToAwaitingWithdrawalUseCase } from "./packet-update-status-to-awaiting-withdrawal.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
-let sut: UpdatePacketStatusToAwaitingWithdrawalUseCase; // Subject Under Test
+let sut: PacketUpdateStatusToAwaitingWithdrawalUseCase; // Subject Under Test
 
 describe("Define Packet as Awaiting Withdrawal", () => {
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe("Define Packet as Awaiting Withdrawal", () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );
-    sut = new UpdatePacketStatusToAwaitingWithdrawalUseCase(
+    sut = new PacketUpdateStatusToAwaitingWithdrawalUseCase(
       inMemoryPacketsRepository,
     );
   });

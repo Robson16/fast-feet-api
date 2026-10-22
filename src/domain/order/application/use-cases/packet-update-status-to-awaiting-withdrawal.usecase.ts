@@ -6,11 +6,11 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { PacketsRepository } from "@/domain/order/application/repositories/packets-repository";
 import { Packet } from "@/domain/order/enterprise/entities/packet";
 
-interface UpdatePacketStatusToAwaitingWithdrawalUseCaseRequest {
+interface PacketUpdateStatusToAwaitingWithdrawalUseCaseRequest {
   packetId: string;
 }
 
-type UpdatePacketStatusToAwaitingWithdrawalUseCaseResponse = Either<
+type PacketUpdateStatusToAwaitingWithdrawalUseCaseResponse = Either<
   ResourceNotFoundError | NotAllowedError,
   {
     packet: Packet;
@@ -18,12 +18,12 @@ type UpdatePacketStatusToAwaitingWithdrawalUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class UpdatePacketStatusToAwaitingWithdrawalUseCase {
+export class PacketUpdateStatusToAwaitingWithdrawalUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
     packetId,
-  }: UpdatePacketStatusToAwaitingWithdrawalUseCaseRequest): Promise<UpdatePacketStatusToAwaitingWithdrawalUseCaseResponse> {
+  }: PacketUpdateStatusToAwaitingWithdrawalUseCaseRequest): Promise<PacketUpdateStatusToAwaitingWithdrawalUseCaseResponse> {
     const packet = await this.packetsRepository.findById(packetId);
 
     if (!packet) {

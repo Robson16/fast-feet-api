@@ -41,6 +41,10 @@ The **FastFeet API** provides features for managing deliveries, couriers, and re
 
 ## 🚧 Planned Features
 
+- Add a login endpoint and expose the existing user, parcel, and destination use cases through HTTP.
+- Enforce the access-control requirements listed below across all routes.
+- Persist parcels and destinations through Prisma repositories.
+- Require a photo when marking a parcel as delivered.
 - Notify recipients whenever a parcel's status changes.
 - Require a photo when marking a parcel as delivered.
 - Enforce stricter access controls:
@@ -83,8 +87,8 @@ The API is designed for use by web and mobile applications. See the proposed app
 1. **Clone the repository**:
 
 ```bash
-  git clone https://github.com/Robson16/challenge-ignite-nodejs-05-fast-feet-api.git
-  cd challenge-ignite-nodejs-05-fast-feet-api
+  git clone https://github.com/Robson16/fast-feet-api.git
+  cd fast-feet-api
 ```
 
 2. **Install the dependencies**:
@@ -108,10 +112,10 @@ The API is designed for use by web and mobile applications. See the proposed app
 5. **Start the development server**:
 
 ```bash
-  npm run start:dev
+  npm run dev
 ```
 
-6. **Open the application at http://localhost:3000**.
+6. **Open the API at http://localhost:3333** or the Swagger UI at http://localhost:3333/api.
 
 ## 🧪 Tests
 

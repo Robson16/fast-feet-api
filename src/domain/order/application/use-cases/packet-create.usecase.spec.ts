@@ -5,12 +5,12 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
-import { CreatePacketUseCase } from "./packet-create.usecase";
+import { PacketCreateUseCase } from "./packet-create.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
-let sut: CreatePacketUseCase; // Subject Under Test
+let sut: PacketCreateUseCase; // Subject Under Test
 
 describe("Create Packet", () => {
   beforeEach(() => {
@@ -20,7 +20,7 @@ describe("Create Packet", () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );
-    sut = new CreatePacketUseCase(
+    sut = new PacketCreateUseCase(
       inMemoryDestinationsRepository,
       inMemoryPacketsRepository,
     );

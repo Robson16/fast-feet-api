@@ -5,12 +5,12 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
-import { DeletePacketUseCase } from "./packet-delete.usecase";
+import { PacketDeleteUseCase } from "./packet-delete.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
-let sut: DeletePacketUseCase; // Subject Under Test
+let sut: PacketDeleteUseCase; // Subject Under Test
 
 describe("Delete Packet", () => {
   beforeEach(() => {
@@ -20,7 +20,7 @@ describe("Delete Packet", () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );
-    sut = new DeletePacketUseCase(inMemoryPacketsRepository);
+    sut = new PacketDeleteUseCase(inMemoryPacketsRepository);
   });
 
   it("should be able to delete a packet", async () => {

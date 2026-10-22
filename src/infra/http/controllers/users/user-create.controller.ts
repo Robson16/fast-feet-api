@@ -19,11 +19,11 @@ import {
 import { z } from "zod";
 
 import { UserAlreadyExistsError } from "@/domain/user/application/use-cases/errors/user-already-exists-error";
-import { RegisterUserUseCase } from "@/domain/user/application/use-cases/user-register.usecase";
+import { UserRegisterUseCase } from "@/domain/user/application/use-cases/user-register.usecase";
 import { Roles } from "@/infra/auth/roles-decorator";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
 
-const createUserBodySchema = z.object({
+const userCreateBodySchema = z.object({
   name: z.string(),
   cpf: z.string(),
   email: z.string().email(),
@@ -31,13 +31,13 @@ const createUserBodySchema = z.object({
   role: z.enum(["ADMIN", "DELIVERER", "RECIPIENT"]).default("DELIVERER"),
 });
 
-type CreateUserBodySchema = z.infer<typeof createUserBodySchema>;
+type UserCreateBodySchema = z.infer<typeof userCreateBodySchema>;
 
 @Controller("/users")
 @ApiTags("Users")
 @ApiBearerAuth()
-export class CreateUserController {
-  constructor(private registerUser: RegisterUserUseCase) {}
+export class UserCreateController {
+  constructor(private userRegister: UserRegisterUseCase) {}
 
   @Post()
   @Roles("ADMIN")
@@ -67,11 +67,11 @@ export class CreateUserController {
   @ApiCreatedResponse({ description: "User created successfully." })
   @ApiBadRequestResponse({ description: "Invalid data or invalid CPF." })
   @ApiConflictResponse({ description: "User already exists." })
-  @UsePipes(new ZodValidationPipe(createUserBodySchema))
-  async handle(@Body() body: CreateUserBodySchema) {
+  @UsePipes(new ZodValidationPipe(userCreateBodySchema))
+  async handle(@Body() body: UserCreateBodySchema) {
     const { name, cpf, email, password, role } = body;
 
-    const result = await this.registerUser.execute({
+    const result = await this.userRegister.execute({
       name,
       cpf,
       email,

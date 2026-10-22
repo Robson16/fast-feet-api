@@ -3,23 +3,23 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { DestinationsRepository } from "@/domain/order/application/repositories/destinations-repository";
 import { Destination } from "@/domain/order/enterprise/entities/destination";
 
-interface GetDestinationUseCaseRequest {
+interface DestinationGetUseCaseRequest {
   destinationId: string;
 }
 
-type GetDestinationUseCaseResponse = Either<
+type DestinationGetUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     destination: Destination;
   }
 >;
 
-export class GetDestinationUseCase {
+export class DestinationGetUseCase {
   constructor(private destinationsRepository: DestinationsRepository) {}
 
   async execute({
     destinationId,
-  }: GetDestinationUseCaseRequest): Promise<GetDestinationUseCaseResponse> {
+  }: DestinationGetUseCaseRequest): Promise<DestinationGetUseCaseResponse> {
     const destination =
       await this.destinationsRepository.findById(destinationId);
 

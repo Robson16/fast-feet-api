@@ -1,15 +1,15 @@
 import { Module } from "@nestjs/common";
 
-import { RegisterUserUseCase } from "@/domain/user/application/use-cases/user-register.usecase";
+import { UserRegisterUseCase } from "@/domain/user/application/use-cases/user-register.usecase";
 
 import { CryptographyModule } from "../cryptography/cryptography.module";
 import { DatabaseModule } from "../database/database.module";
-import { CreateAccountController } from "./controllers/users/create-account.controller";
-import { CreateUserController } from "./controllers/users/create-user.controller";
+import { UserCreateController } from "./controllers/users/user-create.controller";
+import { UserRegisterController } from "./controllers/users/user-register.controller";
 
 @Module({
   imports: [DatabaseModule, CryptographyModule],
-  controllers: [CreateAccountController, CreateUserController],
-  providers: [RegisterUserUseCase],
+  controllers: [UserRegisterController, UserCreateController],
+  providers: [UserRegisterUseCase],
 })
 export class HttpModule {}

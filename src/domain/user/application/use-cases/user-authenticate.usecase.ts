@@ -9,12 +9,12 @@ import { UsersRepository } from "../repositories/users-repository";
 import { InvalidCPFError } from "./errors/invalid-cpf-error";
 import { WrongCredentialsError } from "./errors/wrong-credentials-error";
 
-interface AuthenticateUserUseCaseRequest {
+interface UserAuthenticateUseCaseRequest {
   cpf: string;
   password: string;
 }
 
-type AuthenticateUserUseCaseResponse = Either<
+type UserAuthenticateUseCaseResponse = Either<
   InvalidCPFError | WrongCredentialsError,
   {
     accessToken: string;
@@ -22,7 +22,7 @@ type AuthenticateUserUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class AuthenticateUserUseCase {
+export class UserAuthenticateUseCase {
   constructor(
     private userRepository: UsersRepository,
     private hashCompare: HashComparer,
@@ -32,7 +32,7 @@ export class AuthenticateUserUseCase {
   async execute({
     cpf,
     password,
-  }: AuthenticateUserUseCaseRequest): Promise<AuthenticateUserUseCaseResponse> {
+  }: UserAuthenticateUseCaseRequest): Promise<UserAuthenticateUseCaseResponse> {
     const isCPFValid = CPF.validate(cpf);
 
     if (!isCPFValid) {

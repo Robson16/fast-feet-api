@@ -3,23 +3,23 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { PacketsRepository } from "@/domain/order/application/repositories/packets-repository";
 import { PacketDetails } from "@/domain/order/enterprise/entities/value-objects/packet-details";
 
-interface GetPacketUseCaseRequest {
+interface PacketGetUseCaseRequest {
   packetId: string;
 }
 
-type GetPacketUseCaseResponse = Either<
+type PacketGetUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     packet: PacketDetails;
   }
 >;
 
-export class GetPacketUseCase {
+export class PacketGetUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
     packetId,
-  }: GetPacketUseCaseRequest): Promise<GetPacketUseCaseResponse> {
+  }: PacketGetUseCaseRequest): Promise<PacketGetUseCaseResponse> {
     const packet = await this.packetsRepository.findDetailsById(packetId);
 
     if (!packet) {

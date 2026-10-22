@@ -2,18 +2,18 @@ import { Either, left, right } from "@/core/either";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { PacketsRepository } from "@/domain/order/application/repositories/packets-repository";
 
-interface DeletePacketUseCaseRequest {
+interface PacketDeleteUseCaseRequest {
   packetId: string;
 }
 
-type DeletePacketUseCaseResponse = Either<ResourceNotFoundError, null>;
+type PacketDeleteUseCaseResponse = Either<ResourceNotFoundError, null>;
 
-export class DeletePacketUseCase {
+export class PacketDeleteUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
     packetId,
-  }: DeletePacketUseCaseRequest): Promise<DeletePacketUseCaseResponse> {
+  }: PacketDeleteUseCaseRequest): Promise<PacketDeleteUseCaseResponse> {
     const packet = await this.packetsRepository.findById(packetId);
 
     if (!packet) {

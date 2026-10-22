@@ -7,7 +7,7 @@ import { DestinationsRepository } from "@/domain/order/application/repositories/
 import { Destination } from "@/domain/order/enterprise/entities/destination";
 import { UsersRepository } from "@/domain/user/application/repositories/users-repository";
 
-interface CreateDestinationUseCaseRequest {
+interface DestinationCreateUseCaseRequest {
   recipientId: string;
   title: string;
   addressStreet: string;
@@ -22,7 +22,7 @@ interface CreateDestinationUseCaseRequest {
   longitude: number;
 }
 
-type CreateDestinationUseCaseResponse = Either<
+type DestinationCreateUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     destination: Destination;
@@ -30,7 +30,7 @@ type CreateDestinationUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class CreateDestinationUseCase {
+export class DestinationCreateUseCase {
   constructor(
     private usersRepository: UsersRepository,
     private destinationsRepository: DestinationsRepository,
@@ -49,7 +49,7 @@ export class CreateDestinationUseCase {
     addressCountry,
     latitude,
     longitude,
-  }: CreateDestinationUseCaseRequest): Promise<CreateDestinationUseCaseResponse> {
+  }: DestinationCreateUseCaseRequest): Promise<DestinationCreateUseCaseResponse> {
     const isRecipientExistent =
       await this.usersRepository.findById(recipientId);
 

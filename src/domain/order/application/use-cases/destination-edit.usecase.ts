@@ -3,7 +3,7 @@ import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { DestinationsRepository } from "@/domain/order/application/repositories/destinations-repository";
 import { Destination } from "@/domain/order/enterprise/entities/destination";
 
-interface EditDestinationUseCaseRequest {
+interface DestinationEditUseCaseRequest {
   destinationId: string;
   title: string;
   addressStreet: string;
@@ -18,14 +18,14 @@ interface EditDestinationUseCaseRequest {
   longitude: number;
 }
 
-type EditDestinationUseCaseResponse = Either<
+type DestinationEditUseCaseResponse = Either<
   ResourceNotFoundError,
   {
     destination: Destination;
   }
 >;
 
-export class EditDestinationUseCase {
+export class DestinationEditUseCase {
   constructor(private destinationsRepository: DestinationsRepository) {}
 
   async execute({
@@ -41,7 +41,7 @@ export class EditDestinationUseCase {
     addressCountry,
     latitude,
     longitude,
-  }: EditDestinationUseCaseRequest): Promise<EditDestinationUseCaseResponse> {
+  }: DestinationEditUseCaseRequest): Promise<DestinationEditUseCaseResponse> {
     const destination =
       await this.destinationsRepository.findById(destinationId);
 

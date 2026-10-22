@@ -6,12 +6,12 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 
-import { FetchPacketsWithdrawnByDelivererUseCase } from "./packet-fetch-withdrawn-by-deliverer.usecase";
+import { PacketFetchWithdrawnByDelivererUseCase } from "./packet-fetch-withdrawn-by-deliverer.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
-let sut: FetchPacketsWithdrawnByDelivererUseCase; // Subject Under Test
+let sut: PacketFetchWithdrawnByDelivererUseCase; // Subject Under Test
 
 describe("Fetch Packets Withdrawn by Deliverer", () => {
   beforeEach(() => {
@@ -21,9 +21,7 @@ describe("Fetch Packets Withdrawn by Deliverer", () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );
-    sut = new FetchPacketsWithdrawnByDelivererUseCase(
-      inMemoryPacketsRepository,
-    );
+    sut = new PacketFetchWithdrawnByDelivererUseCase(inMemoryPacketsRepository);
   });
 
   it("should be able to fetch packets withdrawn by deliverer", async () => {
