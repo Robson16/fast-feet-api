@@ -15,19 +15,17 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
-import { z } from "zod";
 
 import { WrongCredentialsError } from "@/domain/user/application/use-cases/errors/wrong-credentials-error";
 import { UserAuthenticateUseCase } from "@/domain/user/application/use-cases/user-authenticate.usecase";
 import { Public } from "@/infra/auth/public";
+import { AuthenticateResponseDto } from "@/infra/http/dtos/authenticate-response.dto";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
-
-const userAuthenticateBodySchema = z.object({
-  cpf: z.string(),
-  password: z.string(),
-});
-
-type UserAuthenticateBodySchema = z.infer<typeof userAuthenticateBodySchema>;
+import {
+  userAuthenticateApiBody,
+  UserAuthenticateBodySchema,
+  userAuthenticateBodySchema,
+} from "@/infra/http/schemas/authenticate-request.schema";
 
 @Controller("/auth")
 @ApiTags("Authentication")
@@ -42,24 +40,10 @@ export class UserAuthenticateController {
     description:
       "Authenticates a user with CPF and password, returning a JWT token.",
   })
-  @ApiBody({
-    schema: {
-      type: "object",
-      required: ["cpf", "password"],
-      properties: {
-        cpf: { type: "string", example: "111.222.333-44" },
-        password: { type: "string", example: "strong-password" },
-      },
-    },
-  })
+  @ApiBody(userAuthenticateApiBody)
   @ApiOkResponse({
     description: "Authentication successful.",
-    schema: {
-      type: "object",
-      properties: {
-        access_token: { type: "string" },
-      },
-    },
+    type: AuthenticateResponseDto,
   })
   @ApiUnauthorizedResponse({ description: "Wrong credentials." })
   @ApiBadRequestResponse({ description: "Invalid input data." })

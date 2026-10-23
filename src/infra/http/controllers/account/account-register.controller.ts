@@ -15,21 +15,16 @@ import {
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
-import { z } from "zod";
 
 import { UserAlreadyExistsError } from "@/domain/user/application/use-cases/errors/user-already-exists-error";
 import { UserRegisterUseCase } from "@/domain/user/application/use-cases/user-register.usecase";
 import { Public } from "@/infra/auth/public";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
-
-const accountRegisterBodySchema = z.object({
-  name: z.string(),
-  cpf: z.string(),
-  email: z.string().email(),
-  password: z.string(),
-});
-
-type AccountRegisterBodySchema = z.infer<typeof accountRegisterBodySchema>;
+import {
+  accountRegisterApiBody,
+  AccountRegisterBodySchema,
+  accountRegisterBodySchema,
+} from "@/infra/http/schemas/account-register.schema";
 
 @Controller("/accounts")
 @ApiTags("Accounts")
@@ -43,22 +38,7 @@ export class AccountRegisterController {
     summary: "Create a user account",
     description: "Creates an account with a name, CPF, email, password.",
   })
-  @ApiBody({
-    schema: {
-      type: "object",
-      required: ["name", "cpf", "email", "password"],
-      properties: {
-        name: { type: "string", example: "John Doe" },
-        cpf: { type: "string", example: "529.982.247-25" },
-        email: {
-          type: "string",
-          format: "email",
-          example: "john.doe@example.com",
-        },
-        password: { type: "string", example: "strong-password" },
-      },
-    },
-  })
+  @ApiBody(accountRegisterApiBody)
   @ApiCreatedResponse({ description: "Account created successfully." })
   @ApiBadRequestResponse({
     description: "Invalid data, invalid CPF.",

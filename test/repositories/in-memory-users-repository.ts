@@ -14,6 +14,17 @@ export class InMemoryUsersRepository implements UsersRepository {
     return user;
   }
 
+  async findMany({ page }: { page: number }) {
+    const startIndex = (page - 1) * 20;
+
+    return [...this.items]
+      .sort(
+        (first, second) =>
+          second.createdAt.getTime() - first.createdAt.getTime(),
+      )
+      .slice(startIndex, startIndex + 20);
+  }
+
   async findByCPF(cpf: string) {
     const user = this.items.find((item) => item.cpf.value === cpf);
 

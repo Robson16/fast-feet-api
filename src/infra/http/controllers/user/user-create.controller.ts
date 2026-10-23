@@ -16,26 +16,16 @@ import {
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
-import { z } from "zod";
 
 import { UserAlreadyExistsError } from "@/domain/user/application/use-cases/errors/user-already-exists-error";
 import { UserRegisterUseCase } from "@/domain/user/application/use-cases/user-register.usecase";
-import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
 import { Roles } from "@/infra/auth/roles-decorator";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
-
-const userCreateBodySchema = z.object({
-  name: z.string(),
-  cpf: z.string(),
-  email: z.string().email(),
-  password: z.string(),
-  role: z
-    .string()
-    .refine(Role.validate, { message: "Invalid Role" })
-    .default("DELIVERER"),
-});
-
-type UserCreateBodySchema = z.infer<typeof userCreateBodySchema>;
+import {
+  userCreateApiBody,
+  UserCreateBodySchema,
+  userCreateBodySchema,
+} from "@/infra/http/schemas/user-create.schema";
 
 @Controller("/users")
 @ApiTags("Users")
@@ -51,23 +41,7 @@ export class UserCreateController {
     description:
       "Authenticated route for administrators to create any user role (ADMIN, DELIVERER, or RECIPIENT).",
   })
-  @ApiBody({
-    schema: {
-      type: "object",
-      required: ["name", "cpf", "email", "password", "role"],
-      properties: {
-        name: { type: "string", example: "Jane Admin" },
-        cpf: { type: "string", example: "111.222.333-44" },
-        email: {
-          type: "string",
-          format: "email",
-          example: "jane@fastfeet.com",
-        },
-        password: { type: "string", example: "strong-password" },
-        role: { type: "string", enum: ["ADMIN", "DELIVERER", "RECIPIENT"] },
-      },
-    },
-  })
+  @ApiBody(userCreateApiBody)
   @ApiCreatedResponse({ description: "User created successfully." })
   @ApiBadRequestResponse({ description: "Invalid data or invalid CPF." })
   @ApiConflictResponse({ description: "User already exists." })

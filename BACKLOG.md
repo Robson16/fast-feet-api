@@ -2,10 +2,10 @@
 
 ## Current Implementation Snapshot
 
-- The only HTTP endpoint currently registered is `POST /accounts`.
-- Application use cases already exist for user registration, authentication, editing, deletion, and password updates; destination creation, lookup by ID, editing, and deletion; and parcel creation, lookup, deletion, status transitions, and selected parcel queries.
-- JWT authentication infrastructure and a global authentication guard are already configured. Role-based authorization is not implemented.
-- Prisma persistence is currently wired only for users. Packet and destination repository abstractions have in-memory test implementations but no Prisma adapters registered for runtime use.
+- The HTTP API exposes public account registration and authentication, user creation/listing/lookups/editing/deletion, and authenticated profile lookup/editing/deletion.
+- Application use cases exist for user registration, authentication, lookup, listing, editing, deletion, and password updates; destination creation, lookup by ID, editing, and deletion; and parcel creation, lookup, deletion, status transitions, and selected parcel queries.
+- JWT authentication and a global authentication guard are configured. Role-based authorization is implemented and applied to administrator-only user management; destination and parcel policies remain pending.
+- Prisma persistence is wired for users, including paginated listing. Packet and destination repository abstractions have in-memory test implementations but no Prisma adapters registered for runtime use.
 - The Prisma schema includes a `Notification` model, but there are no notification use cases, repositories, or routes. Parcel photo storage is not modeled.
 
 ## Epic 1: Secure Authentication and User Management
@@ -38,7 +38,7 @@ As a user, I want to sign in with my CPF and password so that I can receive an a
 
 As a system owner, I want routes to enforce the user's role so that users can only perform operations permitted to their role.
 
-- [ ] Add route metadata and a guard for role policies; authentication alone is not sufficient.
+- [x] Add route metadata and a guard for role policies; authentication alone is not sufficient.
 - [ ] Restrict user and destination administration to administrators, and parcel administration to administrators and deliverers.
 - [ ] Ensure recipients can access only their own account, destination, parcels, and notifications; deliverers can access only parcels assigned to them where applicable.
 - [ ] Add tests for unauthenticated, forbidden-role, and cross-user access attempts.
@@ -47,13 +47,13 @@ As a system owner, I want routes to enforce the user's role so that users can on
 
 As an administrator or account owner, I want the existing user operations available through HTTP so that user accounts can be managed safely.
 
-- [ ] Add authenticated endpoints for editing and deleting users, backed by the existing use cases.
-- [ ] Implement `GET /users` in `src/infra/http/controllers/user/user-list.controller.ts`, restricted to administrators; add repository and use-case support for listing users, including pagination if the result set can grow.
-- [ ] Implement `GET /users/:id` in `src/infra/http/controllers/user/user-get.controller.ts`, restricted to administrators, and return only fields safe for administrative viewing.
-- [ ] Implement `GET /profile` in `src/infra/http/controllers/profile/profile-get.controller.ts`, deriving the user ID from the authenticated JWT and returning only the current user's safe profile fields.
-- [ ] Register the user-list, user-get, and profile-get controllers in `HttpModule` when their handlers are implemented.
+- [x] Add authenticated endpoints for editing and deleting users, backed by the existing use cases.
+- [x] Implement `GET /users` in `src/infra/http/controllers/user/user-list.controller.ts`, restricted to administrators; add repository and use-case support for listing users, including pagination if the result set can grow.
+- [x] Implement `GET /users/:id` in `src/infra/http/controllers/user/user-get.controller.ts`, restricted to administrators, and return only fields safe for administrative viewing.
+- [x] Implement `GET /profile` in `src/infra/http/controllers/profile/profile-get.controller.ts`, deriving the user ID from the authenticated JWT and returning only the current user's safe profile fields.
+- [x] Register the user-list, user-get, and profile-get controllers in `HttpModule` when their handlers are implemented.
 - [ ] Add a password-change endpoint backed by `UpdateUserPasswordUseCase`, scoped to the authenticated account unless an administrator is acting.
-- [ ] Validate request payloads, prevent password hashes from appearing in responses, document routes, and test authorization and error cases.
+- [x] Validate request payloads, prevent password hashes from appearing in responses, document user routes, and test authorization and validation errors.
 
 ### Story 1.6: List a user's parcels (P1)
 
@@ -147,8 +147,8 @@ As a recipient, I want to list my notifications and mark them as read so that I 
 As an API consumer, I want accurate OpenAPI documentation so that I can integrate with the available endpoints.
 
 - [ ] Add request, response, authentication, role, and error schemas for every implemented route.
-- [ ] Document `GET /users`, `GET /users/:id`, and `GET /profile` with their respective administrator or authenticated-user access requirements once implemented.
-- [ ] Keep the documented status values and role options aligned with the application domain.
+- [x] Document `GET /users`, `GET /users/:id`, and `GET /profile` with their respective administrator or authenticated-user access requirements once implemented.
+- [x] Keep the documented status values and role options aligned with the application domain.
 - [ ] Verify the Swagger UI at `/api` and the generated OpenAPI document in an automated test or smoke check.
 
 ### Story 5.2: Add end-to-end coverage for the complete API (P1)

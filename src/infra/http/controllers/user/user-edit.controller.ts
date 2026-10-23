@@ -14,24 +14,15 @@ import {
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
-import { z } from "zod";
 
 import { UserEditUseCase } from "@/domain/user/application/use-cases/user-edit.usecase";
-import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
 import { Roles } from "@/infra/auth/roles-decorator";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
-
-const editUserBodySchema = z.object({
-  name: z.string().optional(),
-  cpf: z.string().optional(),
-  email: z.string().email().optional(),
-  role: z
-    .string()
-    .refine(Role.validate, { message: "Invalid Role" })
-    .optional(),
-});
-
-type EditUserBodySchema = z.infer<typeof editUserBodySchema>;
+import {
+  editUserApiBody,
+  EditUserBodySchema,
+  editUserBodySchema,
+} from "@/infra/http/schemas/user-edit.schema";
 
 @Controller("/users/:id")
 @ApiTags("Users")
@@ -46,17 +37,7 @@ export class UserEditController {
     summary: "Edit a user",
     description: "Updates user details and role. Requires ADMIN role.",
   })
-  @ApiBody({
-    schema: {
-      type: "object",
-      properties: {
-        name: { type: "string", example: "Jane Updated" },
-        cpf: { type: "string", example: "111.222.333-44" },
-        email: { type: "string", format: "email" },
-        role: { type: "string", enum: ["ADMIN", "DELIVERER", "RECIPIENT"] },
-      },
-    },
-  })
+  @ApiBody(editUserApiBody)
   @ApiNoContentResponse({ description: "User updated successfully." })
   @ApiBadRequestResponse({ description: "Invalid data or CPF." })
   async handle(

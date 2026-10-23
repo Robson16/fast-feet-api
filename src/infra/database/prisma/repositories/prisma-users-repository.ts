@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
+import { PaginationParams } from "@/core/repositories/pagination-params";
 import { UsersRepository } from "@/domain/user/application/repositories/users-repository";
 import { User } from "@/domain/user/enterprise/entities/user";
 
@@ -22,6 +23,16 @@ export class PrismaUsersRepository implements UsersRepository {
     }
 
     return PrismaUserMapper.toDomain(user);
+  }
+
+  async findMany({ page }: PaginationParams): Promise<User[]> {
+    const users = await this.prisma.user.findMany({
+      skip: (page - 1) * 20,
+      take: 20,
+      orderBy: { createdAt: "desc" },
+    });
+
+    return users.map(PrismaUserMapper.toDomain);
   }
 
   async findByCPF(cpf: string): Promise<User | null> {

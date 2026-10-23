@@ -13,19 +13,16 @@ import {
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
-import { z } from "zod";
 
 import { UserEditUseCase } from "@/domain/user/application/use-cases/user-edit.usecase";
 import { CurrentUser } from "@/infra/auth/current-user-decorator";
 import { UserPayload } from "@/infra/auth/jwt.strategy";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
-
-const editProfileBodySchema = z.object({
-  name: z.string().optional(),
-  email: z.string().email().optional(),
-});
-
-type EditProfileBodySchema = z.infer<typeof editProfileBodySchema>;
+import {
+  editProfileApiBody,
+  EditProfileBodySchema,
+  editProfileBodySchema,
+} from "@/infra/http/schemas/profile-edit.schema";
 
 @Controller("/profile")
 @ApiTags("Profile")
@@ -39,15 +36,7 @@ export class ProfileEditController {
     summary: "Edit own profile",
     description: "Updates the authenticated user's details.",
   })
-  @ApiBody({
-    schema: {
-      type: "object",
-      properties: {
-        name: { type: "string", example: "Jane Updated" },
-        email: { type: "string", format: "email" },
-      },
-    },
-  })
+  @ApiBody(editProfileApiBody)
   @ApiNoContentResponse({ description: "Profile updated successfully." })
   @ApiBadRequestResponse({ description: "Invalid data." })
   async handle(
