@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { makeUser } from "test/factories/make-user";
+import { makeUser } from "test/factories/user/make-user";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 

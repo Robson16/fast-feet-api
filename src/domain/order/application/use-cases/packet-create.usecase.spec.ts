@@ -1,4 +1,4 @@
-import { makeDestination } from "test/factories/make-destination";
+import { makeDestination } from "test/factories/destination/make-destination";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";

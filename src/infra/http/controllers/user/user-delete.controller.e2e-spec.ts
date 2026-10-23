@@ -2,7 +2,7 @@ import { INestApplication } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Test } from "@nestjs/testing";
 import request from "supertest";
-import { UserFactory } from "test/factories/user-factory";
+import { UserFactory } from "test/factories/user/user-factory";
 
 import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
 import { AppModule } from "@/infra/app.module";

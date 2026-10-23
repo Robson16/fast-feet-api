@@ -1,4 +1,4 @@
-import { makeDestination } from "test/factories/make-destination";
+import { makeDestination } from "test/factories/destination/make-destination";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";

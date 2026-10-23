@@ -1,5 +1,5 @@
 import { FakeHasher } from "test/cryptography/fake-hasher";
-import { makeUser } from "test/factories/make-user";
+import { makeUser } from "test/factories/user/make-user";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";

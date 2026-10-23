@@ -1,6 +1,6 @@
-import { makeDestination } from "test/factories/make-destination";
-import { makePacket } from "test/factories/make-packet";
-import { makeUser } from "test/factories/make-user";
+import { makeDestination } from "test/factories/destination/make-destination";
+import { makePacket } from "test/factories/packet/make-packet";
+import { makeUser } from "test/factories/user/make-user";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
