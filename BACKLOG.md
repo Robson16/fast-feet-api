@@ -52,7 +52,14 @@ As an administrator or account owner, I want the existing user operations availa
 - [x] Implement `GET /users/:id` in `src/infra/http/controllers/user/user-get.controller.ts`, restricted to administrators, and return only fields safe for administrative viewing.
 - [x] Implement `GET /profile` in `src/infra/http/controllers/profile/profile-get.controller.ts`, deriving the user ID from the authenticated JWT and returning only the current user's safe profile fields.
 - [x] Register the user-list, user-get, and profile-get controllers in `HttpModule` when their handlers are implemented.
-- [ ] Add a password-change endpoint backed by `UpdateUserPasswordUseCase`, scoped to the authenticated account unless an administrator is acting.
+- [x] Add `PATCH /profile/password` in `src/infra/http/controllers/profile/`; derive the account ID from the authenticated JWT and never accept a target user ID from the request.
+- [x] Require the current password and a new password for self-service changes; verify the current password before hashing and saving the new one.
+- [x] Update `UserUpdatePasswordUseCase` as needed to support current-password verification, while keeping password hashing and persistence in the application layer.
+- [x] Add administrator-only `PATCH /users/:id/password` in `src/infra/http/controllers/user/` for resetting another user's password; enforce the `ADMIN` role and return not found for an unknown user.
+- [x] Validate password payloads and the project's password policy; never include password hashes in either endpoint's response.
+- [x] Document both routes in Swagger, including authentication, authorization, request fields, and validation/authorization/not-found responses.
+- [x] Add E2E tests for successful self-service change, wrong current password, unauthenticated access, and proof that a user cannot change another account's password.
+- [x] Add E2E tests for successful administrator reset, forbidden non-admin access, and unknown target user.
 - [x] Validate request payloads, prevent password hashes from appearing in responses, document user routes, and test authorization and validation errors.
 
 ### Story 1.6: List a user's parcels (P1)

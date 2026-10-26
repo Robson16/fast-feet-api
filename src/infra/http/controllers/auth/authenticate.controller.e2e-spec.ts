@@ -1,9 +1,9 @@
 import { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
-import { hash } from "bcryptjs";
 import request from "supertest";
 import { UserFactory } from "test/factories/user/user-factory";
 
+import { HashGenerator } from "@/domain/user/application/cryptography/hash-generator";
 import { CPF } from "@/domain/user/enterprise/entities/value-objects/cpf";
 import { AppModule } from "@/infra/app.module";
 import { DatabaseModule } from "@/infra/database/database.module";
@@ -11,6 +11,7 @@ import { DatabaseModule } from "@/infra/database/database.module";
 describe("POST /auth (E2E)", () => {
   let app: INestApplication;
   let userFactory: UserFactory;
+  let hashGenerator: HashGenerator;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -21,13 +22,14 @@ describe("POST /auth (E2E)", () => {
     app = moduleRef.createNestApplication();
 
     userFactory = moduleRef.get(UserFactory);
+    hashGenerator = moduleRef.get(HashGenerator);
 
     await app.init();
   });
 
   test("[POST] /auth - should authenticate and return a JWT token", async () => {
     const fakeCPF = CPF.generate();
-    const passwordHash = await hash("123456", 8);
+    const passwordHash = await hashGenerator.hash("123456");
 
     await userFactory.makePrismaUser({
       cpf: fakeCPF,
@@ -47,7 +49,7 @@ describe("POST /auth (E2E)", () => {
 
   test("[POST] /auth - should return 401 with wrong password", async () => {
     const fakeCPF = CPF.generate();
-    const passwordHash = await hash("123456", 8);
+    const passwordHash = await hashGenerator.hash("123456");
 
     await userFactory.makePrismaUser({
       cpf: fakeCPF,

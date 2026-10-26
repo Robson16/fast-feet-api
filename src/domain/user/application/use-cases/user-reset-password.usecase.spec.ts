@@ -4,39 +4,38 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
-import { UserUpdatePasswordUseCase } from "./user-update-password.usecase";
+import { UserResetPasswordUseCase } from "./user-reset-password.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let fakeHasher: FakeHasher;
-let sut: UserUpdatePasswordUseCase; // Subject Under Test
+let sut: UserResetPasswordUseCase;
 
-describe("Update User Password", () => {
+describe("Reset User Password", () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository();
     fakeHasher = new FakeHasher();
-    sut = new UserUpdatePasswordUseCase(inMemoryUsersRepository, fakeHasher);
+    sut = new UserResetPasswordUseCase(inMemoryUsersRepository, fakeHasher);
   });
 
-  it("should be able to update a user password", async () => {
-    const user = makeUser();
-
+  it("should be able to reset a user's password", async () => {
+    const user = makeUser({ password: "old-password-hash" });
     await inMemoryUsersRepository.create(user);
 
     const result = await sut.execute({
       userId: user.id.toString(),
-      password: "654321",
+      password: "new-password",
     });
 
-    const hashedPassword = await fakeHasher.hash("654321");
-
     expect(result.isRight()).toBe(true);
-    expect(inMemoryUsersRepository.items[0].password).toEqual(hashedPassword);
+    expect(inMemoryUsersRepository.items[0].password).toBe(
+      await fakeHasher.hash("new-password"),
+    );
   });
 
-  it("should not be able to update the password for a nonexistent user", async () => {
+  it("should not be able to reset the password of a nonexistent user", async () => {
     const result = await sut.execute({
       userId: "invalid-user-id",
-      password: "654321",
+      password: "new-password",
     });
 
     expect(result.isLeft()).toBe(true);
