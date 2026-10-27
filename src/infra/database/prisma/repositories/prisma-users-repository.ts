@@ -3,9 +3,8 @@ import { Injectable } from "@nestjs/common";
 import { PaginationParams } from "@/core/repositories/pagination-params";
 import { UsersRepository } from "@/domain/user/application/repositories/users-repository";
 import { User } from "@/domain/user/enterprise/entities/user";
-
-import { PrismaUserMapper } from "../mappers/prisma-user-mapper";
-import { PrismaService } from "../prisma.service";
+import { PrismaUserMapper } from "@/infra/database/prisma/mappers/prisma-user-mapper";
+import { PrismaService } from "@/infra/database/prisma/prisma.service";
 
 @Injectable()
 export class PrismaUsersRepository implements UsersRepository {

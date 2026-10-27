@@ -41,6 +41,11 @@ export abstract class PacketsRepository {
     params: FindManyNearbyByStatusAndDelivererIdParams,
   ): Promise<Packet[]>;
 
+  abstract findManyByRecipientId(
+    recipientId: string,
+    pagination: PaginationParams,
+  ): Promise<Packet[]>;
+
   abstract create(packet: Packet): Promise<void>;
   abstract save(packet: Packet): Promise<void>;
   abstract delete(packet: Packet): Promise<void>;

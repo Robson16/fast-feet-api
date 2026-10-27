@@ -20,7 +20,7 @@ export interface PacketDetailsProps {
 
 export class PacketDetails extends Entity<PacketDetailsProps> {
   get packetId() {
-    return this.props.destinationId;
+    return this.props.packetId;
   }
 
   get destinationId() {

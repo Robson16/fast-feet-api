@@ -1,5 +1,5 @@
 import { PaginationParams } from "@/core/repositories/pagination-params";
-import { getDistanceBetweenCoordinates } from "@/core/utils/get-distance-between-coodinates";
+import { getDistanceBetweenCoordinates } from "@/core/utils/get-distance-between-coordinates";
 import {
   FindManyNearbyByStatusAndDelivererIdParams,
   PacketsFilters,
@@ -186,6 +186,36 @@ export class InMemoryPacketsRepository implements PacketsRepository {
 
     const startIndex = (params.pagination.page - 1) * 20;
     const endIndex = params.pagination.page * 20;
+
+    return filteredPackets
+      .filter((packet): packet is Packet => packet !== null)
+      .slice(startIndex, endIndex);
+  }
+
+  async findManyByRecipientId(
+    recipientId: string,
+    { page }: PaginationParams,
+  ): Promise<Packet[]> {
+    const startIndex = (page - 1) * 20;
+    const endIndex = page * 20;
+
+    const filteredPackets = await Promise.all(
+      this.items.map(async (packet) => {
+        const destination = await this.destinationsRepository.findById(
+          packet.destinationId.toString(),
+        );
+
+        if (!destination) {
+          return null;
+        }
+
+        if (destination.recipientId.toString() === recipientId) {
+          return packet;
+        }
+
+        return null;
+      }),
+    );
 
     return filteredPackets
       .filter((packet): packet is Packet => packet !== null)

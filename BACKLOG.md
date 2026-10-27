@@ -76,10 +76,10 @@ As a recipient or deliverer, I want to see parcels associated with my account so
 
 As an API operator, I want destination and packet operations backed by PostgreSQL so that the existing application use cases work outside tests.
 
-- [ ] Implement Prisma adapters and mappers for `DestinationsRepository` and `PacketsRepository`.
-- [ ] Support relations and query behavior required by the interfaces, including packet details, status queries, filters, nearby queries, pagination, save, and delete.
-- [ ] Register and export both repositories from the database module.
-- [ ] Add repository integration tests against the configured test database.
+- [x] Implement Prisma adapters and mappers for `DestinationsRepository` and `PacketsRepository`.
+- [x] Support relations and query behavior required by the interfaces, including packet details, status queries, filters, nearby queries, pagination, save, and delete.
+- [x] Register and export both repositories from the database module.
+- [x] Add repository integration tests against the configured test database.
 
 ### Story 2.2: Expose destination CRUD routes (P1)
 
