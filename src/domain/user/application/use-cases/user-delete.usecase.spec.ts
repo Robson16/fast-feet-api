@@ -1,4 +1,4 @@
-import { makeUser } from "test/factories/user/make-user";
+import { userMaker } from "test/factories/user/user-maker";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
@@ -15,7 +15,7 @@ describe("Delete User", () => {
   });
 
   it("should be able to delete a user", async () => {
-    const user = makeUser();
+    const user = userMaker();
 
     await inMemoryUsersRepository.create(user);
 

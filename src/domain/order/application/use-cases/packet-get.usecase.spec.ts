@@ -1,6 +1,6 @@
-import { makeDestination } from "test/factories/destination/make-destination";
-import { makePacket } from "test/factories/packet/make-packet";
-import { makeUser } from "test/factories/user/make-user";
+import { destinationMaker } from "test/factories/destination/destination-maker";
+import { packetMaker } from "test/factories/packet/packet-maker";
+import { userMaker } from "test/factories/user/user-maker";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
@@ -27,19 +27,19 @@ describe("Get Packet", () => {
   });
 
   it("should be able to get a packet", async () => {
-    const recipient = makeUser({
+    const recipient = userMaker({
       role: Role.create("RECIPIENT"),
     });
 
     await inMemoryUsersRepository.create(recipient);
 
-    const destination = makeDestination({
+    const destination = destinationMaker({
       recipientId: recipient.id,
     });
 
     await inMemoryDestinationsRepository.create(destination);
 
-    const packet = makePacket({
+    const packet = packetMaker({
       destinationId: destination.id,
       status: "WITHDRAWN",
     });

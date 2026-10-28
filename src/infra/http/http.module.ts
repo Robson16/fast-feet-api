@@ -1,5 +1,6 @@
 import { Module } from "@nestjs/common";
 
+import { PacketListByRecipientUseCase } from "@/domain/order/application/use-cases/packet-list-by-recipient.usecase";
 import { UserAuthenticateUseCase } from "@/domain/user/application/use-cases/user-authenticate.usecase";
 import { UserChangePasswordUseCase } from "@/domain/user/application/use-cases/user-change-password.usecase.ts";
 import { UserDeleteUseCase } from "@/domain/user/application/use-cases/user-delete.usecase";
@@ -13,6 +14,7 @@ import { DatabaseModule } from "@/infra/database/database.module";
 
 import { AccountRegisterController } from "./controllers/account/account-register.controller";
 import { UserAuthenticateController } from "./controllers/auth/authenticate.controller";
+import { PacketListByRecipientController } from "./controllers/packet/packet-list-by-recipient.controller";
 import { ProfileChangePasswordController } from "./controllers/profile/profile-change-password.controller";
 import { ProfileDeleteController } from "./controllers/profile/profile-delete.controller";
 import { ProfileEditController } from "./controllers/profile/profile-edit.controller";
@@ -39,6 +41,7 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     UserResetPasswordController,
     ProfileDeleteController,
     UserDeleteController,
+    PacketListByRecipientController,
   ],
   providers: [
     UserRegisterUseCase,
@@ -49,6 +52,7 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     UserChangePasswordUseCase,
     UserResetPasswordUseCase,
     UserDeleteUseCase,
+    PacketListByRecipientUseCase,
   ],
 })
 export class HttpModule {}

@@ -1,4 +1,4 @@
-import { makeDestination } from "test/factories/destination/make-destination";
+import { destinationMaker } from "test/factories/destination/destination-maker";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
@@ -27,7 +27,7 @@ describe("Create Packet", () => {
   });
 
   it("should be able to create a packet", async () => {
-    const destination = makeDestination();
+    const destination = destinationMaker();
 
     await inMemoryDestinationsRepository.create(destination);
 

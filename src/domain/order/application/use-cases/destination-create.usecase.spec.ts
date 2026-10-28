@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { makeUser } from "test/factories/user/make-user";
+import { userMaker } from "test/factories/user/user-maker";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
@@ -22,7 +22,7 @@ describe("Create Destination", () => {
   });
 
   it("should be able to create a destination", async () => {
-    const user = makeUser();
+    const user = userMaker();
 
     await inMemoryUsersRepository.create(user);
 

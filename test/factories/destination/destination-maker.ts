@@ -6,7 +6,7 @@ import {
   DestinationProps,
 } from "@/domain/order/enterprise/entities/destination";
 
-export function makeDestination(
+export function destinationMaker(
   override: Partial<DestinationProps> = {},
   id?: UniqueEntityID,
 ): Destination {

@@ -1,5 +1,5 @@
-import { makePacket } from "test/factories/packet/make-packet";
-import { makeUser } from "test/factories/user/make-user";
+import { packetMaker } from "test/factories/packet/packet-maker";
+import { userMaker } from "test/factories/user/user-maker";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
@@ -29,8 +29,8 @@ describe("Withdrawal Packet", () => {
   });
 
   it("should be able to withdrawal a packet", async () => {
-    const deliverer = makeUser();
-    const packet = makePacket();
+    const deliverer = userMaker();
+    const packet = packetMaker();
 
     await inMemoryUsersRepository.create(deliverer);
     await inMemoryPacketsRepository.create(packet);
@@ -47,7 +47,7 @@ describe("Withdrawal Packet", () => {
   });
 
   it("should not be able to withdrawal with a invalid deliverer", async () => {
-    const packet = makePacket();
+    const packet = packetMaker();
 
     await inMemoryPacketsRepository.create(packet);
 
@@ -61,8 +61,8 @@ describe("Withdrawal Packet", () => {
   });
 
   it("should not be able to withdrawal an unavailable packet", async () => {
-    const deliverer = makeUser();
-    const packet = makePacket({
+    const deliverer = userMaker();
+    const packet = packetMaker({
       status: "DELIVERED",
     });
 

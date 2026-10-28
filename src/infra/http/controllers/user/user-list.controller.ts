@@ -10,8 +10,10 @@ import {
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
-import { UserListUseCase } from "@/domain/user/application/use-cases/user-list.usecase";
-import { USERS_PER_PAGE } from "@/domain/user/application/use-cases/user-list.usecase";
+import {
+  UserListUseCase,
+  USERS_PER_PAGE,
+} from "@/domain/user/application/use-cases/user-list.usecase";
 import { Roles } from "@/infra/auth/roles-decorator";
 import { UserListResponseDto } from "@/infra/http/dtos/user-response.dto";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";

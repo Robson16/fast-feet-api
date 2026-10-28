@@ -1,4 +1,4 @@
-import { makePacket } from "test/factories/packet/make-packet";
+import { packetMaker } from "test/factories/packet/packet-maker";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
@@ -25,7 +25,7 @@ describe("Return Packet", () => {
   });
 
   it("should be able to return a packet", async () => {
-    const packet = makePacket({
+    const packet = packetMaker({
       status: "WITHDRAWN",
     });
 
@@ -52,7 +52,7 @@ describe("Return Packet", () => {
   });
 
   it("should not be able to define a packet as returned that already is defined as it", async () => {
-    const packet = makePacket({
+    const packet = packetMaker({
       delivererId: undefined,
       status: "RETURNED",
     });

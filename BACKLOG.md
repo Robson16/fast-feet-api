@@ -66,9 +66,9 @@ As an administrator or account owner, I want the existing user operations availa
 
 As a recipient or deliverer, I want to see parcels associated with my account so that I can track only the deliveries relevant to me.
 
-- [ ] Add the missing user-parcel query/use case and repository support.
-- [ ] Expose a protected endpoint that derives the user identity from the JWT rather than trusting an arbitrary user ID in the request.
-- [ ] Add tests proving users cannot retrieve another user's parcels.
+- [x] Add the missing user-parcel query/use case and repository support.
+- [x] Expose a protected endpoint that derives the user identity from the JWT rather than trusting an arbitrary user ID in the request.
+- [x] Add tests proving users cannot retrieve another user's parcels.
 
 ## Epic 2: Persist and Expose Destinations
 

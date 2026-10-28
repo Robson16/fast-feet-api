@@ -5,7 +5,7 @@ import { User, UserProps } from "@/domain/user/enterprise/entities/user";
 import { CPF } from "@/domain/user/enterprise/entities/value-objects/cpf";
 import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
 
-export function makeUser(
+export function userMaker(
   override: Partial<UserProps> = {},
   id?: UniqueEntityID,
 ): User {

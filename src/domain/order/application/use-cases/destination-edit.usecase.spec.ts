@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { makeDestination } from "test/factories/destination/make-destination";
+import { destinationMaker } from "test/factories/destination/destination-maker";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
@@ -16,7 +16,7 @@ describe("Edit Destination", () => {
   });
 
   it("should be able to edit a destination", async () => {
-    const destination = makeDestination();
+    const destination = destinationMaker();
 
     await inMemoryDestinationsRepository.create(destination);
 

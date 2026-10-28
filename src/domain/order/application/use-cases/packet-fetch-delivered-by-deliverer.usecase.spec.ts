@@ -1,5 +1,5 @@
-import { makeDestination } from "test/factories/destination/make-destination";
-import { makePacket } from "test/factories/packet/make-packet";
+import { destinationMaker } from "test/factories/destination/destination-maker";
+import { packetMaker } from "test/factories/packet/packet-maker";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
@@ -28,21 +28,21 @@ describe("Fetch Packets Delivered by Deliverer", () => {
     const delivererId = new UniqueEntityID();
 
     await inMemoryPacketsRepository.create(
-      makePacket({
+      packetMaker({
         delivererId,
         status: "DELIVERED",
       }),
     );
 
     await inMemoryPacketsRepository.create(
-      makePacket({
+      packetMaker({
         delivererId,
         status: "DELIVERED",
       }),
     );
 
     await inMemoryPacketsRepository.create(
-      makePacket({
+      packetMaker({
         delivererId,
         status: "DELIVERED",
       }),
@@ -60,14 +60,14 @@ describe("Fetch Packets Delivered by Deliverer", () => {
   it("should be able to fetch packets delivered by deliverer and filtered by neighborhood", async () => {
     const delivererId = new UniqueEntityID();
 
-    const destination1 = makeDestination();
-    const destination2 = makeDestination();
+    const destination1 = destinationMaker();
+    const destination2 = destinationMaker();
 
     await inMemoryDestinationsRepository.create(destination1);
     await inMemoryDestinationsRepository.create(destination2);
 
     await inMemoryPacketsRepository.create(
-      makePacket({
+      packetMaker({
         delivererId,
         destinationId: destination1.id,
         status: "DELIVERED",
@@ -75,7 +75,7 @@ describe("Fetch Packets Delivered by Deliverer", () => {
     );
 
     await inMemoryPacketsRepository.create(
-      makePacket({
+      packetMaker({
         delivererId,
         destinationId: destination1.id,
         status: "DELIVERED",
@@ -83,7 +83,7 @@ describe("Fetch Packets Delivered by Deliverer", () => {
     );
 
     await inMemoryPacketsRepository.create(
-      makePacket({
+      packetMaker({
         delivererId,
         destinationId: destination2.id,
         status: "DELIVERED",
@@ -91,7 +91,7 @@ describe("Fetch Packets Delivered by Deliverer", () => {
     );
 
     await inMemoryPacketsRepository.create(
-      makePacket({
+      packetMaker({
         delivererId,
         destinationId: destination2.id,
         status: "DELIVERED",
@@ -119,7 +119,7 @@ describe("Fetch Packets Delivered by Deliverer", () => {
 
     for (let i = 1; i <= 22; i++) {
       await inMemoryPacketsRepository.create(
-        makePacket({
+        packetMaker({
           delivererId,
           status: "DELIVERED",
         }),

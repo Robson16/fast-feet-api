@@ -1,5 +1,5 @@
 import { FakeHasher } from "test/cryptography/fake-hasher";
-import { makeUser } from "test/factories/user/make-user";
+import { userMaker } from "test/factories/user/user-maker";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
@@ -18,7 +18,7 @@ describe("Reset User Password", () => {
   });
 
   it("should be able to reset a user's password", async () => {
-    const user = makeUser({ password: "old-password-hash" });
+    const user = userMaker({ password: "old-password-hash" });
     await inMemoryUsersRepository.create(user);
 
     const result = await sut.execute({

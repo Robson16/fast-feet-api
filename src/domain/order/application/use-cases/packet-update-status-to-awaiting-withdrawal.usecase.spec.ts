@@ -1,4 +1,4 @@
-import { makePacket } from "test/factories/packet/make-packet";
+import { packetMaker } from "test/factories/packet/packet-maker";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
@@ -27,7 +27,7 @@ describe("Define Packet as Awaiting Withdrawal", () => {
   });
 
   it("should be able to define packet as awaiting withdrawal", async () => {
-    const packet = makePacket({
+    const packet = packetMaker({
       status: "WITHDRAWN",
     });
 
@@ -54,7 +54,7 @@ describe("Define Packet as Awaiting Withdrawal", () => {
   });
 
   it("should not be able to define a packet as awaiting withdrawal that already is defined as it", async () => {
-    const packet = makePacket({
+    const packet = packetMaker({
       delivererId: undefined,
       status: "AWAITING_WITHDRAWAL",
     });

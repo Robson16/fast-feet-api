@@ -1,5 +1,5 @@
-import { makePacket } from "test/factories/packet/make-packet";
-import { makeUser } from "test/factories/user/make-user";
+import { packetMaker } from "test/factories/packet/packet-maker";
+import { userMaker } from "test/factories/user/user-maker";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
@@ -26,9 +26,9 @@ describe("Deliver Packet", () => {
   });
 
   it("should be able to deliver a packet", async () => {
-    const deliverer = makeUser();
+    const deliverer = userMaker();
 
-    const packet = makePacket({
+    const packet = packetMaker({
       delivererId: deliverer.id,
       status: "WITHDRAWN",
     });
@@ -48,7 +48,7 @@ describe("Deliver Packet", () => {
   });
 
   it("should not be able to deliver a non existing packet", async () => {
-    const deliverer = makeUser();
+    const deliverer = userMaker();
 
     const result = await sut.execute({
       delivererId: deliverer.id.toString(),
@@ -60,9 +60,9 @@ describe("Deliver Packet", () => {
   });
 
   it("should not be able to deliver a packet not withdrawn by a deliverer", async () => {
-    const deliverer = makeUser();
+    const deliverer = userMaker();
 
-    const packet = makePacket({
+    const packet = packetMaker({
       delivererId: undefined,
       status: "AWAITING_WITHDRAWAL",
     });
@@ -79,9 +79,9 @@ describe("Deliver Packet", () => {
   });
 
   it("should not be able to deliver a packet already delivered", async () => {
-    const deliverer = makeUser();
+    const deliverer = userMaker();
 
-    const packet = makePacket({
+    const packet = packetMaker({
       delivererId: deliverer.id,
       status: "DELIVERED",
     });

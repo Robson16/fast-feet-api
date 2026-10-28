@@ -1,6 +1,6 @@
 import { FakeEncrypter } from "test/cryptography/fake-encrypter";
 import { FakeHasher } from "test/cryptography/fake-hasher";
-import { makeUser } from "test/factories/user/make-user";
+import { userMaker } from "test/factories/user/user-maker";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
 import { CPF } from "@/domain/user/enterprise/entities/value-objects/cpf";
@@ -25,7 +25,7 @@ describe("Authenticate User", () => {
   });
 
   it("should be able to authenticate a user", async () => {
-    const user = makeUser({
+    const user = userMaker({
       cpf: CPF.create("267.859.975-26"),
       password: await fakeHasher.hash("123456"),
     });

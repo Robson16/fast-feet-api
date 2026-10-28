@@ -1,6 +1,6 @@
-import { makeDestination } from "test/factories/destination/make-destination";
-import { makePacket } from "test/factories/packet/make-packet";
-import { makeUser } from "test/factories/user/make-user";
+import { destinationMaker } from "test/factories/destination/destination-maker";
+import { packetMaker } from "test/factories/packet/packet-maker";
+import { userMaker } from "test/factories/user/user-maker";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
@@ -24,27 +24,27 @@ describe("Fetch Packets Nearby By Deliverer", () => {
   });
 
   it("should be able to fetch packets nearby by deliverer id", async () => {
-    const deliverer = makeUser();
+    const deliverer = userMaker();
 
     await inMemoryUsersRepository.create(deliverer);
 
-    const destination1 = makeDestination({
+    const destination1 = destinationMaker({
       latitude: -23.543230904067464,
       longitude: -46.63861674486173,
     });
-    const destination2 = makeDestination({
+    const destination2 = destinationMaker({
       latitude: -23.54501135408347,
       longitude: -46.638677436319895,
     });
-    const destination3 = makeDestination({
+    const destination3 = destinationMaker({
       latitude: -23.543230904067464,
       longitude: -46.634034539770255,
     });
-    const destination4 = makeDestination({
+    const destination4 = destinationMaker({
       latitude: -23.514073962096976,
       longitude: -46.64337372730712,
     });
-    const destination5 = makeDestination({
+    const destination5 = destinationMaker({
       latitude: -23.70443954074078,
       longitude: -46.69842914846108,
     });
@@ -55,27 +55,27 @@ describe("Fetch Packets Nearby By Deliverer", () => {
     await inMemoryDestinationsRepository.create(destination4);
     await inMemoryDestinationsRepository.create(destination5);
 
-    const packet1 = makePacket({
+    const packet1 = packetMaker({
       delivererId: deliverer.id,
       destinationId: destination1.id,
       status: "WITHDRAWN",
     });
-    const packet2 = makePacket({
+    const packet2 = packetMaker({
       delivererId: deliverer.id,
       destinationId: destination2.id,
       status: "WITHDRAWN",
     });
-    const packet3 = makePacket({
+    const packet3 = packetMaker({
       delivererId: deliverer.id,
       destinationId: destination3.id,
       status: "WITHDRAWN",
     });
-    const packet4 = makePacket({
+    const packet4 = packetMaker({
       delivererId: deliverer.id,
       destinationId: destination4.id,
       status: "WITHDRAWN",
     });
-    const packet5 = makePacket({
+    const packet5 = packetMaker({
       delivererId: deliverer.id,
       destinationId: destination5.id,
       status: "WITHDRAWN",

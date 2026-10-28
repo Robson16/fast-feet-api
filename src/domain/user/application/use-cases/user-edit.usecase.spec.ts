@@ -1,5 +1,5 @@
 import { FakeHasher } from "test/cryptography/fake-hasher";
-import { makeUser } from "test/factories/user/make-user";
+import { userMaker } from "test/factories/user/user-maker";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
@@ -20,7 +20,7 @@ describe("Edit User", () => {
   });
 
   it("should be able to edit a user", async () => {
-    const user = makeUser();
+    const user = userMaker();
 
     await inMemoryUsersRepository.create(user);
 
@@ -46,7 +46,7 @@ describe("Edit User", () => {
   });
 
   it("should not be able to edit a user with an invalid CPF number", async () => {
-    const user = makeUser();
+    const user = userMaker();
 
     await inMemoryUsersRepository.create(user);
 
@@ -60,8 +60,8 @@ describe("Edit User", () => {
   });
 
   it("should not be able to edit a user for a CPF number already in use", async () => {
-    const user1 = makeUser();
-    const user2 = makeUser();
+    const user1 = userMaker();
+    const user2 = userMaker();
 
     await inMemoryUsersRepository.create(user1);
     await inMemoryUsersRepository.create(user2);
@@ -76,8 +76,8 @@ describe("Edit User", () => {
   });
 
   it("should not be able to edit a user in an email already in use", async () => {
-    const user1 = makeUser();
-    const user2 = makeUser();
+    const user1 = userMaker();
+    const user2 = userMaker();
 
     await inMemoryUsersRepository.create(user1);
     await inMemoryUsersRepository.create(user2);

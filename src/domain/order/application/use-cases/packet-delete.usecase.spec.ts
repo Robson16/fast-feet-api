@@ -1,4 +1,4 @@
-import { makePacket } from "test/factories/packet/make-packet";
+import { packetMaker } from "test/factories/packet/packet-maker";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
@@ -24,7 +24,7 @@ describe("Delete Packet", () => {
   });
 
   it("should be able to delete a packet", async () => {
-    const packet = makePacket();
+    const packet = packetMaker();
 
     await inMemoryPacketsRepository.create(packet);
 

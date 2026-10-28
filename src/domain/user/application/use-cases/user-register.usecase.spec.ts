@@ -1,5 +1,5 @@
 import { FakeHasher } from "test/cryptography/fake-hasher";
-import { makeUser } from "test/factories/user/make-user";
+import { userMaker } from "test/factories/user/user-maker";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
 import { CPF } from "@/domain/user/enterprise/entities/value-objects/cpf";
@@ -64,7 +64,7 @@ describe("Register User", () => {
   });
 
   it("should not be able to register with CPF already in use", async () => {
-    const user = makeUser({
+    const user = userMaker({
       cpf: CPF.create("267.859.975-26"),
     });
 
@@ -83,7 +83,7 @@ describe("Register User", () => {
   });
 
   it("should not be able to register with Email already in use", async () => {
-    const user = makeUser({
+    const user = userMaker({
       email: "jonhdoe@example.com",
     });
 

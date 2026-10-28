@@ -1,4 +1,4 @@
-import { makeUser } from "test/factories/user/make-user";
+import { userMaker } from "test/factories/user/user-maker";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
 import { UserListUseCase } from "./user-list.usecase";
@@ -13,7 +13,7 @@ describe("List Users Use Case", () => {
   });
 
   it("should return users from the requested page", async () => {
-    const users = Array.from({ length: 21 }, () => makeUser());
+    const users = Array.from({ length: 21 }, () => userMaker());
 
     for (const user of users) {
       await inMemoryUsersRepository.create(user);
