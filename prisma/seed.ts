@@ -4,8 +4,9 @@ import process from "node:process";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
-import { hash } from "bcryptjs";
 import { Pool } from "pg";
+
+import { BcryptHasher } from "@/infra/cryptography/bcrypt-hasher";
 
 const connectionString = process.env.DATABASE_URL;
 const pool = new Pool({ connectionString });
@@ -31,7 +32,8 @@ async function main() {
     );
   }
 
-  const passwordHash = await hash(adminPassword, 8);
+  const hasher = new BcryptHasher();
+  const passwordHash = await hasher.hash(adminPassword);
 
   await prisma.user.create({
     data: {
