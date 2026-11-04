@@ -124,6 +124,23 @@ describe("PATCH /users/:id/password (E2E)", () => {
     expect(response.statusCode).toBe(403);
   });
 
+  test("[PATCH] /users/:id/password - should return 400 when the id is not a UUID", async () => {
+    const adminUser = await userFactory.makePrismaUser({
+      role: Role.create("ADMIN"),
+    });
+    const accessToken = jwt.sign({
+      sub: adminUser.id.toString(),
+      role: adminUser.role.value,
+    });
+
+    const response = await request(app.getHttpServer())
+      .patch("/users/not-a-uuid/password")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ newPassword: "123456" });
+
+    expect(response.statusCode).toBe(400);
+  });
+
   test("[PATCH] /users/:id/password - should return 404 if target user does not exist", async () => {
     const adminUser = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),

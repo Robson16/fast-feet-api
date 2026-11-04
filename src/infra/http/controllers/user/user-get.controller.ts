@@ -1,4 +1,10 @@
-import { Controller, Get, NotFoundException, Param } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Param,
+  ParseUUIDPipe,
+} from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
@@ -35,7 +41,7 @@ export class UserGetController {
   @ApiUnauthorizedResponse({ description: "Authentication is required." })
   @ApiForbiddenResponse({ description: "Requires ADMIN role." })
   @ApiNotFoundResponse({ description: "User not found." })
-  async handle(@Param("id") id: string) {
+  async handle(@Param("id", new ParseUUIDPipe({ version: "4" })) id: string) {
     const result = await this.userGet.execute({ userId: id });
 
     if (result.isLeft()) {

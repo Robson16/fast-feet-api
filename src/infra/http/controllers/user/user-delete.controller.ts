@@ -4,6 +4,7 @@ import {
   Delete,
   HttpCode,
   Param,
+  ParseUUIDPipe,
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
@@ -29,7 +30,7 @@ export class UserDeleteController {
     description: "Removes a user from the system. Requires ADMIN role.",
   })
   @ApiNoContentResponse({ description: "User deleted successfully." })
-  async handle(@Param("id") id: string) {
+  async handle(@Param("id", new ParseUUIDPipe({ version: "4" })) id: string) {
     const result = await this.userDelete.execute({
       userId: id,
     });

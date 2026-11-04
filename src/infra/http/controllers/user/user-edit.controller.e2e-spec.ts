@@ -65,6 +65,27 @@ describe("PUT /users/:id (E2E)", () => {
     });
   });
 
+  test("[PUT] /users/:id - returns 400 when the id is not a UUID", async () => {
+    const admin = await userFactory.makePrismaUser({
+      role: Role.create("ADMIN"),
+    });
+    const accessToken = jwt.sign({
+      sub: admin.id.toString(),
+      role: admin.role.value,
+    });
+
+    const response = await request(app.getHttpServer())
+      .put("/users/not-a-uuid")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({
+        name: "Updated User",
+        email: "updated-user@example.com",
+        role: "RECIPIENT",
+      });
+
+    expect(response.statusCode).toBe(400);
+  });
+
   test("[PUT] /users/:id - returns 400 when the requested role is invalid", async () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),

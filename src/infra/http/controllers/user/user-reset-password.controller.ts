@@ -5,6 +5,7 @@ import {
   HttpCode,
   NotFoundException,
   Param,
+  ParseUUIDPipe,
   Patch,
 } from "@nestjs/common";
 import {
@@ -57,7 +58,7 @@ export class UserResetPasswordController {
   @ApiForbiddenResponse({ description: "Requires ADMIN role." })
   @ApiNotFoundResponse({ description: "Target user was not found." })
   async handle(
-    @Param("id") id: string,
+    @Param("id", new ParseUUIDPipe({ version: "4" })) id: string,
     @Body(new ZodValidationPipe(userResetPasswordBodySchema))
     body: UserResetPasswordBodySchema,
   ) {

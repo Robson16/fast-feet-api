@@ -81,7 +81,7 @@ Arquivos existentes: `src/infra/auth/jwt-auth.guard.ts`, `src/infra/auth/roles.g
 - [x] Manter `@Roles("ADMIN")` nas rotas administrativas de usuario e na criacao de destino existente.
 - [x] Auditar as rotas HTTP existentes e registrar as lacunas nas Stories 1.5, 1.6, 1.7, 2.2 e 5.2.
 - [ ] Antes de adicionar cada rota nova, definir se é pública ou autenticada, papel permitido e regra de propriedade; obter IDs do usuário autenticado via `@CurrentUser()`, nunca confiar em `userId`/`delivererId` arbitrário para acesso próprio.
-- [ ] Verificar em cada rota administrativa se o papel autorizado continua válido no banco; não tratar o papel dentro de um JWT antigo como fonte definitiva (detalhado na Story 1.7).
+- [x] Verificar em cada rota administrativa se o papel autorizado continua válido no banco; não tratar o papel dentro de um JWT antigo como fonte definitiva (implementado globalmente na Story 1.7).
 - [ ] Restringir administracao de destinos a `ADMIN`; criacao/exclusao de pacotes a `ADMIN`; retirada e entrega a `DELIVERER` conforme Story 3.2.
 - [ ] Restringir destinatarios a destinos, pacotes e notificacoes ligados ao proprio ID; restringir entregadores aos pacotes atribuidos a eles.
 - [ ] Cobrir em E2E cada politica com sem token (`401`), papel incorreto (`403`) e tentativa de acessar ID alheio (sem vazamento de existencia/dados).
@@ -99,7 +99,7 @@ Arquivos existentes: `src/infra/http/controllers/user/`, `src/infra/http/control
 - [x] Manter `PATCH /users/:id/password` exclusivo de `ADMIN`, com `404` para usuario inexistente e hash feito na camada de aplicacao.
 - [x] Aplicar a política mínima de 6 caracteres em cadastro público, criação administrativa, troca própria e reset administrativo; verificar em E2E que 5 caracteres são rejeitados e exatamente 6 são aceitos.
 - [x] Corrigir `userResetPasswordApiBody` em `src/infra/http/schemas/user-reset-password.schema.ts`: `required` declara `newPassword` e o schema OpenAPI documenta `minLength: 6`.
-- [ ] Validar `:id` como UUID nas rotas `GET/PUT/DELETE /users/:id` e `PATCH /users/:id/password`; retornar `400` para formato inválido sem deixar erro de validação do Prisma virar `500`.
+- [x] Validar `:id` como UUID nas rotas `GET/PUT/DELETE /users/:id` e `PATCH /users/:id/password`; retornar `400` para formato inválido sem deixar erro de validação do Prisma virar `500`.
 - [ ] Mapear usuário inexistente para `404` em `PUT /users/:id` e `DELETE /users/:id` (hoje ambos respondem `400`); documentar e testar também conflito de CPF/e-mail duplicado.
 - [ ] Adicionar teste E2E explicito de que uma conta nao consegue trocar a senha de outra conta e de que nenhuma rota/resposta expoe `password`/hash.
 - [ ] Revisar e documentar respostas `400`, `401`, `403` e `404` de cada rota de senha e manter Swagger alinhado aos schemas reais.

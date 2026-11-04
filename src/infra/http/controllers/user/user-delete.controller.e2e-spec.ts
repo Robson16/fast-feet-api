@@ -79,6 +79,22 @@ describe("DELETE /users/:id (E2E)", () => {
     expect(userOnDatabase).not.toBeNull();
   });
 
+  test("[DELETE] /users/:id - returns 400 when the id is not a UUID", async () => {
+    const admin = await userFactory.makePrismaUser({
+      role: Role.create("ADMIN"),
+    });
+    const accessToken = jwt.sign({
+      sub: admin.id.toString(),
+      role: admin.role.value,
+    });
+
+    const response = await request(app.getHttpServer())
+      .delete("/users/not-a-uuid")
+      .set("Authorization", `Bearer ${accessToken}`);
+
+    expect(response.statusCode).toBe(400);
+  });
+
   test("[DELETE] /users/:id - returns 401 when no access token is provided", async () => {
     const target = await userFactory.makePrismaUser();
 

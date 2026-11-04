@@ -4,6 +4,7 @@ import {
   Controller,
   HttpCode,
   Param,
+  ParseUUIDPipe,
   Put,
 } from "@nestjs/common";
 import {
@@ -41,7 +42,7 @@ export class UserEditController {
   @ApiNoContentResponse({ description: "User updated successfully." })
   @ApiBadRequestResponse({ description: "Invalid data or CPF." })
   async handle(
-    @Param("id") id: string,
+    @Param("id", new ParseUUIDPipe({ version: "4" })) id: string,
     @Body(new ZodValidationPipe(editUserBodySchema)) body: EditUserBodySchema,
   ) {
     const { name, cpf, email, role } = body;
