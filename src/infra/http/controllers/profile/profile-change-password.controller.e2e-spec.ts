@@ -35,42 +35,55 @@ describe("PATCH /profile/password (E2E)", () => {
     await app.init();
   });
 
-  test("[PATCH] /profile/password - should change authenticated user password", async () => {
+  test("[PATCH] /profile/password - should only change the authenticated user's password", async () => {
     const currentPassword = "old-password-123";
     const newPassword = "new-password-321";
-
-    const passwordHash = await hashGenerator.hash(currentPassword);
-    const user = await userFactory.makePrismaUser({
-      password: passwordHash,
+    const currentPasswordHash = await hashGenerator.hash(currentPassword);
+    const authenticatedUser = await userFactory.makePrismaUser({
+      password: currentPasswordHash,
     });
 
     const accessToken = jwt.sign({
-      sub: user.id.toString(),
-      role: user.role.value,
+      sub: authenticatedUser.id.toString(),
+      role: authenticatedUser.role.value,
+    });
+
+    const otherUserPasswordHash = await hashGenerator.hash(
+      "other-user-password",
+    );
+    const otherUser = await userFactory.makePrismaUser({
+      password: otherUserPasswordHash,
     });
 
     const response = await request(app.getHttpServer())
       .patch("/profile/password")
       .set("Authorization", `Bearer ${accessToken}`)
       .send({
+        userId: otherUser.id.toString(),
         currentPassword,
         newPassword,
       });
 
     expect(response.statusCode).toBe(204);
 
-    const userOnDatabase = await prisma.user.findUnique({
-      where: { id: user.id.toString() },
+    const authenticatedUserOnDatabase = await prisma.user.findUnique({
+      where: { id: authenticatedUser.id.toString() },
+    });
+    const otherUserOnDatabase = await prisma.user.findUnique({
+      where: { id: otherUser.id.toString() },
     });
 
-    expect(userOnDatabase?.password).not.toEqual(passwordHash);
+    expect(authenticatedUserOnDatabase?.password).not.toEqual(
+      currentPasswordHash,
+    );
 
     const isNewPasswordValid = await hashComparer.compare(
       newPassword,
-      userOnDatabase!.password,
+      authenticatedUserOnDatabase!.password,
     );
 
     expect(isNewPasswordValid).toBe(true);
+    expect(otherUserOnDatabase?.password).toEqual(otherUserPasswordHash);
   });
 
   test("[PATCH] /profile/password - should reject a new password shorter than six characters", async () => {

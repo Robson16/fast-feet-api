@@ -77,11 +77,19 @@ export class UserEditUseCase {
     }
 
     if (cpf && (await this.userExistsWithCPF(cpf))) {
-      return left(new UserAlreadyExistsError(cpf));
+      const userWithCPF = await this.usersRepository.findByCPF(cpf);
+
+      if (userWithCPF && userWithCPF.id.toString() !== user.id.toString()) {
+        return left(new UserAlreadyExistsError(cpf));
+      }
     }
 
     if (email && (await this.userExistsWithEmail(email))) {
-      return left(new UserAlreadyExistsError(email));
+      const userWithEmail = await this.usersRepository.findByEmail(email);
+
+      if (userWithEmail && userWithEmail.email !== user.email) {
+        return left(new UserAlreadyExistsError(email));
+      }
     }
 
     if (role && !this.isValidRole(role)) {

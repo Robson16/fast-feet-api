@@ -13,8 +13,10 @@ import {
   ApiBody,
   ApiConflictResponse,
   ApiCreatedResponse,
+  ApiForbiddenResponse,
   ApiOperation,
   ApiTags,
+  ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
 import { UserAlreadyExistsError } from "@/domain/user/application/use-cases/errors/user-already-exists-error";
@@ -43,8 +45,13 @@ export class UserCreateController {
   })
   @ApiBody(userCreateApiBody)
   @ApiCreatedResponse({ description: "User created successfully." })
-  @ApiBadRequestResponse({ description: "Invalid data or invalid CPF." })
+  @ApiBadRequestResponse({
+    description:
+      "Invalid data, invalid CPF or role, or password shorter than 6 characters.",
+  })
   @ApiConflictResponse({ description: "User already exists." })
+  @ApiUnauthorizedResponse({ description: "Authentication is required." })
+  @ApiForbiddenResponse({ description: "Requires ADMIN role." })
   @UsePipes(new ZodValidationPipe(userCreateBodySchema))
   async handle(@Body() body: UserCreateBodySchema) {
     const { name, cpf, email, password, role } = body;

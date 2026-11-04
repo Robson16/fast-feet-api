@@ -57,6 +57,8 @@ describe("GET /profile (E2E)", () => {
         email: "johndoe@example.com",
       }),
     );
+    expect(response.body.user).not.toHaveProperty("password");
+    expect(response.body.user).not.toHaveProperty("passwordHash");
   });
 
   test("[GET] /profile - should return 401 with an expired token", async () => {

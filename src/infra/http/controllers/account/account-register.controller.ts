@@ -41,7 +41,8 @@ export class AccountRegisterController {
   @ApiBody(accountRegisterApiBody)
   @ApiCreatedResponse({ description: "Account created successfully." })
   @ApiBadRequestResponse({
-    description: "Invalid data, invalid CPF.",
+    description:
+      "Invalid data, invalid CPF, or password shorter than 6 characters.",
   })
   @ApiConflictResponse({
     description: "An account with the provided details already exists.",

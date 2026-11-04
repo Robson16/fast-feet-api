@@ -90,7 +90,7 @@ Critério de aceite: todas as rotas existentes e novas têm política explícita
 
 ### Story 1.5: Completar gestao de usuarios e operacoes de senha (P1)
 
-**Estado: Parcial.** CRUD administrativo, perfil e rotas de troca/reset existem. A política mínima de 6 caracteres está aplicada aos quatro fluxos de senha e coberta nos limites; ainda faltam testes de segurança listados abaixo.
+**Estado: Concluída.** CRUD administrativo, perfil e rotas de troca/reset existem. A política mínima de 6 caracteres está aplicada aos quatro fluxos de senha; respostas e schemas estão documentados e os testes E2E cobrem autorização, isolamento e ausência de senha/hash nas respostas.
 
 Arquivos existentes: `src/infra/http/controllers/user/`, `src/infra/http/controllers/profile/`, `src/domain/user/application/use-cases/user-change-password.usecase.ts.ts`, `src/domain/user/application/use-cases/user-reset-password.usecase.ts`, `src/infra/http/schemas/profile-change-password.schema.ts`, `src/infra/http/schemas/user-reset-password.schema.ts`, `src/infra/http/schemas/user-create.schema.ts`, `src/infra/http/schemas/account-register.schema.ts`, `src/infra/http/dtos/user-response.dto.ts`, `src/infra/http/presenters/user-presenter.ts`.
 
@@ -100,9 +100,9 @@ Arquivos existentes: `src/infra/http/controllers/user/`, `src/infra/http/control
 - [x] Aplicar a política mínima de 6 caracteres em cadastro público, criação administrativa, troca própria e reset administrativo; verificar em E2E que 5 caracteres são rejeitados e exatamente 6 são aceitos.
 - [x] Corrigir `userResetPasswordApiBody` em `src/infra/http/schemas/user-reset-password.schema.ts`: `required` declara `newPassword` e o schema OpenAPI documenta `minLength: 6`.
 - [x] Validar `:id` como UUID nas rotas `GET/PUT/DELETE /users/:id` e `PATCH /users/:id/password`; retornar `400` para formato inválido sem deixar erro de validação do Prisma virar `500`.
-- [ ] Mapear usuário inexistente para `404` em `PUT /users/:id` e `DELETE /users/:id` (hoje ambos respondem `400`); documentar e testar também conflito de CPF/e-mail duplicado.
-- [ ] Adicionar teste E2E explicito de que uma conta nao consegue trocar a senha de outra conta e de que nenhuma rota/resposta expoe `password`/hash.
-- [ ] Revisar e documentar respostas `400`, `401`, `403` e `404` de cada rota de senha e manter Swagger alinhado aos schemas reais.
+- [x] Mapear usuário inexistente para `404` em `PUT /users/:id` e `DELETE /users/:id`; documentar e testar também conflito de CPF/e-mail duplicado.
+- [x] Adicionar teste E2E explicito de que uma conta nao consegue trocar a senha de outra conta e de que nenhuma rota/resposta expoe `password`/hash.
+- [x] Revisar e documentar respostas `400`, `401`, `403` e `404` aplicáveis às rotas de senha e manter Swagger alinhado aos schemas reais.
 
 Critério de aceite: todos os endpoints aplicam a mesma regra de senha; nenhum retorno contem hash; testes cobrem usuario proprio, outro usuario, admin, nao-admin, payload invalido e alvo inexistente.
 

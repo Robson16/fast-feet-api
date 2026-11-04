@@ -46,7 +46,10 @@ export class ProfileChangePasswordController {
   })
   @ApiBody(profileChangePasswordApiBody)
   @ApiNoContentResponse({ description: "Password changed successfully." })
-  @ApiBadRequestResponse({ description: "Invalid request body." })
+  @ApiBadRequestResponse({
+    description:
+      "Missing required fields or newPassword shorter than 6 characters.",
+  })
   @ApiUnauthorizedResponse({
     description:
       "Authentication is required or the current password is incorrect.",

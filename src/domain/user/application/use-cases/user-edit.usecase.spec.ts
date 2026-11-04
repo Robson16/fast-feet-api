@@ -35,6 +35,32 @@ describe("Edit User", () => {
     });
   });
 
+  it("should allow keeping the user's existing CPF", async () => {
+    const user = userMaker();
+
+    await inMemoryUsersRepository.create(user);
+
+    const result = await sut.execute({
+      userId: user.id.toString(),
+      cpf: user.cpf.value,
+    });
+
+    expect(result.isRight()).toBe(true);
+  });
+
+  it("should allow keeping the user's existing email", async () => {
+    const user = userMaker();
+
+    await inMemoryUsersRepository.create(user);
+
+    const result = await sut.execute({
+      userId: user.id.toString(),
+      email: user.email,
+    });
+
+    expect(result.isRight()).toBe(true);
+  });
+
   it("should not be able to edit a nonexistent user", async () => {
     const result = await sut.execute({
       userId: "invalid-user-id",

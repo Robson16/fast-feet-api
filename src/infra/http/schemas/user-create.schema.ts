@@ -21,7 +21,7 @@ export type UserCreateBodySchema = z.infer<typeof userCreateBodySchema>;
 export const userCreateApiBody: ApiBodyOptions = {
   schema: {
     type: "object",
-    required: ["name", "cpf", "email", "password", "role"],
+    required: ["name", "cpf", "email", "password"],
     properties: {
       name: { type: "string", example: "Jane Admin" },
       cpf: { type: "string", example: "111.222.333-44" },
@@ -36,7 +36,11 @@ export const userCreateApiBody: ApiBodyOptions = {
         minLength: 6,
         example: "strong-password",
       },
-      role: { type: "string", enum: ["ADMIN", "DELIVERER", "RECIPIENT"] },
+      role: {
+        type: "string",
+        enum: ["ADMIN", "DELIVERER", "RECIPIENT"],
+        default: "DELIVERER",
+      },
     },
   },
 };

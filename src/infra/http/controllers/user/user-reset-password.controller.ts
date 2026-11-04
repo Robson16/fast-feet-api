@@ -53,7 +53,10 @@ export class UserResetPasswordController {
   })
   @ApiBody(userResetPasswordApiBody)
   @ApiNoContentResponse({ description: "Password reset successfully." })
-  @ApiBadRequestResponse({ description: "Invalid request body format." })
+  @ApiBadRequestResponse({
+    description:
+      "Invalid UUID, missing newPassword, or newPassword shorter than 6 characters.",
+  })
   @ApiUnauthorizedResponse({ description: "Authentication is required." })
   @ApiForbiddenResponse({ description: "Requires ADMIN role." })
   @ApiNotFoundResponse({ description: "Target user was not found." })

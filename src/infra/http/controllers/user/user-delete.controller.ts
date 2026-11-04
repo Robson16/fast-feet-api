@@ -1,14 +1,15 @@
 import {
-  BadRequestException,
   Controller,
   Delete,
   HttpCode,
+  NotFoundException,
   Param,
   ParseUUIDPipe,
 } from "@nestjs/common";
 import {
   ApiBearerAuth,
   ApiNoContentResponse,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiTags,
 } from "@nestjs/swagger";
@@ -30,13 +31,14 @@ export class UserDeleteController {
     description: "Removes a user from the system. Requires ADMIN role.",
   })
   @ApiNoContentResponse({ description: "User deleted successfully." })
+  @ApiNotFoundResponse({ description: "User not found." })
   async handle(@Param("id", new ParseUUIDPipe({ version: "4" })) id: string) {
     const result = await this.userDelete.execute({
       userId: id,
     });
 
     if (result.isLeft()) {
-      throw new BadRequestException(result.value.message);
+      throw new NotFoundException(result.value.message);
     }
   }
 }

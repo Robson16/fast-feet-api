@@ -4,6 +4,7 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { UserFactory } from "test/factories/user/user-factory";
 
+import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
 import { AppModule } from "@/infra/app.module";
 import { DatabaseModule } from "@/infra/database/database.module";
@@ -37,11 +38,12 @@ describe("DELETE /users/:id (E2E)", () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),
     });
-    const target = await userFactory.makePrismaUser();
     const accessToken = jwt.sign({
       sub: admin.id.toString(),
       role: admin.role.value,
     });
+
+    const target = await userFactory.makePrismaUser();
 
     const response = await request(app.getHttpServer())
       .delete(`/users/${target.id.toString()}`)
@@ -56,15 +58,34 @@ describe("DELETE /users/:id (E2E)", () => {
     expect(userOnDatabase).toBeNull();
   });
 
+  test("[DELETE] /users/:id - returns 404 when user is not found", async () => {
+    const admin = await userFactory.makePrismaUser({
+      role: Role.create("ADMIN"),
+    });
+    const accessToken = jwt.sign({
+      sub: admin.id.toString(),
+      role: admin.role.value,
+    });
+
+    const randomIdNotExistent = new UniqueEntityID();
+
+    const response = await request(app.getHttpServer())
+      .delete(`/users/${randomIdNotExistent.toString()}`)
+      .set("Authorization", `Bearer ${accessToken}`);
+
+    expect(response.statusCode).toBe(404);
+  });
+
   test("[DELETE] /users/:id - returns 403 when the authenticated user is not an ADMIN", async () => {
     const deliverer = await userFactory.makePrismaUser({
       role: Role.create("DELIVERER"),
     });
-    const target = await userFactory.makePrismaUser();
     const accessToken = jwt.sign({
       sub: deliverer.id.toString(),
       role: deliverer.role.value,
     });
+
+    const target = await userFactory.makePrismaUser();
 
     const response = await request(app.getHttpServer())
       .delete(`/users/${target.id.toString()}`)
