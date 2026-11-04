@@ -30,7 +30,7 @@ describe("GET /users/:id (E2E)", () => {
     await app.close();
   });
 
-  test("returns the requested user to an ADMIN without exposing the password", async () => {
+  test("[GET] /users/:id - returns the requested user to an ADMIN without exposing the password", async () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),
     });
@@ -53,7 +53,7 @@ describe("GET /users/:id (E2E)", () => {
     expect(response.body.user).not.toHaveProperty("password");
   });
 
-  test("returns 403 to a non-admin user", async () => {
+  test("[GET] /users/:id - returns 403 to a non-admin user", async () => {
     const user = await userFactory.makePrismaUser();
     const target = await userFactory.makePrismaUser();
     const accessToken = jwt.sign({
@@ -68,7 +68,7 @@ describe("GET /users/:id (E2E)", () => {
     expect(response.statusCode).toBe(403);
   });
 
-  test("returns 401 when no access token is provided", async () => {
+  test("[GET] /users/:id - returns 401 when no access token is provided", async () => {
     const target = await userFactory.makePrismaUser();
 
     const response = await request(app.getHttpServer()).get(

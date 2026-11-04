@@ -33,7 +33,7 @@ describe("DELETE /users/:id (E2E)", () => {
     await app.close();
   });
 
-  test("deletes a user when authenticated as an ADMIN", async () => {
+  test("[DELETE] /users/:id - deletes a user when authenticated as an ADMIN", async () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),
     });
@@ -56,7 +56,7 @@ describe("DELETE /users/:id (E2E)", () => {
     expect(userOnDatabase).toBeNull();
   });
 
-  test("returns 403 when the authenticated user is not an ADMIN", async () => {
+  test("[DELETE] /users/:id - returns 403 when the authenticated user is not an ADMIN", async () => {
     const deliverer = await userFactory.makePrismaUser({
       role: Role.create("DELIVERER"),
     });
@@ -79,7 +79,7 @@ describe("DELETE /users/:id (E2E)", () => {
     expect(userOnDatabase).not.toBeNull();
   });
 
-  test("returns 401 when no access token is provided", async () => {
+  test("[DELETE] /users/:id - returns 401 when no access token is provided", async () => {
     const target = await userFactory.makePrismaUser();
 
     const response = await request(app.getHttpServer()).delete(

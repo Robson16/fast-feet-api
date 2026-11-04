@@ -33,7 +33,7 @@ describe("PUT /users/:id (E2E)", () => {
     await app.close();
   });
 
-  test("updates a user when authenticated as an ADMIN", async () => {
+  test("[PUT] /users/:id - updates a user when authenticated as an ADMIN", async () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),
     });
@@ -65,7 +65,7 @@ describe("PUT /users/:id (E2E)", () => {
     });
   });
 
-  test("returns 400 when the requested role is invalid", async () => {
+  test("[PUT] /users/:id - returns 400 when the requested role is invalid", async () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),
     });
@@ -83,7 +83,7 @@ describe("PUT /users/:id (E2E)", () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test("returns 403 when the authenticated user is not an ADMIN", async () => {
+  test("[PUT] /users/:id - returns 403 when the authenticated user is not an ADMIN", async () => {
     const deliverer = await userFactory.makePrismaUser({
       role: Role.create("DELIVERER"),
     });
@@ -101,7 +101,7 @@ describe("PUT /users/:id (E2E)", () => {
     expect(response.statusCode).toBe(403);
   });
 
-  test("returns 401 when no access token is provided", async () => {
+  test("[PUT] /users/:id - returns 401 when no access token is provided", async () => {
     const target = await userFactory.makePrismaUser();
 
     const response = await request(app.getHttpServer())
