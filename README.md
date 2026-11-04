@@ -97,25 +97,41 @@ The API is designed for use by web and mobile applications. See the proposed app
   npm install
 ```
 
-3. **Start the database with Docker Compose**:
+3. **Create your local environment file**:
+
+Copy `.env.example` to `.env`, then set `APP_ADMIN_PASSWORD` to a strong, temporary password. Set the database and JWT variables required by your local environment as well. `JWT_ACCESS_TOKEN_TTL_SECONDS` is optional, defaults to `900` seconds (15 minutes), and accepts values from 60 seconds to 24 hours. Restart the API after changing it. `.env` is ignored by Git; never commit it or share its contents.
+
+4. **Start the database with Docker Compose**:
 
 ```bash
   docker-compose up -d
 ```
 
-4. **Run the database migrations**:
+5. **Run the database migrations**:
 
 ```bash
   npm run prisma:migrate
 ```
 
-5. **Start the development server**:
+6. **Create the initial administrator**:
+
+```bash
+  npm run prisma:seed
+```
+
+The seed reads `APP_ADMIN_PASSWORD` from `.env`, hashes it before saving, and creates the initial administrator only when no administrator exists. A successful run prints a confirmation; if an administrator already exists, it prints that no account was created. The seed does not change an existing administrator's password, even if you change `APP_ADMIN_PASSWORD`.
+
+After starting the API, verify the account by signing in at `POST /auth` with the CPF configured in `prisma/seed.ts` and the temporary password, then request `GET /profile` with the returned bearer token and confirm the role is `ADMIN`.
+
+After verifying the initial account, remove the value of `APP_ADMIN_PASSWORD` from your local `.env` (leave the variable empty if you prefer). To rotate the administrator password, sign in and use `PATCH /profile/password`; changing `APP_ADMIN_PASSWORD` and rerunning the seed will not rotate it. For deployed environments, provide the initial secret through the deployment's secret manager rather than committing it to a file.
+
+7. **Start the development server**:
 
 ```bash
   npm run dev
 ```
 
-6. **Open the API at http://localhost:3333** or the Swagger UI at http://localhost:3333/api.
+8. **Open the API at http://localhost:3333** or the Swagger UI at http://localhost:3333/api.
 
 ## 🧪 Tests
 
