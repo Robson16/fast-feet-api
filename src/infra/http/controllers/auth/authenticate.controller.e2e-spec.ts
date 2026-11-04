@@ -1,4 +1,5 @@
 import { INestApplication } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { UserFactory } from "test/factories/user/user-factory";
@@ -7,11 +8,14 @@ import { HashGenerator } from "@/domain/user/application/cryptography/hash-gener
 import { CPF } from "@/domain/user/enterprise/entities/value-objects/cpf";
 import { AppModule } from "@/infra/app.module";
 import { DatabaseModule } from "@/infra/database/database.module";
+import { EnvService } from "@/infra/env/env.service";
 
 describe("POST /auth (E2E)", () => {
   let app: INestApplication;
   let userFactory: UserFactory;
   let hashGenerator: HashGenerator;
+  let jwt: JwtService;
+  let accessTokenTtlSeconds: number;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
@@ -23,6 +27,10 @@ describe("POST /auth (E2E)", () => {
 
     userFactory = moduleRef.get(UserFactory);
     hashGenerator = moduleRef.get(HashGenerator);
+    jwt = moduleRef.get(JwtService);
+    accessTokenTtlSeconds = moduleRef
+      .get(EnvService)
+      .get("JWT_ACCESS_TOKEN_TTL_SECONDS");
 
     await app.init();
   });
@@ -45,6 +53,32 @@ describe("POST /auth (E2E)", () => {
     expect(response.body).toEqual({
       access_token: expect.any(String),
     });
+  });
+
+  test("[POST] /auth - should include the configured token expiration", async () => {
+    const fakeCPF = CPF.generate();
+    const passwordHash = await hashGenerator.hash("123456");
+
+    await userFactory.makePrismaUser({
+      cpf: fakeCPF,
+      password: passwordHash,
+    });
+
+    const response = await request(app.getHttpServer()).post("/auth").send({
+      cpf: fakeCPF.value,
+      password: "123456",
+    });
+
+    expect(response.statusCode).toBe(200);
+
+    const payload = jwt.decode(response.body.access_token) as {
+      iat: number;
+      exp: number;
+    };
+
+    expect(payload.exp).toEqual(expect.any(Number));
+    expect(payload.exp).toBeGreaterThan(payload.iat);
+    expect(payload.exp - payload.iat).toBe(accessTokenTtlSeconds);
   });
 
   test("[POST] /auth - should return 401 with wrong password", async () => {

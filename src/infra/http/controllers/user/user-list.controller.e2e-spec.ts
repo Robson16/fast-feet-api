@@ -7,9 +7,11 @@ import { UserFactory } from "test/factories/user/user-factory";
 import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
 import { AppModule } from "@/infra/app.module";
 import { DatabaseModule } from "@/infra/database/database.module";
+import { PrismaService } from "@/infra/database/prisma/prisma.service";
 
 describe("GET /users (E2E)", () => {
   let app: INestApplication;
+  let prisma: PrismaService;
   let userFactory: UserFactory;
   let jwt: JwtService;
 
@@ -20,6 +22,7 @@ describe("GET /users (E2E)", () => {
     }).compile();
 
     app = moduleRef.createNestApplication();
+    prisma = moduleRef.get(PrismaService);
     userFactory = moduleRef.get(UserFactory);
     jwt = moduleRef.get(JwtService);
 
@@ -30,7 +33,7 @@ describe("GET /users (E2E)", () => {
     await app.close();
   });
 
-  test("returns a page of users to an ADMIN without exposing passwords", async () => {
+  test("[GET] /users - returns a page to an ADMIN without exposing passwords", async () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),
     });
@@ -52,7 +55,7 @@ describe("GET /users (E2E)", () => {
     expect(response.body.users[0]).not.toHaveProperty("password");
   });
 
-  test("rejects an invalid page", async () => {
+  test("[GET] /users - rejects an invalid page", async () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),
     });
@@ -68,7 +71,7 @@ describe("GET /users (E2E)", () => {
     expect(response.statusCode).toBe(400);
   });
 
-  test("returns 403 to a non-admin user", async () => {
+  test("[GET] /users - returns 403 to a non-admin user", async () => {
     const user = await userFactory.makePrismaUser();
     const accessToken = jwt.sign({
       sub: user.id.toString(),
@@ -82,7 +85,28 @@ describe("GET /users (E2E)", () => {
     expect(response.statusCode).toBe(403);
   });
 
-  test("returns 401 when no access token is provided", async () => {
+  test("[GET] /users - returns 403 when an ADMIN token is used after the user's role is downgraded", async () => {
+    const admin = await userFactory.makePrismaUser({
+      role: Role.create("ADMIN"),
+    });
+    const accessToken = jwt.sign({
+      sub: admin.id.toString(),
+      role: admin.role.value,
+    });
+
+    await prisma.user.update({
+      where: { id: admin.id.toString() },
+      data: { role: "DELIVERER" },
+    });
+
+    const response = await request(app.getHttpServer())
+      .get("/users")
+      .set("Authorization", `Bearer ${accessToken}`);
+
+    expect(response.statusCode).toBe(403);
+  });
+
+  test("[GET] /users - returns 401 when no access token is provided", async () => {
     const response = await request(app.getHttpServer()).get("/users");
 
     expect(response.statusCode).toBe(401);

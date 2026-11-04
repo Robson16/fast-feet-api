@@ -1,14 +1,15 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { z } from "zod";
 
+import { UsersRepository } from "@/domain/user/application/repositories/users-repository";
 import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
-
-import { EnvService } from "../env/env.service";
+import { EnvService } from "@/infra/env/env.service";
 
 const tokenPayloadSchema = z.object({
   sub: z.string().uuid(),
+  exp: z.number().int().positive(),
   role: z
     .string()
     .refine(Role.validate, { message: "Invalid Role" })
@@ -19,7 +20,10 @@ export type UserPayload = z.infer<typeof tokenPayloadSchema>;
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(config: EnvService) {
+  constructor(
+    private config: EnvService,
+    private usersRepository: UsersRepository,
+  ) {
     const publicKey = config.get("JWT_PUBLIC_KEY");
 
     super({
@@ -30,6 +34,23 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: UserPayload) {
-    return tokenPayloadSchema.parse(payload);
+    const parsedPayload = tokenPayloadSchema.safeParse(payload);
+
+    if (!parsedPayload.success) {
+      throw new UnauthorizedException();
+    }
+
+    const { sub } = parsedPayload.data;
+
+    const user = await this.usersRepository.findById(sub);
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
+    return {
+      sub: user.id.toString(),
+      role: user.role.value,
+    };
   }
 }
