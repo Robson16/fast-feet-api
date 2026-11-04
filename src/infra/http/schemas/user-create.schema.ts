@@ -7,7 +7,9 @@ export const userCreateBodySchema = z.object({
   name: z.string(),
   cpf: z.string(),
   email: z.string().email(),
-  password: z.string(),
+  password: z
+    .string()
+    .min(6, "The password must be at least 6 characters long."),
   role: z
     .string()
     .refine(Role.validate, { message: "Invalid Role" })
@@ -28,7 +30,12 @@ export const userCreateApiBody: ApiBodyOptions = {
         format: "email",
         example: "jane@fastfeet.com",
       },
-      password: { type: "string", example: "strong-password" },
+      password: {
+        type: "string",
+        format: "password",
+        minLength: 6,
+        example: "strong-password",
+      },
       role: { type: "string", enum: ["ADMIN", "DELIVERER", "RECIPIENT"] },
     },
   },

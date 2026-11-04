@@ -63,6 +63,34 @@ describe("POST /users (E2E)", () => {
     expect(userOnDatabase?.role).toBe("ADMIN");
   });
 
+  test("[POST] /users - rejects a password shorter than six characters", async () => {
+    const admin = await userFactory.makePrismaUser({
+      role: Role.create("ADMIN"),
+    });
+    const accessToken = jwt.sign({
+      sub: admin.id.toString(),
+      role: admin.role.value,
+    });
+
+    const response = await request(app.getHttpServer())
+      .post("/users")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({
+        name: "Short Password",
+        cpf: "267.859.975-26",
+        email: "short-admin-password@example.com",
+        password: "12345",
+        role: "ADMIN",
+      });
+
+    expect(response.statusCode).toBe(400);
+    expect(
+      await prisma.user.findUnique({
+        where: { email: "short-admin-password@example.com" },
+      }),
+    ).toBeNull();
+  });
+
   test("[POST] /users - returns 403 when the authenticated user is not an ADMIN", async () => {
     const deliverer = await userFactory.makePrismaUser({
       role: Role.create("DELIVERER"),

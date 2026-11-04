@@ -77,6 +77,31 @@ describe("PATCH /users/:id/password (E2E)", () => {
     expect(isNewPasswordValid).toBe(true);
   });
 
+  test("[PATCH] /users/:id/password - should reject a password shorter than six characters", async () => {
+    const adminUser = await userFactory.makePrismaUser({
+      role: Role.create("ADMIN"),
+    });
+    const accessToken = jwt.sign({
+      sub: adminUser.id.toString(),
+      role: adminUser.role.value,
+    });
+    const oldPasswordHash = await hashGenerator.hash("old-password-123");
+    const targetUser = await userFactory.makePrismaUser({
+      password: oldPasswordHash,
+    });
+
+    const response = await request(app.getHttpServer())
+      .patch(`/users/${targetUser.id.toString()}/password`)
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({ newPassword: "12345" });
+
+    expect(response.statusCode).toBe(400);
+    const targetUserOnDatabase = await prisma.user.findUnique({
+      where: { id: targetUser.id.toString() },
+    });
+    expect(targetUserOnDatabase?.password).toBe(oldPasswordHash);
+  });
+
   test("[PATCH] /users/:id/password - should return 403 Forbidden if not ADMIN", async () => {
     const delivererUser = await userFactory.makePrismaUser({
       role: Role.create("DELIVERER"),

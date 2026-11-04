@@ -5,7 +5,9 @@ export const accountRegisterBodySchema = z.object({
   name: z.string(),
   cpf: z.string(),
   email: z.string().email(),
-  password: z.string(),
+  password: z
+    .string()
+    .min(6, "The password must be at least 6 characters long."),
 });
 
 export type AccountRegisterBodySchema = z.infer<
@@ -24,7 +26,12 @@ export const accountRegisterApiBody: ApiBodyOptions = {
         format: "email",
         example: "john.doe@example.com",
       },
-      password: { type: "string", example: "strong-password" },
+      password: {
+        type: "string",
+        format: "password",
+        minLength: 6,
+        example: "strong-password",
+      },
     },
   },
 };

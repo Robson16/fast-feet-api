@@ -41,6 +41,22 @@ describe("POST /accounts (E2E)", () => {
     expect(userOnDatabase?.role).toBe("DELIVERER");
   });
 
+  test("[POST] /accounts - rejects a password shorter than six characters", async () => {
+    const response = await request(app.getHttpServer()).post("/accounts").send({
+      name: "Short Password",
+      cpf: "267.859.975-26",
+      email: "short-password@example.com",
+      password: "12345",
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(
+      await prisma.user.findUnique({
+        where: { email: "short-password@example.com" },
+      }),
+    ).toBeNull();
+  });
+
   test("[POST] /accounts - assigns DELIVERER when the request asks for ADMIN", async () => {
     const response = await request(app.getHttpServer()).post("/accounts").send({
       name: "Admin Hacker",

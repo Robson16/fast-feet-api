@@ -14,11 +14,12 @@ export type UserResetPasswordBodySchema = z.infer<
 export const userResetPasswordApiBody: ApiBodyOptions = {
   schema: {
     type: "object",
-    required: ["password"],
+    required: ["newPassword"],
     properties: {
       newPassword: {
         type: "string",
         format: "password",
+        minLength: 6,
         example: "new-strong-password",
       },
     },

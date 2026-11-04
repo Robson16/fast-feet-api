@@ -73,6 +73,32 @@ describe("PATCH /profile/password (E2E)", () => {
     expect(isNewPasswordValid).toBe(true);
   });
 
+  test("[PATCH] /profile/password - should reject a new password shorter than six characters", async () => {
+    const currentPassword = "old-password-123";
+    const passwordHash = await hashGenerator.hash(currentPassword);
+    const user = await userFactory.makePrismaUser({
+      password: passwordHash,
+    });
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      role: user.role.value,
+    });
+
+    const response = await request(app.getHttpServer())
+      .patch("/profile/password")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({
+        currentPassword,
+        newPassword: "12345",
+      });
+
+    expect(response.statusCode).toBe(400);
+    const userOnDatabase = await prisma.user.findUnique({
+      where: { id: user.id.toString() },
+    });
+    expect(userOnDatabase?.password).toBe(passwordHash);
+  });
+
   test("[PATCH] /profile/password - should return 401 with wrong current password", async () => {
     const passwordHash = await hashGenerator.hash("old-password-123");
     const user = await userFactory.makePrismaUser({
