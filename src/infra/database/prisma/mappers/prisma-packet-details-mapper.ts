@@ -27,6 +27,8 @@ export class PrismaPacketDetailsMapper {
       addressCity: raw.destination.addressCity,
       addressState: raw.destination.addressState,
       addressCountry: raw.destination.addressCountry ?? undefined,
+      latitude: Number(raw.destination.latitude),
+      longitude: Number(raw.destination.longitude),
       status: raw.status,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt,

@@ -99,7 +99,7 @@ export class PrismaPacketsRepository implements PacketsRepository {
     };
 
     if (filters) {
-      if (filters.neighborhood || filters.city) {
+      if (filters.state || filters.neighborhood || filters.city) {
         where.destination = {
           ...(filters.neighborhood && {
             addressNeighborhood: {
@@ -110,11 +110,13 @@ export class PrismaPacketsRepository implements PacketsRepository {
           ...(filters.city && {
             addressCity: {
               contains: filters.city,
+              mode: "insensitive",
             },
           }),
           ...(filters.state && {
             addressState: {
               contains: filters.state,
+              mode: "insensitive",
             },
           }),
         };

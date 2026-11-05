@@ -71,6 +71,8 @@ export class InMemoryPacketsRepository implements PacketsRepository {
       addressCity: destination.addressCity,
       addressState: destination.addressState,
       addressCountry: destination.addressCountry,
+      latitude: destination.latitude,
+      longitude: destination.longitude,
       status: packet.status,
       createdAt: packet.createdAt,
       updatedAt: packet.updatedAt,

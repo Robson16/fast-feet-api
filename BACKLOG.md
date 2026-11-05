@@ -22,7 +22,7 @@ Este documento e o roteiro de implementacao auditado do repositorio. Os estados 
 
 - Ha endpoints HTTP para cadastro publico, autenticacao, gestao administrativa de usuarios, perfil, criacao de destinos e listagem de pacotes do destinatario.
 - Os casos de uso de criar/consultar/editar/excluir destinos e criar/consultar/excluir/alterar status de pacotes existem em `src/domain/order/application/use-cases/`, mas a maioria nao esta ligada a controllers HTTP.
-- Os adapters Prisma de usuarios, destinos e pacotes existem e estao registrados em `src/infra/database/database.module.ts`. Nao foram encontrados testes de integracao diretos desses repositorios.
+- Os adapters Prisma de usuarios, destinos e pacotes existem e estao registrados em `src/infra/database/database.module.ts`. Ha testes de integracao com PostgreSQL para esses repositorios em `src/infra/database/prisma/repositories/`.
 - O esquema Prisma ja tem `Notification`, mas nao ha entidade, repositorio, caso de uso ou endpoint de notificacoes. Nao ha referencia a foto de entrega no modelo de pacote.
 - `npm run typecheck`: passou.
 - `npm run test:e2e`: passou, 15 arquivos e 44 testes (inclui a suíte do seed).
@@ -142,16 +142,16 @@ Objetivo: concluir a camada de persistencia e tornar o cadastro/consulta/edicao 
 
 ### Story 2.1: Validar repositorios Prisma de destinos e pacotes (P1)
 
-**Estado: Parcial.** `PrismaDestinationsRepository` e `PrismaPacketsRepository` existem, tem mappers e estao registrados. Nao ha testes de integracao diretos; ha um defeito observavel: filtro apenas por estado e ignorado no filtro de pacotes.
+**Estado: Concluída.** `PrismaDestinationsRepository` e `PrismaPacketsRepository` têm mappers, estão registrados e são cobertos por testes de integração com PostgreSQL. Os filtros por estado, cidade e bairro são verificados, inclusive sem combinar estado com os outros filtros e com comparação case-insensitive.
 
-Arquivos existentes: `src/infra/database/prisma/repositories/prisma-destinations-repository.ts`, `src/infra/database/prisma/repositories/prisma-packets-repository.ts`, `src/infra/database/prisma/mappers/prisma-destination-mapper.ts`, `src/infra/database/prisma/mappers/prisma-packet-mapper.ts`, `src/infra/database/prisma/mappers/prisma-packet-details-mapper.ts`, `src/infra/database/database.module.ts`. Arquivos de teste a criar: `src/infra/database/prisma/repositories/prisma-destinations-repository.e2e-spec.ts` e `src/infra/database/prisma/repositories/prisma-packets-repository.e2e-spec.ts`.
+Arquivos verificados: `src/infra/database/prisma/repositories/prisma-destinations-repository.ts`, `src/infra/database/prisma/repositories/prisma-packets-repository.ts`, `src/infra/database/prisma/mappers/prisma-destination-mapper.ts`, `src/infra/database/prisma/mappers/prisma-packet-mapper.ts`, `src/infra/database/prisma/mappers/prisma-packet-details-mapper.ts`, `src/infra/database/database.module.ts`, `src/infra/database/prisma/repositories/prisma-destinations-repository.e2e-spec.ts` e `src/infra/database/prisma/repositories/prisma-packets-repository.e2e-spec.ts`.
 
 - [x] Manter os adapters e bindings/exportacoes atuais no `DatabaseModule`.
-- [ ] Em `prisma-packets-repository.ts`, fazer a construcao do filtro de endereco considerar `state` mesmo quando `city` e `neighborhood` nao foram informados; padronizar comparacao de cidade/estado como case-insensitive.
-- [ ] Criar testes de integracao usando a base `-test` e o setup de `vitest.config.e2e.mts`; nao usar mocks para afirmar comportamento Prisma.
-- [ ] Testar em destinos: criar, buscar por ID, atualizar, excluir e comportamento para IDs inexistentes.
-- [ ] Testar em pacotes: criar, buscar por ID/detalhes/aguardando, buscar por destinatario/status/entregador, filtros cidade/estado/bairro, proximidade, paginacao, atualizar e excluir; verificar relacoes e mapeamento decimal de latitude/longitude.
-- [ ] Acrescentar caso de filtro somente `state`, paginacao vazia/limite e pacotes sem entregador para evitar regressoes.
+- [x] Em `prisma-packets-repository.ts`, fazer a construcao do filtro de endereco considerar `state` mesmo quando `city` e `neighborhood` nao foram informados; padronizar comparacao de cidade/estado como case-insensitive.
+- [x] Criar testes de integracao usando a base `-test` e o setup de `vitest.config.e2e.mts`; nao usar mocks para afirmar comportamento Prisma.
+- [x] Testar em destinos: criar, buscar por ID, atualizar, excluir e comportamento para IDs inexistentes.
+- [x] Testar em pacotes: criar, buscar por ID/detalhes/aguardando, buscar por destinatario/status/entregador, filtros cidade/estado/bairro, proximidade, paginacao, atualizar e excluir; verificar relacoes e mapeamento decimal de latitude/longitude.
+- [x] Acrescentar caso de filtro somente `state`, paginacao vazia/limite e pacotes sem entregador para evitar regressoes.
 
 Critério de aceite: os dois arquivos de integracao passam com PostgreSQL de teste; cada metodo das interfaces tem ao menos um cenario de sucesso e um de ausencia/filtro relevante.
 

@@ -13,6 +13,8 @@ export interface PacketDetailsProps {
   addressCity: string;
   addressState: string;
   addressCountry?: string;
+  latitude: number;
+  longitude: number;
   status: string;
   createdAt: Date;
   updatedAt?: Date | null;
@@ -61,6 +63,14 @@ export class PacketDetails extends Entity<PacketDetailsProps> {
 
   get addressCountry() {
     return this.props.addressCountry;
+  }
+
+  get latitude() {
+    return this.props.latitude;
+  }
+
+  get longitude() {
+    return this.props.longitude;
   }
 
   get status() {
