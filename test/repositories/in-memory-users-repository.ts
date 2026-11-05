@@ -18,10 +18,19 @@ export class InMemoryUsersRepository implements UsersRepository {
     const startIndex = (page - 1) * 20;
 
     return [...this.items]
-      .sort(
-        (first, second) =>
-          second.createdAt.getTime() - first.createdAt.getTime(),
-      )
+      .sort((first, second) => {
+        const timeDiference =
+          second.createdAt.getTime() - first.createdAt.getTime();
+
+        if (timeDiference !== 0) {
+          return timeDiference;
+        }
+
+        return first.id
+          .toString()
+          .toLowerCase()
+          .localeCompare(second.id.toString().toLowerCase());
+      })
       .slice(startIndex, startIndex + 20);
   }
 

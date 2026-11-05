@@ -183,4 +183,70 @@ describe("POST /destinations (E2E)", () => {
 
     expect(response.statusCode).toBe(404);
   });
+
+  test("[POST] /destinations - returns 400 when the user does not have the RECIPIENT role", async () => {
+    const admin = await userFactory.makePrismaUser({
+      role: Role.create("ADMIN"),
+    });
+
+    const accessToken = jwt.sign({
+      sub: admin.id.toString(),
+      role: admin.role.value,
+    });
+
+    const deliverer = await userFactory.makePrismaUser({
+      role: Role.create("DELIVERER"),
+    });
+
+    const response = await request(app.getHttpServer())
+      .post("/destinations")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({
+        recipientId: deliverer.id.toString(),
+        title: "Home",
+        addressStreet: "Test Street",
+        addressNumber: "123",
+        addressZipCode: "12345-678",
+        addressNeighborhood: "Test Neighborhood",
+        addressCity: "Test City",
+        addressState: "TS",
+        latitude: -23.55052,
+        longitude: -46.633308,
+      });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  test("[POST] /destinations - returns 400 when coordinates or ZIP code are out of bounds/invalid", async () => {
+    const admin = await userFactory.makePrismaUser({
+      role: Role.create("ADMIN"),
+    });
+
+    const accessToken = jwt.sign({
+      sub: admin.id.toString(),
+      role: admin.role.value,
+    });
+
+    const recipient = await userFactory.makePrismaUser({
+      role: Role.create("RECIPIENT"),
+    });
+
+    const response = await request(app.getHttpServer())
+      .post("/destinations")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({
+        recipientId: recipient.id.toString(),
+        title: "Home",
+        addressStreet: "Test Street",
+        addressNumber: "123",
+        addressZipCode: "invalid-zip",
+        addressNeighborhood: "Test Neighborhood",
+        addressCity: "Test City",
+        addressState: "TS",
+        latitude: 91,
+        longitude: -181,
+      });
+
+    expect(response.statusCode).toBe(400);
+  });
 });

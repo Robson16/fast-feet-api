@@ -165,8 +165,8 @@ Arquivos existentes: `src/infra/http/controllers/destination/destination-create.
 - [x] Corrigir o controller de criacao para converter destinatario inexistente em `404` em vez de responder `400` generico.
 - [ ] Criar `GET /destinations/:id`, `PATCH /destinations/:id` e `DELETE /destinations/:id`, usando os casos de uso existentes; registrar os controllers e providers em `src/infra/http/http.module.ts`.
 - [ ] Criar `DestinationListUseCase`, adicionar `findMany` a `DestinationsRepository` e implementar paginacao em `PrismaDestinationsRepository`; expor `GET /destinations?page=1` somente para ADMIN.
-- [ ] Validar UUIDs, campos obrigatórios não vazios, ZIP/CEP conforme formato escolhido e latitude entre -90 e 90 / longitude entre -180 e 180; no caso de uso, confirmar que o usuário vinculado existe e tem papel `RECIPIENT` (hoje só é verificada a existência).
-- [ ] Mapear destinatário inexistente para `404`, papel de destinatário inválido para `400` (ou `422`, se esse for o padrão definido) e testar ambos; não responder `400` sem mensagem para qualquer erro do caso de uso.
+- [x] Validar UUIDs, campos obrigatórios não vazios, ZIP/CEP conforme formato escolhido e latitude entre -90 e 90 / longitude entre -180 e 180; no caso de uso, confirmar que o usuário vinculado existe e tem papel `RECIPIENT` (hoje só é verificada a existência).
+- [x] Mapear destinatário inexistente para `404`, papel de destinatário inválido para `400` (ou `422`, se esse for o padrão definido) e testar ambos; não responder `400` sem mensagem para qualquer erro do caso de uso.
 - [ ] Criar presenter/DTO se necessario para nao retornar dados internos e manter formato de resposta consistente nas rotas.
 - [ ] Criar E2E por rota cobrindo sucesso, payload invalido, destinatario/destino inexistente, `401`, `403` e paginacao; documentar todos os casos no Swagger.
 
@@ -293,7 +293,7 @@ Critério de aceite: teste de contrato confirma que o documento OpenAPI correspo
 
 Arquivos existentes: testes `*.e2e-spec.ts` sob `src/infra/http/controllers/`, `test/setup.e2e.ts`, `vitest.config.e2e.mts`, `vitest.config.mts`. Arquivo com falha observada: `src/domain/user/application/use-cases/user-list.usecase.spec.ts`; implementacao relacionada: `src/infra/database/prisma/repositories/prisma-users-repository.ts`.
 
-- [ ] Corrigir a ordenacao/paginacao de usuarios para ter desempate estavel (por exemplo, `createdAt` e `id`) e atualizar o repositorio in-memory para seguir o mesmo contrato; nao relaxar a assercao para mascarar resultado nao deterministico.
+- [x] Corrigir a ordenacao/paginacao de usuarios para ter desempate estavel (por exemplo, `createdAt` e `id`) e atualizar o repositorio in-memory para seguir o mesmo contrato; nao relaxar a assercao para mascarar resultado nao deterministico.
 - [ ] Criar/expandir E2E para todas as rotas de destino, pacote e notificacoes das Stories 2–4, cobrindo sucesso, validacao, `404`, conflito/estado invalido, `401`, `403` e isolamento de propriedade.
 - [ ] Completar testes E2E de senha e perfil: identidade do JWT, ausencia de hashes, troca propria, reset ADMIN e payload invalido.
 - [ ] Adicionar E2E sem token para `GET /profile` e `DELETE /profile`, e para `PATCH /users/:id/password`; testar token de papel incorreto onde houver política de papel.

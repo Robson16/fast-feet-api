@@ -4,6 +4,7 @@ import { InMemoryDestinationsRepository } from "test/repositories/in-memory-dest
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
+import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
 
 import { DestinationCreateUseCase } from "./destination-create.usecase";
 
@@ -22,7 +23,9 @@ describe("Create Destination", () => {
   });
 
   it("should be able to create a destination", async () => {
-    const user = userMaker();
+    const user = userMaker({
+      role: Role.create("RECIPIENT"),
+    });
 
     await inMemoryUsersRepository.create(user);
 

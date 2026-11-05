@@ -13,7 +13,14 @@ describe("List Users Use Case", () => {
   });
 
   it("should return users from the requested page", async () => {
-    const users = Array.from({ length: 21 }, () => userMaker());
+    const baseDate = new Date();
+
+    const users = Array.from({ length: 21 }, (_, index) =>
+      userMaker({
+        // Creates a new date by adding 'index' seconds (index * 1000 ms) to the base.
+        createdAt: new Date(baseDate.getTime() + index * 1000),
+      }),
+    );
 
     for (const user of users) {
       await inMemoryUsersRepository.create(user);

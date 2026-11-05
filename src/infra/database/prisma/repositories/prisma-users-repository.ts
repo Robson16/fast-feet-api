@@ -28,7 +28,7 @@ export class PrismaUsersRepository implements UsersRepository {
     const users = await this.prisma.user.findMany({
       skip: (page - 1) * 20,
       take: 20,
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
     });
 
     return users.map(PrismaUserMapper.toDomain);

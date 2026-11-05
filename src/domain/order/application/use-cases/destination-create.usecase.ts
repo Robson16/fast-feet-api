@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 
 import { Either, left, right } from "@/core/either";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { NotAllowedError } from "@/core/errors/not-allowed-error";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { DestinationsRepository } from "@/domain/order/application/repositories/destinations-repository";
 import { Destination } from "@/domain/order/enterprise/entities/destination";
@@ -23,7 +24,7 @@ interface DestinationCreateUseCaseRequest {
 }
 
 type DestinationCreateUseCaseResponse = Either<
-  ResourceNotFoundError,
+  ResourceNotFoundError | NotAllowedError,
   {
     destination: Destination;
   }
@@ -55,6 +56,10 @@ export class DestinationCreateUseCase {
 
     if (!isRecipientExistent) {
       return left(new ResourceNotFoundError("Recipient not found."));
+    }
+
+    if (isRecipientExistent.role.value !== "RECIPIENT") {
+      return left(new NotAllowedError("User does not have RECIPIENT role."));
     }
 
     const destination = Destination.create({

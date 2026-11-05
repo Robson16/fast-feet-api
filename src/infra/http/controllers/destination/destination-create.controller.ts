@@ -6,14 +6,17 @@ import {
   Post,
 } from "@nestjs/common";
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiForbiddenResponse,
+  ApiNotFoundResponse,
   ApiOperation,
   ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
+import { NotAllowedError } from "@/core/errors/not-allowed-error";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { DestinationCreateUseCase } from "@/domain/order/application/use-cases/destination-create.usecase";
 import { Roles } from "@/infra/auth/roles-decorator";
@@ -39,8 +42,12 @@ export class DestinationCreateController {
     status: 201,
     description: "Destination created successfully.",
   })
+  @ApiBadRequestResponse({
+    description: "Invalid input or user does not have RECIPIENT role.",
+  })
   @ApiUnauthorizedResponse({ description: "Authentication is required." })
   @ApiForbiddenResponse({ description: "Requires ADMIN role." })
+  @ApiNotFoundResponse({ description: "Recipient not found." })
   async handle(
     @Body(new ZodValidationPipe(destinationCreateSchema))
     body: DestinationCreateSchema,
@@ -53,6 +60,8 @@ export class DestinationCreateController {
       switch (error.constructor) {
         case ResourceNotFoundError:
           throw new NotFoundException(error.message);
+        case NotAllowedError:
+          throw new BadRequestException(error.message);
         default:
           throw new BadRequestException(error.message);
       }
