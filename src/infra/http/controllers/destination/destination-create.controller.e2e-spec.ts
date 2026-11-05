@@ -152,4 +152,35 @@ describe("POST /destinations (E2E)", () => {
 
     expect(response.statusCode).toBe(400);
   });
+
+  test("[POST] /destinations - returns 404 when the recipient does not exist", async () => {
+    const user = await userFactory.makePrismaUser({
+      role: Role.create("ADMIN"),
+    });
+
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      role: user.role.value,
+    });
+
+    const nonExistentRecipientId = "00000000-0000-0000-0000-000000000000";
+
+    const response = await request(app.getHttpServer())
+      .post("/destinations")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({
+        recipientId: nonExistentRecipientId,
+        title: "Home",
+        addressStreet: "Test Street",
+        addressNumber: "123",
+        addressZipCode: "12345-678",
+        addressNeighborhood: "Test Neighborhood",
+        addressCity: "Test City",
+        addressState: "TS",
+        latitude: -23.55052,
+        longitude: -46.633308,
+      });
+
+    expect(response.statusCode).toBe(404);
+  });
 });
