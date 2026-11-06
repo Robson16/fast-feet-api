@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+
 import { INestApplication } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Test } from "@nestjs/testing";
@@ -77,7 +79,6 @@ describe("POST /destinations (E2E)", () => {
     const deliverer = await userFactory.makePrismaUser({
       role: Role.create("DELIVERER"),
     });
-
     const accessToken = jwt.sign({
       sub: deliverer.id.toString(),
       role: deliverer.role.value,
@@ -163,7 +164,7 @@ describe("POST /destinations (E2E)", () => {
       role: user.role.value,
     });
 
-    const nonExistentRecipientId = "00000000-0000-0000-0000-000000000000";
+    const nonExistentRecipientId = randomUUID();
 
     const response = await request(app.getHttpServer())
       .post("/destinations")

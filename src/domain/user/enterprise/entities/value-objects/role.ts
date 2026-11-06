@@ -1,13 +1,17 @@
-export class Role {
-  public readonly value: string;
+export type RoleValue = "ADMIN" | "DELIVERER" | "RECIPIENT";
 
-  constructor(value: string) {
+export class Role {
+  public readonly value: RoleValue;
+
+  constructor(value: RoleValue) {
     this.value = value;
   }
 
+  static create(role: RoleValue): Role;
+  static create(role: string): Role;
   static create(role: string): Role {
     if (Role.validate(role)) {
-      return new Role(role);
+      return new Role(role as RoleValue);
     } else {
       throw new Error("Invalid Role");
     }

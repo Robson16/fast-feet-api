@@ -1,8 +1,10 @@
 import {
   BadRequestException,
   Body,
+  ConflictException,
   Controller,
   HttpCode,
+  NotFoundException,
   Put,
 } from "@nestjs/common";
 import {
@@ -14,6 +16,10 @@ import {
   ApiTags,
 } from "@nestjs/swagger";
 
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
+import { InvalidCPFError } from "@/domain/user/application/use-cases/errors/invalid-cpf-error";
+import { InvalidUserRole } from "@/domain/user/application/use-cases/errors/invalid-user-role";
+import { UserAlreadyExistsError } from "@/domain/user/application/use-cases/errors/user-already-exists-error";
 import { UserEditUseCase } from "@/domain/user/application/use-cases/user-edit.usecase";
 import { CurrentUser } from "@/infra/auth/current-user-decorator";
 import { UserPayload } from "@/infra/auth/jwt.strategy";
@@ -53,7 +59,20 @@ export class ProfileEditController {
     });
 
     if (result.isLeft()) {
-      throw new BadRequestException(result.value.message);
+      const error = result.value;
+
+      switch (error.constructor) {
+        case ResourceNotFoundError:
+          throw new NotFoundException(error.message);
+        case UserAlreadyExistsError:
+          throw new ConflictException(error.message);
+        case InvalidCPFError:
+          throw new BadRequestException(error.message);
+        case InvalidUserRole:
+          throw new BadRequestException(error.message);
+        default:
+          throw new BadRequestException(error.message);
+      }
     }
   }
 }

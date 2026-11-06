@@ -86,4 +86,48 @@ describe("PUT /profile (E2E)", () => {
 
     expect(response.statusCode).toBe(401);
   });
+
+  test("[PUT] /profile - should return 409 Conflict if email is already in use by another user", async () => {
+    await userFactory.makePrismaUser({
+      email: "in-use@example.com",
+    });
+
+    const user = await userFactory.makePrismaUser();
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      role: user.role.value,
+    });
+
+    const response = await request(app.getHttpServer())
+      .put("/profile")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({
+        email: "in-use@example.com",
+      });
+
+    expect(response.statusCode).toBe(409);
+  });
+
+  test("[PUT] /profile - should return 401 if the authenticated user no longer exists in the database", async () => {
+    const user = await userFactory.makePrismaUser();
+    const accessToken = jwt.sign({
+      sub: user.id.toString(),
+      role: user.role.value,
+    });
+
+    await prisma.user.delete({
+      where: {
+        id: user.id.toString(),
+      },
+    });
+
+    const response = await request(app.getHttpServer())
+      .put("/profile")
+      .set("Authorization", `Bearer ${accessToken}`)
+      .send({
+        name: "Ghost User",
+      });
+
+    expect(response.statusCode).toBe(401);
+  });
 });

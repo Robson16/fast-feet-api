@@ -34,11 +34,12 @@ describe("GET /users/:id (E2E)", () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),
     });
-    const target = await userFactory.makePrismaUser({ name: "Target User" });
     const accessToken = jwt.sign({
       sub: admin.id.toString(),
       role: admin.role.value,
     });
+
+    const target = await userFactory.makePrismaUser({ name: "Target User" });
 
     const response = await request(app.getHttpServer())
       .get(`/users/${target.id.toString()}`)
@@ -55,11 +56,12 @@ describe("GET /users/:id (E2E)", () => {
 
   test("[GET] /users/:id - returns 403 to a non-admin user", async () => {
     const user = await userFactory.makePrismaUser();
-    const target = await userFactory.makePrismaUser();
     const accessToken = jwt.sign({
       sub: user.id.toString(),
       role: user.role.value,
     });
+
+    const target = await userFactory.makePrismaUser();
 
     const response = await request(app.getHttpServer())
       .get(`/users/${target.id.toString()}`)

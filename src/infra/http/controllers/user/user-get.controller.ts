@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Controller,
   Get,
   NotFoundException,
@@ -16,6 +17,7 @@ import {
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
+import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { UserGetUseCase } from "@/domain/user/application/use-cases/user-get.usecase";
 import { Roles } from "@/infra/auth/roles-decorator";
 import { UserDetailsResponseDto } from "@/infra/http/dtos/user-response.dto";
@@ -45,9 +47,18 @@ export class UserGetController {
     const result = await this.userGet.execute({ userId: id });
 
     if (result.isLeft()) {
-      throw new NotFoundException(result.value.message);
+      const error = result.value;
+
+      switch (error.constructor) {
+        case ResourceNotFoundError:
+          throw new NotFoundException(error.message);
+        default:
+          throw new BadRequestException(error.message);
+      }
     }
 
-    return { user: UserPresenter.toHTTP(result.value.user) };
+    return {
+      user: UserPresenter.toHTTP(result.value.user),
+    };
   }
 }

@@ -83,7 +83,7 @@ export class UserRegisterUseCase {
       cpf: CPF.create(cpf),
       email,
       password: hashedPassword,
-      role: role ? new Role(role) : undefined,
+      role: role ? Role.create(role) : undefined,
     });
 
     await this.usersRepository.create(user);

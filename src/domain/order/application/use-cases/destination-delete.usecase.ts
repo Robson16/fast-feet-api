@@ -1,3 +1,5 @@
+import { Injectable } from "@nestjs/common";
+
 import { Either, left, right } from "@/core/either";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { DestinationsRepository } from "@/domain/order/application/repositories/destinations-repository";
@@ -8,6 +10,7 @@ interface DestinationDeleteUseCaseRequest {
 
 type DestinationDeleteUseCaseResponse = Either<ResourceNotFoundError, null>;
 
+@Injectable()
 export class DestinationDeleteUseCase {
   constructor(private destinationsRepository: DestinationsRepository) {}
 

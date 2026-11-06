@@ -1,3 +1,5 @@
+import { Injectable } from "@nestjs/common";
+
 import { Either, left, right } from "@/core/either";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { PacketsRepository } from "@/domain/order/application/repositories/packets-repository";
@@ -14,6 +16,7 @@ type PacketGetUseCaseResponse = Either<
   }
 >;
 
+@Injectable()
 export class PacketGetUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 

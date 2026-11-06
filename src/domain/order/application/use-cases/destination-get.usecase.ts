@@ -1,3 +1,5 @@
+import { Injectable } from "@nestjs/common";
+
 import { Either, left, right } from "@/core/either";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 import { DestinationsRepository } from "@/domain/order/application/repositories/destinations-repository";
@@ -14,6 +16,7 @@ type DestinationGetUseCaseResponse = Either<
   }
 >;
 
+@Injectable()
 export class DestinationGetUseCase {
   constructor(private destinationsRepository: DestinationsRepository) {}
 
