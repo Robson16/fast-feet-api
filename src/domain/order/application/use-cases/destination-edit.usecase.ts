@@ -7,17 +7,17 @@ import { Destination } from "@/domain/order/enterprise/entities/destination";
 
 interface DestinationEditUseCaseRequest {
   destinationId: string;
-  title: string;
-  addressStreet: string;
-  addressNumber: string;
-  addressComplement: string;
-  addressZipCode: string;
-  addressNeighborhood: string;
-  addressCity: string;
-  addressState: string;
+  title?: string;
+  addressStreet?: string;
+  addressNumber?: string;
+  addressComplement?: string;
+  addressZipCode?: string;
+  addressNeighborhood?: string;
+  addressCity?: string;
+  addressState?: string;
   addressCountry?: string;
-  latitude: number;
-  longitude: number;
+  latitude?: number;
+  longitude?: number;
 }
 
 type DestinationEditUseCaseResponse = Either<
@@ -52,17 +52,19 @@ export class DestinationEditUseCase {
       return left(new ResourceNotFoundError("Destination not found."));
     }
 
-    destination.title = title;
-    destination.addressStreet = addressStreet;
-    destination.addressNumber = addressNumber;
-    destination.addressComplement = addressComplement;
-    destination.addressZipCode = addressZipCode;
-    destination.addressNeighborhood = addressNeighborhood;
-    destination.addressCity = addressCity;
-    destination.addressState = addressState;
-    destination.addressCountry = addressCountry;
-    destination.latitude = latitude;
-    destination.longitude = longitude;
+    destination.title = title ?? destination.title;
+    destination.addressStreet = addressStreet ?? destination.addressStreet;
+    destination.addressNumber = addressNumber ?? destination.addressNumber;
+    destination.addressComplement =
+      addressComplement ?? destination.addressComplement;
+    destination.addressZipCode = addressZipCode ?? destination.addressZipCode;
+    destination.addressNeighborhood =
+      addressNeighborhood ?? destination.addressNeighborhood;
+    destination.addressCity = addressCity ?? destination.addressCity;
+    destination.addressState = addressState ?? destination.addressState;
+    destination.addressCountry = addressCountry ?? destination.addressCountry;
+    destination.latitude = latitude ?? destination.latitude;
+    destination.longitude = longitude ?? destination.longitude;
 
     await this.destinationsRepository.save(destination);
 

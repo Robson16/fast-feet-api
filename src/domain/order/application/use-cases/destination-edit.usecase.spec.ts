@@ -63,4 +63,26 @@ describe("Edit Destination", () => {
     expect(result.isLeft()).toBe(true);
     expect(result.value).toBeInstanceOf(ResourceNotFoundError);
   });
+
+  it("should be able to partially edit a destination and accept zero values", async () => {
+    const destination = destinationMaker({
+      title: "Old Title",
+      latitude: 10,
+    });
+
+    await inMemoryDestinationsRepository.create(destination);
+
+    const result = await sut.execute({
+      destinationId: destination.id.toString(),
+      title: "New Title",
+      latitude: 0,
+    });
+
+    expect(result.isRight()).toBe(true);
+    expect(inMemoryDestinationsRepository.items[0].title).toBe("New Title");
+    expect(inMemoryDestinationsRepository.items[0].latitude).toBe(0);
+    expect(inMemoryDestinationsRepository.items[0].addressStreet).toBe(
+      destination.addressStreet,
+    );
+  });
 });

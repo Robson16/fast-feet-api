@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 
 import { DestinationCreateUseCase } from "@/domain/order/application/use-cases/destination-create.usecase";
 import { DestinationDeleteUseCase } from "@/domain/order/application/use-cases/destination-delete.usecase";
+import { DestinationEditUseCase } from "@/domain/order/application/use-cases/destination-edit.usecase";
 import { DestinationGetUseCase } from "@/domain/order/application/use-cases/destination-get.usecase";
 import { PacketListByRecipientUseCase } from "@/domain/order/application/use-cases/packet-list-by-recipient.usecase";
 import { UserAuthenticateUseCase } from "@/domain/user/application/use-cases/user-authenticate.usecase";
@@ -19,6 +20,7 @@ import { AccountRegisterController } from "./controllers/account/account-registe
 import { UserAuthenticateController } from "./controllers/auth/authenticate.controller";
 import { DestinationCreateController } from "./controllers/destination/destination-create.controller";
 import { DestinationDeleteController } from "./controllers/destination/destination-delete.controller";
+import { DestinationEditController } from "./controllers/destination/destination-edit.controller";
 import { DestinationGetController } from "./controllers/destination/destination-get.controller";
 import { PacketListByRecipientController } from "./controllers/packet/packet-list-by-recipient.controller";
 import { ProfileChangePasswordController } from "./controllers/profile/profile-change-password.controller";
@@ -51,6 +53,7 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     DestinationCreateController,
     DestinationGetController,
     DestinationDeleteController,
+    DestinationEditController,
   ],
   providers: [
     UserRegisterUseCase,
@@ -65,6 +68,7 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     DestinationCreateUseCase,
     DestinationGetUseCase,
     DestinationDeleteUseCase,
+    DestinationEditUseCase,
   ],
 })
 export class HttpModule {}

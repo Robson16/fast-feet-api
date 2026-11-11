@@ -1,6 +1,6 @@
 # Backlog da FastFeet API
 
-Este documento e o roteiro de implementacao auditado do repositorio. Os estados abaixo foram conferidos no codigo em 2026-11-03; uma story so deve ser marcada como concluida quando todos os passos e criterios de aceite estiverem atendidos e os testes relevantes passarem.
+Este documento e o roteiro de implementacao auditado do repositorio. Os estados abaixo foram conferidos no codigo em 2026-11-11; uma story so deve ser marcada como concluida quando todos os passos e criterios de aceite estiverem atendidos e os testes relevantes passarem.
 
 ## Legenda e estado geral
 
@@ -25,7 +25,7 @@ Este documento e o roteiro de implementacao auditado do repositorio. Os estados 
 - Os adapters Prisma de usuarios, destinos e pacotes existem e estao registrados em `src/infra/database/database.module.ts`. Ha testes de integracao com PostgreSQL para esses repositorios em `src/infra/database/prisma/repositories/`.
 - O esquema Prisma ja tem `Notification`, mas nao ha entidade, repositorio, caso de uso ou endpoint de notificacoes. Nao ha referencia a foto de entrega no modelo de pacote.
 - `npm run typecheck`: passou.
-- `npm run test:e2e`: passou, 15 arquivos e 44 testes (inclui a suíte do seed).
+- `npm run test:e2e`: passou, 18 arquivos e 59 testes (inclui a suíte do seed).
 - `npm run test`: 26 arquivos passaram e 1 falhou (70/71 testes). `src/domain/user/application/use-cases/user-list.usecase.spec.ts` espera que `users[0]` fique sozinho na pagina 2, mas as datas de criacao podem empatar e a ordenacao nao define desempate; tornar o teste e a ordenacao deterministas faz parte do trabalho restante.
 - O README ja contem a URL correta do repositorio, `npm run dev`, porta `3333` e Swagger em `/api`. O que esta desatualizado e a descricao do que esta implementado/planejado e a ausencia de instrucoes operacionais completas.
 
@@ -157,18 +157,19 @@ Critério de aceite: os dois arquivos de integracao passam com PostgreSQL de tes
 
 ### Story 2.2: Expor CRUD e listagem paginada de destinos (P1)
 
-**Estado: Parcial.** Existe apenas `POST /destinations`; os casos de uso de busca, edicao e exclusao existem, mas nao estao registrados em `HttpModule`. Nao ha listagem paginada.
+**Estado: Parcial.** Existe apenas `POST /destinations`, `GET /destinations/:id`, `PATCH /destinations/:id` e `DELETE /destinations/:id`; os controllers e providers correspondentes foram implementados e registrados em `HttpModule`. Nao ha listagem paginada.
 
-Arquivos existentes: `src/infra/http/controllers/destination/destination-create.controller.ts`, `src/infra/http/schemas/destination-create.schema.ts`, `src/domain/order/application/use-cases/destination-create.usecase.ts`, `destination-get.usecase.ts`, `destination-edit.usecase.ts`, `destination-delete.usecase.ts`, `src/domain/order/application/repositories/destinations-repository.ts`, `src/infra/database/prisma/repositories/prisma-destinations-repository.ts`. Criar controllers/schema/tests no mesmo diretorio `src/infra/http/controllers/destination/` e `src/infra/http/schemas/`.
+Arquivos existentes: `src/infra/http/controllers/destination/destination-create.controller.ts`, `destination-get.controller.ts`, `destination-delete.controller.ts`, `destination-edit.controller.ts`, schemas em `src/infra/http/schemas/`, e testes E2E completos em `src/infra/http/controllers/destination/`. Criar schema/test e endpoint restante na mesma pasta.
 
 - [x] Manter `POST /destinations` administrativo e conectado ao caso de uso de criacao.
 - [x] Corrigir o controller de criacao para converter destinatario inexistente em `404` em vez de responder `400` generico.
-- [ ] Criar `GET /destinations/:id`, `PATCH /destinations/:id` e `DELETE /destinations/:id`, usando os casos de uso existentes; registrar os controllers e providers em `src/infra/http/http.module.ts`.
+- [x] Criar `GET /destinations/:id`, `PATCH /destinations/:id` e `DELETE /destinations/:id`, usando os casos de uso existentes; registrar os controllers e providers em `src/infra/http/http.module.ts`.
 - [ ] Criar `DestinationListUseCase`, adicionar `findMany` a `DestinationsRepository` e implementar paginacao em `PrismaDestinationsRepository`; expor `GET /destinations?page=1` somente para ADMIN.
 - [x] Validar UUIDs, campos obrigatórios não vazios, ZIP/CEP conforme formato escolhido e latitude entre -90 e 90 / longitude entre -180 e 180; no caso de uso, confirmar que o usuário vinculado existe e tem papel `RECIPIENT` (hoje só é verificada a existência).
 - [x] Mapear destinatário inexistente para `404`, papel de destinatário inválido para `400` (ou `422`, se esse for o padrão definido) e testar ambos; não responder `400` sem mensagem para qualquer erro do caso de uso.
 - [ ] Criar presenter/DTO se necessario para nao retornar dados internos e manter formato de resposta consistente nas rotas.
-- [ ] Criar E2E por rota cobrindo sucesso, payload invalido, destinatario/destino inexistente, `401`, `403` e paginacao; documentar todos os casos no Swagger.
+- [x] Criar E2E por rota cobrindo sucesso, payload invalido, destinatario/destino inexistente, `401`, `403`; documentar todos os casos no Swagger.
+- [ ] Acrescentar E2E para cobrir paginação e comportamento da listagem em `DestinationListController`.
 
 Critério de aceite: ADMIN consegue criar, listar, consultar, editar e excluir destino; demais papeis nao administram enderecos; entradas e respostas estao documentadas e testadas.
 
@@ -289,16 +290,16 @@ Critério de aceite: teste de contrato confirma que o documento OpenAPI correspo
 
 ### Story 5.2: Completar E2E e estabilizar verificacoes (P1)
 
-**Estado: Parcial.** Ha 15 arquivos E2E e 44 testes passando no momento da auditoria, mas cobrem apenas cadastro/autenticacao, alguns fluxos de usuarios, criacao de destino, listagem de pacotes do destinatario e seed. A suite unitaria tem uma falha conhecida.
+**Estado: Parcial.** Ha 18 arquivos E2E e 59 testes passando no momento da auditoria, cobrindo rotas completas do CRUD de destinos, além de cadastro/autenticação e perfis.
 
 Arquivos existentes: testes `*.e2e-spec.ts` sob `src/infra/http/controllers/`, `test/setup.e2e.ts`, `vitest.config.e2e.mts`, `vitest.config.mts`. Arquivo com falha observada: `src/domain/user/application/use-cases/user-list.usecase.spec.ts`; implementacao relacionada: `src/infra/database/prisma/repositories/prisma-users-repository.ts`.
 
 - [x] Corrigir a ordenacao/paginacao de usuarios para ter desempate estavel (por exemplo, `createdAt` e `id`) e atualizar o repositorio in-memory para seguir o mesmo contrato; nao relaxar a assercao para mascarar resultado nao deterministico.
-- [ ] Criar/expandir E2E para todas as rotas de destino, pacote e notificacoes das Stories 2–4, cobrindo sucesso, validacao, `404`, conflito/estado invalido, `401`, `403` e isolamento de propriedade.
+- [ ] Criar/expandir E2E para todas as rotas de pacote e notificacoes das Stories 3–4, cobrindo sucesso, validacao, `404`, conflito/estado invalido, `401`, `403` e isolamento de propriedade.
 - [ ] Completar testes E2E de senha e perfil: identidade do JWT, ausencia de hashes, troca propria, reset ADMIN e payload invalido.
 - [ ] Adicionar E2E sem token para `GET /profile` e `DELETE /profile`, e para `PATCH /users/:id/password`; testar token de papel incorreto onde houver política de papel.
 - [ ] Adicionar E2E para usuário inexistente e UUID inválido em `GET/PUT/DELETE /users/:id` e `PATCH /users/:id/password`; confirmar códigos `404` e `400` definidos na Story 1.5.
-- [ ] Cobrir em E2E as regras corrigidas da criação de destinos: ID de usuário existente que não é `RECIPIENT`, destinatário inexistente e coordenadas fora dos limites.
+- [x] Cobrir em E2E as regras corrigidas da criação de destinos: ID de usuário existente que não é `RECIPIENT`, destinatário inexistente e coordenadas fora dos limites.
 - [ ] Cobrir em E2E paginação de pacotes com decimal, texto, zero e página válida, além da página padrão.
 - [ ] Cobrir emissão/validade do token, papel alterado e usuário excluído conforme Story 1.7.
 - [x] Manter `test/setup.e2e.ts` exigindo banco com nome terminado em `-test`, aplicando migrations e limpando tabelas antes de cada teste.
