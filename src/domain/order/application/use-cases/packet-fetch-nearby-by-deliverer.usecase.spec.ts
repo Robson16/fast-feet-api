@@ -12,7 +12,7 @@ let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
 let sut: PacketFetchNearbyByDelivererUseCase;
 
-describe("Fetch Packets Nearby By Deliverer", () => {
+describe("Fetch Packets Nearby By Deliverer Use Case", () => {
   beforeEach(() => {
     inMemoryUsersRepository = new InMemoryUsersRepository();
     inMemoryDestinationsRepository = new InMemoryDestinationsRepository();
@@ -23,7 +23,7 @@ describe("Fetch Packets Nearby By Deliverer", () => {
     sut = new PacketFetchNearbyByDelivererUseCase(inMemoryPacketsRepository);
   });
 
-  it("should be able to fetch packets nearby by deliverer id", async () => {
+  it("should be able to fetch recent packets nearby by deliverer id", async () => {
     const deliverer = userMaker();
 
     await inMemoryUsersRepository.create(deliverer);
@@ -58,16 +58,19 @@ describe("Fetch Packets Nearby By Deliverer", () => {
     const packet1 = packetMaker({
       delivererId: deliverer.id,
       destinationId: destination1.id,
+      createdAt: new Date(2026, 0, 20),
       status: "WITHDRAWN",
     });
     const packet2 = packetMaker({
       delivererId: deliverer.id,
       destinationId: destination2.id,
+      createdAt: new Date(2026, 0, 18),
       status: "WITHDRAWN",
     });
     const packet3 = packetMaker({
       delivererId: deliverer.id,
       destinationId: destination3.id,
+      createdAt: new Date(2026, 0, 16),
       status: "WITHDRAWN",
     });
     const packet4 = packetMaker({
@@ -81,10 +84,10 @@ describe("Fetch Packets Nearby By Deliverer", () => {
       status: "WITHDRAWN",
     });
 
-    await inMemoryPacketsRepository.create(packet1);
     await inMemoryPacketsRepository.create(packet2);
-    await inMemoryPacketsRepository.create(packet3);
+    await inMemoryPacketsRepository.create(packet1);
     await inMemoryPacketsRepository.create(packet4);
+    await inMemoryPacketsRepository.create(packet3);
     await inMemoryPacketsRepository.create(packet5);
 
     const result = await sut.execute({
@@ -97,5 +100,11 @@ describe("Fetch Packets Nearby By Deliverer", () => {
 
     expect(result.isRight()).toBe(true);
     expect(result.value?.packets).toHaveLength(3);
+
+    expect(result.value?.packets).toEqual([
+      expect.objectContaining({ id: packet1.id }),
+      expect.objectContaining({ id: packet2.id }),
+      expect.objectContaining({ id: packet3.id }),
+    ]);
   });
 });

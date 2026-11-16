@@ -27,26 +27,25 @@ describe("Fetch Packets Withdrawn by Deliverer", () => {
   it("should be able to fetch packets withdrawn by deliverer", async () => {
     const delivererId = new UniqueEntityID();
 
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        status: "WITHDRAWN",
-      }),
-    );
+    const packet1 = packetMaker({
+      delivererId,
+      createdAt: new Date(2026, 0, 20),
+      status: "WITHDRAWN",
+    });
+    const packet2 = packetMaker({
+      delivererId,
+      createdAt: new Date(2026, 0, 18),
+      status: "WITHDRAWN",
+    });
+    const packet3 = packetMaker({
+      delivererId,
+      createdAt: new Date(2026, 0, 15),
+      status: "WITHDRAWN",
+    });
 
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        status: "WITHDRAWN",
-      }),
-    );
-
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        status: "WITHDRAWN",
-      }),
-    );
+    await inMemoryPacketsRepository.create(packet3);
+    await inMemoryPacketsRepository.create(packet1);
+    await inMemoryPacketsRepository.create(packet2);
 
     const result = await sut.execute({
       delivererId: delivererId.toString(),
@@ -55,6 +54,11 @@ describe("Fetch Packets Withdrawn by Deliverer", () => {
 
     expect(result.isRight()).toBe(true);
     expect(result.value?.packets).toHaveLength(3);
+    expect(result.value?.packets).toEqual([
+      expect.objectContaining({ id: packet1.id }),
+      expect.objectContaining({ id: packet2.id }),
+      expect.objectContaining({ id: packet3.id }),
+    ]);
   });
 
   it("should be able to fetch packets withdrawn by deliverer and filtered by neighborhood", async () => {
@@ -66,37 +70,35 @@ describe("Fetch Packets Withdrawn by Deliverer", () => {
     await inMemoryDestinationsRepository.create(destination1);
     await inMemoryDestinationsRepository.create(destination2);
 
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        destinationId: destination1.id,
-        status: "WITHDRAWN",
-      }),
-    );
+    const packet1 = packetMaker({
+      delivererId,
+      destinationId: destination1.id,
+      createdAt: new Date(2026, 0, 20),
+      status: "WITHDRAWN",
+    });
+    const packet2 = packetMaker({
+      delivererId,
+      destinationId: destination1.id,
+      createdAt: new Date(2026, 0, 18),
+      status: "WITHDRAWN",
+    });
+    const packet3 = packetMaker({
+      delivererId,
+      destinationId: destination2.id,
+      createdAt: new Date(2026, 0, 20),
+      status: "WITHDRAWN",
+    });
+    const packet4 = packetMaker({
+      delivererId,
+      destinationId: destination2.id,
+      createdAt: new Date(2026, 0, 18),
+      status: "WITHDRAWN",
+    });
 
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        destinationId: destination1.id,
-        status: "WITHDRAWN",
-      }),
-    );
-
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        destinationId: destination2.id,
-        status: "WITHDRAWN",
-      }),
-    );
-
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        destinationId: destination2.id,
-        status: "WITHDRAWN",
-      }),
-    );
+    await inMemoryPacketsRepository.create(packet2);
+    await inMemoryPacketsRepository.create(packet4);
+    await inMemoryPacketsRepository.create(packet1);
+    await inMemoryPacketsRepository.create(packet3);
 
     const result = await sut.execute({
       delivererId: delivererId.toString(),
@@ -108,9 +110,9 @@ describe("Fetch Packets Withdrawn by Deliverer", () => {
 
     expect(result.isRight()).toBe(true);
     expect(result.value?.packets).toHaveLength(2);
-    expect(result.value?.packets).toMatchObject([
-      { destinationId: destination1.id },
-      { destinationId: destination1.id },
+    expect(result.value?.packets).toEqual([
+      expect.objectContaining({ id: packet1.id }),
+      expect.objectContaining({ id: packet2.id }),
     ]);
   });
 

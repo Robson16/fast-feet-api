@@ -25,27 +25,35 @@ describe("Packet List By Recipient Use Case", () => {
     sut = new PacketListByRecipientUseCase(inMemoryPacketsRepository);
   });
 
-  it("should be able to list packets for a specific recipient", async () => {
+  it("should be able to list recent packets for a specific recipient", async () => {
     const recipient = userMaker();
-    inMemoryUsersRepository.items.push(recipient);
+    await inMemoryUsersRepository.create(recipient);
 
     const destination = destinationMaker({ recipientId: recipient.id });
-    inMemoryDestinationsRepository.items.push(destination);
+    await inMemoryDestinationsRepository.create(destination);
 
-    const packet1 = packetMaker({ destinationId: destination.id });
-    const packet2 = packetMaker({ destinationId: destination.id });
-    inMemoryPacketsRepository.items.push(packet1, packet2);
+    const packet1 = packetMaker({
+      destinationId: destination.id,
+      createdAt: new Date(2026, 0, 20),
+    });
+    const packet2 = packetMaker({
+      destinationId: destination.id,
+      createdAt: new Date(2026, 0, 18),
+    });
 
     const otherRecipient = userMaker();
-    inMemoryUsersRepository.items.push(otherRecipient);
+    await inMemoryUsersRepository.create(otherRecipient);
 
     const otherDestination = destinationMaker({
       recipientId: otherRecipient.id,
     });
-    inMemoryDestinationsRepository.items.push(otherDestination);
+    await inMemoryDestinationsRepository.create(otherDestination);
 
     const otherPacket = packetMaker({ destinationId: otherDestination.id });
-    inMemoryPacketsRepository.items.push(otherPacket);
+
+    await inMemoryPacketsRepository.create(packet2);
+    await inMemoryPacketsRepository.create(otherPacket);
+    await inMemoryPacketsRepository.create(packet1);
 
     const result = await sut.execute({
       recipientId: recipient.id.toString(),
@@ -65,13 +73,13 @@ describe("Packet List By Recipient Use Case", () => {
 
   it("should be able to fetch paginated recipient packets", async () => {
     const recipient = userMaker();
-    inMemoryUsersRepository.items.push(recipient);
+    await inMemoryUsersRepository.create(recipient);
 
     const destination = destinationMaker({ recipientId: recipient.id });
-    inMemoryDestinationsRepository.items.push(destination);
+    await inMemoryDestinationsRepository.create(destination);
 
     for (let i = 1; i <= 22; i++) {
-      inMemoryPacketsRepository.items.push(
+      await inMemoryPacketsRepository.create(
         packetMaker({ destinationId: destination.id }),
       );
     }

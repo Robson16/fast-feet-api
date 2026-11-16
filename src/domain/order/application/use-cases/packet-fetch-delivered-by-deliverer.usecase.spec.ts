@@ -27,26 +27,31 @@ describe("Fetch Packets Delivered by Deliverer", () => {
   it("should be able to fetch packets delivered by deliverer", async () => {
     const delivererId = new UniqueEntityID();
 
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        status: "DELIVERED",
-      }),
-    );
+    const packet1 = packetMaker({
+      delivererId,
+      createdAt: new Date(2026, 0, 20),
+      status: "WITHDRAWN",
+    });
+    const packet2 = packetMaker({
+      delivererId,
+      createdAt: new Date(2026, 0, 18),
+      status: "DELIVERED",
+    });
+    const packet3 = packetMaker({
+      delivererId,
+      createdAt: new Date(2026, 0, 16),
+      status: "DELIVERED",
+    });
+    const packet4 = packetMaker({
+      delivererId,
+      createdAt: new Date(2026, 0, 14),
+      status: "DELIVERED",
+    });
 
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        status: "DELIVERED",
-      }),
-    );
-
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        status: "DELIVERED",
-      }),
-    );
+    await inMemoryPacketsRepository.create(packet2);
+    await inMemoryPacketsRepository.create(packet1);
+    await inMemoryPacketsRepository.create(packet4);
+    await inMemoryPacketsRepository.create(packet3);
 
     const result = await sut.execute({
       delivererId: delivererId.toString(),
@@ -55,6 +60,11 @@ describe("Fetch Packets Delivered by Deliverer", () => {
 
     expect(result.isRight()).toBe(true);
     expect(result.value?.packets).toHaveLength(3);
+    expect(result.value?.packets).toEqual([
+      expect.objectContaining({ id: packet2.id }),
+      expect.objectContaining({ id: packet3.id }),
+      expect.objectContaining({ id: packet4.id }),
+    ]);
   });
 
   it("should be able to fetch packets delivered by deliverer and filtered by neighborhood", async () => {
@@ -66,37 +76,38 @@ describe("Fetch Packets Delivered by Deliverer", () => {
     await inMemoryDestinationsRepository.create(destination1);
     await inMemoryDestinationsRepository.create(destination2);
 
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        destinationId: destination1.id,
-        status: "DELIVERED",
-      }),
-    );
+    const packet1 = packetMaker({
+      delivererId,
+      destinationId: destination1.id,
+      createdAt: new Date(2026, 0, 20),
+      status: "DELIVERED",
+    });
 
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        destinationId: destination1.id,
-        status: "DELIVERED",
-      }),
-    );
+    const packet2 = packetMaker({
+      delivererId,
+      destinationId: destination1.id,
+      createdAt: new Date(2026, 0, 18),
+      status: "DELIVERED",
+    });
 
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        destinationId: destination2.id,
-        status: "DELIVERED",
-      }),
-    );
+    const packet3 = packetMaker({
+      delivererId,
+      destinationId: destination2.id,
+      createdAt: new Date(2026, 0, 20),
+      status: "DELIVERED",
+    });
 
-    await inMemoryPacketsRepository.create(
-      packetMaker({
-        delivererId,
-        destinationId: destination2.id,
-        status: "DELIVERED",
-      }),
-    );
+    const packet4 = packetMaker({
+      delivererId,
+      destinationId: destination2.id,
+      createdAt: new Date(2026, 0, 18),
+      status: "DELIVERED",
+    });
+
+    await inMemoryPacketsRepository.create(packet2);
+    await inMemoryPacketsRepository.create(packet4);
+    await inMemoryPacketsRepository.create(packet1);
+    await inMemoryPacketsRepository.create(packet3);
 
     const result = await sut.execute({
       delivererId: delivererId.toString(),
@@ -108,9 +119,9 @@ describe("Fetch Packets Delivered by Deliverer", () => {
 
     expect(result.isRight()).toBe(true);
     expect(result.value?.packets).toHaveLength(2);
-    expect(result.value?.packets).toMatchObject([
-      { destinationId: destination1.id },
-      { destinationId: destination1.id },
+    expect(result.value?.packets).toEqual([
+      expect.objectContaining({ id: packet1.id }),
+      expect.objectContaining({ id: packet2.id }),
     ]);
   });
 
