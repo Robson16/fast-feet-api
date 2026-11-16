@@ -22,6 +22,22 @@ export class InMemoryPacketsRepository implements PacketsRepository {
     private destinationsRepository: InMemoryDestinationsRepository,
   ) {}
 
+  private sortPackets(packets: Packet[]): Packet[] {
+    return [...packets].sort((first, second) => {
+      const timeDifference =
+        second.createdAt.getTime() - first.createdAt.getTime();
+
+      if (timeDifference !== 0) {
+        return timeDifference;
+      }
+
+      return first.id
+        .toString()
+        .toLowerCase()
+        .localeCompare(second.id.toString().toLowerCase());
+    });
+  }
+
   async findById(id: string) {
     const packet = this.items.find((item) => item.id.toString() === id);
 
@@ -94,13 +110,10 @@ export class InMemoryPacketsRepository implements PacketsRepository {
 
   async findManyByStatus(status: PacketStatus, { page }: PaginationParams) {
     const startIndex = (page - 1) * 20;
-    const endIndex = page * 20;
 
-    const packets = this.items
-      .filter((item) => item.status === status)
-      .slice(startIndex, endIndex);
+    const packets = this.items.filter((item) => item.status === status);
 
-    return packets;
+    return this.sortPackets(packets).slice(startIndex, startIndex + 20);
   }
 
   async findManyByStatusAndDelivererId(
@@ -110,7 +123,6 @@ export class InMemoryPacketsRepository implements PacketsRepository {
     filters?: PacketsFilters,
   ) {
     const startIndex = (page - 1) * 20;
-    const endIndex = page * 20;
 
     const packets = this.items.filter((item) => {
       const matchStatus = item.status === status;
@@ -130,7 +142,7 @@ export class InMemoryPacketsRepository implements PacketsRepository {
         }),
       );
 
-      return filteredPackets
+      const matchDestinations = filteredPackets
         .filter(({ destination }) =>
           destination
             ? (!filters.neighborhood ||
@@ -139,11 +151,15 @@ export class InMemoryPacketsRepository implements PacketsRepository {
               (!filters.state || destination.addressState === filters.state)
             : false,
         )
-        .map(({ packet }) => packet)
-        .slice(startIndex, endIndex);
+        .map(({ packet }) => packet);
+
+      return this.sortPackets(matchDestinations).slice(
+        startIndex,
+        startIndex + 20,
+      );
     }
 
-    return packets.slice(startIndex, endIndex);
+    return this.sortPackets(packets).slice(startIndex, startIndex + 20);
   }
 
   async findManyNearbyByStatusAndDelivererId(
@@ -186,12 +202,13 @@ export class InMemoryPacketsRepository implements PacketsRepository {
       }),
     );
 
-    const startIndex = (params.pagination.page - 1) * 20;
-    const endIndex = params.pagination.page * 20;
+    const validPackets = filteredPackets.filter(
+      (packet): packet is Packet => packet !== null,
+    );
 
-    return filteredPackets
-      .filter((packet): packet is Packet => packet !== null)
-      .slice(startIndex, endIndex);
+    const startIndex = (params.pagination.page - 1) * 20;
+
+    return this.sortPackets(validPackets).slice(startIndex, startIndex + 20);
   }
 
   async findManyByRecipientId(
@@ -199,7 +216,6 @@ export class InMemoryPacketsRepository implements PacketsRepository {
     { page }: PaginationParams,
   ): Promise<Packet[]> {
     const startIndex = (page - 1) * 20;
-    const endIndex = page * 20;
 
     const filteredPackets = await Promise.all(
       this.items.map(async (packet) => {
@@ -207,11 +223,7 @@ export class InMemoryPacketsRepository implements PacketsRepository {
           packet.destinationId.toString(),
         );
 
-        if (!destination) {
-          return null;
-        }
-
-        if (destination.recipientId.toString() === recipientId) {
+        if (destination && destination.recipientId.toString() === recipientId) {
           return packet;
         }
 
@@ -219,9 +231,11 @@ export class InMemoryPacketsRepository implements PacketsRepository {
       }),
     );
 
-    return filteredPackets
-      .filter((packet): packet is Packet => packet !== null)
-      .slice(startIndex, endIndex);
+    const validPackets = filteredPackets.filter(
+      (packet): packet is Packet => packet !== null,
+    );
+
+    return this.sortPackets(validPackets).slice(startIndex, startIndex + 20);
   }
 
   async create(packet: Packet) {

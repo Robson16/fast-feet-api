@@ -76,12 +76,10 @@ export class PrismaPacketsRepository implements PacketsRepository {
     { page }: PaginationParams,
   ): Promise<Packet[]> {
     const packets = await this.prisma.packet.findMany({
-      where: {
-        status,
-      },
+      where: { status },
       skip: (page - 1) * 20,
       take: 20,
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
     });
 
     return packets.map(PrismaPacketMapper.toDomain);
@@ -127,9 +125,7 @@ export class PrismaPacketsRepository implements PacketsRepository {
       where,
       skip: (page - 1) * 20,
       take: 20,
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
     });
 
     return packets.map(PrismaPacketMapper.toDomain);
@@ -146,6 +142,7 @@ export class PrismaPacketsRepository implements PacketsRepository {
       include: {
         destination: true,
       },
+      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
     });
 
     const nearbyPackets = packets.filter((packet) => {
@@ -183,7 +180,7 @@ export class PrismaPacketsRepository implements PacketsRepository {
       },
       skip: (page - 1) * 20,
       take: 20,
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
     });
 
     return packets.map(PrismaPacketMapper.toDomain);

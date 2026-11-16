@@ -1,11 +1,9 @@
-version: "3.8"
-
 services:
   postgres:
     container_name: fast-feet-api-pg
-    image: postgres
+    image: postgres:15
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: docker
@@ -14,4 +12,14 @@ services:
     volumes:
       - ./data/pg:/data/postgres
       - ./scripts/init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql
- 
+
+  localstack:
+    image: localstack/localstack:3.8.1
+    container_name: fast-feet-r2-local
+    ports:
+      - "4566:4566"
+    environment:
+      - SERVICES=s3
+    volumes:
+      - ./data/localstack:/var/lib/localstack
+      - ./scripts/init-s3.sh:/etc/localstack/init/ready.d/init-s3.sh

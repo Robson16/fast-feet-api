@@ -100,11 +100,11 @@ export class UserEditUseCase {
       ? await this.hashGenerator.hash(password)
       : user.password;
 
-    user.name = name || user.name;
-    user.cpf = cpf ? CPF.create(cpf) : user.cpf;
-    user.email = email || user.email;
+    user.name = name ?? user.name;
+    user.email = email ?? user.email;
     user.password = hashedPassword;
-    user.role = role ? Role.create(role) : user.role;
+    user.cpf = cpf !== undefined ? CPF.create(cpf) : user.cpf;
+    user.role = role !== undefined ? Role.create(role) : user.role;
 
     await this.usersRepository.save(user);
 

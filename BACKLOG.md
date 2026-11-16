@@ -164,7 +164,7 @@ Arquivos existentes: `src/infra/http/controllers/destination/destination-create.
 - [x] Manter `POST /destinations` administrativo e conectado ao caso de uso de criacao.
 - [x] Corrigir o controller de criacao para converter destinatario inexistente em `404` em vez de responder `400` generico.
 - [x] Criar `GET /destinations/:id`, `PATCH /destinations/:id` e `DELETE /destinations/:id`, usando os casos de uso existentes; registrar os controllers e providers em `src/infra/http/http.module.ts`.
-- [ ] Criar `DestinationListUseCase`, adicionar `findMany` a `DestinationsRepository` e implementar paginacao em `PrismaDestinationsRepository`; expor `GET /destinations?page=1` somente para ADMIN.
+- [ ] Criar `DestinationListUseCase`, adicionar `findMany` a `DestinationsRepository` e implementar paginacao em `PrismaDestinationsRepository`; expor `GET /destinations?page=1` somente para ADMIN. 
 - [x] Validar UUIDs, campos obrigatórios não vazios, ZIP/CEP conforme formato escolhido e latitude entre -90 e 90 / longitude entre -180 e 180; no caso de uso, confirmar que o usuário vinculado existe e tem papel `RECIPIENT` (hoje só é verificada a existência).
 - [x] Mapear destinatário inexistente para `404`, papel de destinatário inválido para `400` (ou `422`, se esse for o padrão definido) e testar ambos; não responder `400` sem mensagem para qualquer erro do caso de uso.
 - [ ] Criar presenter/DTO se necessario para nao retornar dados internos e manter formato de resposta consistente nas rotas.
