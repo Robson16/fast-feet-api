@@ -1,12 +1,7 @@
 import { z } from "zod";
 
 export const packetListByRecipientQuerySchema = z.object({
-  page: z
-    .string()
-    .optional()
-    .default("1")
-    .transform(Number)
-    .pipe(z.number().min(1)),
+  page: z.coerce.number().int().min(1).default(1),
 });
 
 export type PacketListByRecipientQuerySchema = z.infer<

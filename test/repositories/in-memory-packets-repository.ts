@@ -116,6 +116,19 @@ export class InMemoryPacketsRepository implements PacketsRepository {
     return this.sortPackets(packets).slice(startIndex, startIndex + 20);
   }
 
+  async findManyByDelivererId(
+    delivererId: string,
+    { page }: PaginationParams,
+  ): Promise<Packet[]> {
+    const startIndex = (page - 1) * 20;
+
+    const packets = this.items.filter((item) => {
+      return item.delivererId?.toString() === delivererId;
+    });
+
+    return this.sortPackets(packets).slice(startIndex, startIndex + 20);
+  }
+
   async findManyByStatusAndDelivererId(
     status: PacketStatus,
     delivererId: string,

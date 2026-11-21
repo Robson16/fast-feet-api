@@ -33,7 +33,7 @@ describe("List Destinations (E2E)", () => {
     await app.close();
   });
 
-  it("should be able to list destinations ordered by most recent as an ADMIN", async () => {
+  it("[GET] /destinations - should be able to list destinations ordered by most recent as an ADMIN", async () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),
     });
@@ -46,6 +46,10 @@ describe("List Destinations (E2E)", () => {
       role: Role.create("RECIPIENT"),
     });
 
+    const destination1 = await destinationFactory.makePrismaDestination({
+      recipientId: recipient.id,
+      createdAt: new Date(2026, 0, 15),
+    });
     const destination3 = await destinationFactory.makePrismaDestination({
       recipientId: recipient.id,
       createdAt: new Date(2026, 0, 20),
@@ -54,13 +58,9 @@ describe("List Destinations (E2E)", () => {
       recipientId: recipient.id,
       createdAt: new Date(2026, 0, 18),
     });
-    const destination1 = await destinationFactory.makePrismaDestination({
-      recipientId: recipient.id,
-      createdAt: new Date(2026, 0, 15),
-    });
 
     const response = await request(app.getHttpServer())
-      .get(`/destinations?page=1`)
+      .get("/destinations?page=1")
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.statusCode).toBe(200);
@@ -75,7 +75,7 @@ describe("List Destinations (E2E)", () => {
     });
   });
 
-  it("should be able to fetch paginated destinations on page 2", async () => {
+  it("[GET] /destinations - should be able to fetch paginated destinations on page 2", async () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),
     });
@@ -97,7 +97,7 @@ describe("List Destinations (E2E)", () => {
     );
 
     const response = await request(app.getHttpServer())
-      .get(`/destinations?page=2`)
+      .get("/destinations?page=2")
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.statusCode).toBe(200);
@@ -108,7 +108,7 @@ describe("List Destinations (E2E)", () => {
     expect(response.body.destinations).toHaveLength(3);
   });
 
-  it("should return an empty list when there are no destinations on the requested page", async () => {
+  it("[GET] /destinations - should return an empty list when there are no destinations on the requested page", async () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),
     });
@@ -118,7 +118,7 @@ describe("List Destinations (E2E)", () => {
     });
 
     const response = await request(app.getHttpServer())
-      .get(`/destinations?page=1`)
+      .get("/destinations?page=1")
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.statusCode).toBe(200);
@@ -129,31 +129,34 @@ describe("List Destinations (E2E)", () => {
     expect(response.body.destinations).toHaveLength(0);
   });
 
-  it("should return 400 when page query parameter is invalid", async () => {
-    const admin = await userFactory.makePrismaUser({
-      role: Role.create("ADMIN"),
-    });
-    const accessToken = jwt.sign({
-      sub: admin.id.toString(),
-      role: admin.role.value,
-    });
+  it.each(["0", "-1", "1.5", "one"])(
+    "[GET] /destinations - should return 400 when page query parameter is invalid (%s)",
+    async (invalidPage) => {
+      const admin = await userFactory.makePrismaUser({
+        role: Role.create("ADMIN"),
+      });
+      const accessToken = jwt.sign({
+        sub: admin.id.toString(),
+        role: admin.role.value,
+      });
 
-    const response = await request(app.getHttpServer())
-      .get(`/destinations?page=one`)
-      .set("Authorization", `Bearer ${accessToken}`);
+      const response = await request(app.getHttpServer())
+        .get(`/destinations?page=${invalidPage}`)
+        .set("Authorization", `Bearer ${accessToken}`);
 
-    expect(response.statusCode).toBe(400);
-  });
+      expect(response.statusCode).toBe(400);
+    },
+  );
 
-  it("should return 401 when unauthenticated", async () => {
+  it("[GET] /destinations - should return 401 when unauthenticated", async () => {
     const response = await request(app.getHttpServer()).get(
-      `/destinations?page=1`,
+      "/destinations?page=1",
     );
 
     expect(response.statusCode).toBe(401);
   });
 
-  it("should return 403 when authenticated as a DELIVERER", async () => {
+  it("[GET] /destinations - should return 403 when authenticated as a DELIVERER", async () => {
     const deliverer = await userFactory.makePrismaUser({
       role: Role.create("DELIVERER"),
     });
@@ -163,13 +166,13 @@ describe("List Destinations (E2E)", () => {
     });
 
     const response = await request(app.getHttpServer())
-      .get(`/destinations?page=1`)
+      .get("/destinations?page=1")
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.statusCode).toBe(403);
   });
 
-  it("should return 403 when authenticated as a RECIPIENT", async () => {
+  it("[GET] /destinations - should return 403 when authenticated as a RECIPIENT", async () => {
     const recipient = await userFactory.makePrismaUser({
       role: Role.create("RECIPIENT"),
     });
@@ -179,7 +182,7 @@ describe("List Destinations (E2E)", () => {
     });
 
     const response = await request(app.getHttpServer())
-      .get(`/destinations?page=1`)
+      .get("/destinations?page=1")
       .set("Authorization", `Bearer ${accessToken}`);
 
     expect(response.statusCode).toBe(403);

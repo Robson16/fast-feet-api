@@ -114,11 +114,11 @@ Arquivos existentes: `src/infra/http/controllers/packet/packet-list-by-recipient
 
 - [x] Manter `GET /packets` para `RECIPIENT`, derivando `recipientId` de `@CurrentUser()` e paginando em paginas de 20.
 - [x] Manter teste que confirma que um destinatario nao recebe pacotes de outro destinatario.
-- [ ] Criar `src/domain/order/application/use-cases/packet-list-by-deliverer.usecase.ts`; buscar somente pacotes cujo `delivererId` seja o ID autenticado.
-- [ ] Criar `src/infra/http/controllers/packet/packet-list-by-deliverer.controller.ts` e schema de paginacao; usar `@Roles("DELIVERER")` e nunca aceitar `delivererId` no query/body.
-- [ ] Registrar controller e caso de uso em `src/infra/http/http.module.ts`.
-- [ ] Criar `src/infra/http/controllers/packet/packet-list-by-deliverer.controller.e2e-spec.ts` cobrindo paginacao, sem token, papel incorreto e isolamento entre entregadores.
-- [ ] Corrigir `src/infra/http/schemas/packet-list-by-recipient.schema.ts` para aceitar somente página inteira finita maior ou igual a 1; cobrir `page=0`, decimal, texto e valor ausente nos testes E2E.
+- [x] Criar `src/domain/order/application/use-cases/packet-list-by-deliverer.usecase.ts`; buscar somente pacotes cujo `delivererId` seja o ID autenticado.
+- [x] Criar `src/infra/http/controllers/packet/packet-list-by-deliverer.controller.ts` e schema de paginacao; usar `@Roles("DELIVERER")` e nunca aceitar `delivererId` no query/body.
+- [x] Registrar controller e caso de uso em `src/infra/http/http.module.ts`.
+- [x] Criar `src/infra/http/controllers/packet/packet-list-by-deliverer.controller.e2e-spec.ts` cobrindo paginacao, sem token, papel incorreto e isolamento entre entregadores.
+- [x] Corrigir `src/infra/http/schemas/packet-list-by-recipient.schema.ts` para aceitar somente página inteira finita maior ou igual a 1; cobrir `page=0`, decimal, texto e valor ausente nos testes E2E.
 
 Critério de aceite: destinatario e entregador veem apenas seus proprios pacotes, com paginacao validada e identidade sempre derivada do JWT.
 
@@ -164,12 +164,12 @@ Arquivos existentes: `src/infra/http/controllers/destination/destination-create.
 - [x] Manter `POST /destinations` administrativo e conectado ao caso de uso de criacao.
 - [x] Corrigir o controller de criacao para converter destinatario inexistente em `404` em vez de responder `400` generico.
 - [x] Criar `GET /destinations/:id`, `PATCH /destinations/:id` e `DELETE /destinations/:id`, usando os casos de uso existentes; registrar os controllers e providers em `src/infra/http/http.module.ts`.
-- [ ] Criar `DestinationListUseCase`, adicionar `findMany` a `DestinationsRepository` e implementar paginacao em `PrismaDestinationsRepository`; expor `GET /destinations?page=1` somente para ADMIN. 
+- [x] Criar `DestinationListUseCase`, adicionar `findMany` a `DestinationsRepository` e implementar paginacao em `PrismaDestinationsRepository`; expor `GET /destinations?page=1` somente para ADMIN. 
 - [x] Validar UUIDs, campos obrigatórios não vazios, ZIP/CEP conforme formato escolhido e latitude entre -90 e 90 / longitude entre -180 e 180; no caso de uso, confirmar que o usuário vinculado existe e tem papel `RECIPIENT` (hoje só é verificada a existência).
 - [x] Mapear destinatário inexistente para `404`, papel de destinatário inválido para `400` (ou `422`, se esse for o padrão definido) e testar ambos; não responder `400` sem mensagem para qualquer erro do caso de uso.
 - [ ] Criar presenter/DTO se necessario para nao retornar dados internos e manter formato de resposta consistente nas rotas.
 - [x] Criar E2E por rota cobrindo sucesso, payload invalido, destinatario/destino inexistente, `401`, `403`; documentar todos os casos no Swagger.
-- [ ] Acrescentar E2E para cobrir paginação e comportamento da listagem em `DestinationListController`.
+- [x] Acrescentar E2E para cobrir paginação e comportamento da listagem em `DestinationListController`.
 
 Critério de aceite: ADMIN consegue criar, listar, consultar, editar e excluir destino; demais papeis nao administram enderecos; entradas e respostas estao documentadas e testadas.
 

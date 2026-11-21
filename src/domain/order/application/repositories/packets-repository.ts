@@ -25,6 +25,11 @@ export abstract class PacketsRepository {
   abstract findDetailsById(id: string): Promise<PacketDetails | null>;
   abstract findAwaitingWithdrawalById(id: string): Promise<Packet | null>;
 
+  abstract findManyByDelivererId(
+    delivererId: string,
+    pagination: PaginationParams,
+  ): Promise<Packet[]>;
+
   abstract findManyByStatus(
     status: PacketStatus,
     pagination: PaginationParams,

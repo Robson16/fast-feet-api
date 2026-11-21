@@ -4,8 +4,6 @@ import { Either, right } from "@/core/either";
 import { PacketsRepository } from "@/domain/order/application/repositories/packets-repository";
 import { Packet } from "@/domain/order/enterprise/entities/packet";
 
-export const PACKETS_PER_PAGE = 20;
-
 interface PacketListByRecipientUseCaseRequest {
   page: number;
   recipientId: string;

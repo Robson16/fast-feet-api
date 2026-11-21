@@ -232,6 +232,46 @@ describe("PrismaPacketsRepository (E2E)", () => {
     ).toBe(true);
   });
 
+  test("finds many by deliverer id", async () => {
+    const deliverer = await userFactory.makePrismaUser({
+      role: Role.create("DELIVERER"),
+    });
+    const recipient = await userFactory.makePrismaUser({
+      role: Role.create("RECIPIENT"),
+    });
+    const destination = await destinationFactory.makePrismaDestination({
+      recipientId: recipient.id,
+    });
+
+    const packet1 = packetMaker({
+      delivererId: deliverer.id,
+      destinationId: destination.id,
+      status: "WITHDRAWN",
+    });
+    const packet2 = packetMaker({
+      delivererId: deliverer.id,
+      destinationId: destination.id,
+      status: "WITHDRAWN",
+    });
+    await packetsRepository.create(packet1);
+    await packetsRepository.create(packet2);
+
+    const packets = await packetsRepository.findManyByDelivererId(
+      deliverer.id.toString(),
+      {
+        page: 1,
+      },
+    );
+
+    expect(packets).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          delivererId: deliverer.id,
+        }),
+      ]),
+    );
+  });
+
   test("finds many by status", async () => {
     const recipient = await userFactory.makePrismaUser({
       role: Role.create("RECIPIENT"),

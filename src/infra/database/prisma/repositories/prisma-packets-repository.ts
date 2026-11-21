@@ -71,6 +71,20 @@ export class PrismaPacketsRepository implements PacketsRepository {
     return PrismaPacketMapper.toDomain(packet);
   }
 
+  async findManyByDelivererId(
+    delivererId: string,
+    { page }: PaginationParams,
+  ): Promise<Packet[]> {
+    const packets = await this.prisma.packet.findMany({
+      where: { delivererId },
+      skip: (page - 1) * 20,
+      take: 20,
+      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+    });
+
+    return packets.map(PrismaPacketMapper.toDomain);
+  }
+
   async findManyByStatus(
     status: PacketStatus,
     { page }: PaginationParams,

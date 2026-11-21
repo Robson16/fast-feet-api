@@ -5,6 +5,8 @@ import { InMemoryDestinationsRepository } from "test/repositories/in-memory-dest
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
+import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
+
 import { PacketListByRecipientUseCase } from "./packet-list-by-recipient.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
@@ -26,7 +28,7 @@ describe("Packet List By Recipient Use Case", () => {
   });
 
   it("should be able to list recent packets for a specific recipient", async () => {
-    const recipient = userMaker();
+    const recipient = userMaker({ role: Role.create("RECIPIENT") });
     await inMemoryUsersRepository.create(recipient);
 
     const destination = destinationMaker({ recipientId: recipient.id });
@@ -41,7 +43,7 @@ describe("Packet List By Recipient Use Case", () => {
       createdAt: new Date(2026, 0, 18),
     });
 
-    const otherRecipient = userMaker();
+    const otherRecipient = userMaker({ role: Role.create("RECIPIENT") });
     await inMemoryUsersRepository.create(otherRecipient);
 
     const otherDestination = destinationMaker({
@@ -71,8 +73,8 @@ describe("Packet List By Recipient Use Case", () => {
     }
   });
 
-  it("should be able to fetch paginated recipient packets", async () => {
-    const recipient = userMaker();
+  it("should be able to fetch paginated packets by recipient ", async () => {
+    const recipient = userMaker({ role: Role.create("RECIPIENT") });
     await inMemoryUsersRepository.create(recipient);
 
     const destination = destinationMaker({ recipientId: recipient.id });

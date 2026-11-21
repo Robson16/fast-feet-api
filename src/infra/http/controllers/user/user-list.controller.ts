@@ -10,6 +10,7 @@ import {
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
+import { DEFAULT_PER_PAGE } from "@/core/repositories/pagination-params";
 import { UserListUseCase } from "@/domain/user/application/use-cases/user-list.usecase";
 import { Roles } from "@/infra/auth/roles-decorator";
 import { UserListResponseDto } from "@/infra/http/dtos/user-response.dto";
@@ -19,8 +20,6 @@ import {
   UserListQuerySchema,
   userListQuerySchema,
 } from "@/infra/http/schemas/user-list.schema";
-
-export const USERS_PER_PAGE = 20;
 
 @Controller("/users")
 @ApiTags("Users")
@@ -61,7 +60,7 @@ export class UserListController {
     return {
       users: result.value.users.map(UserPresenter.toHTTP),
       page: query.page,
-      perPage: USERS_PER_PAGE,
+      perPage: DEFAULT_PER_PAGE,
     };
   }
 }

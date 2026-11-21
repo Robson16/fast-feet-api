@@ -10,6 +10,7 @@ import {
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
+import { DEFAULT_PER_PAGE } from "@/core/repositories/pagination-params";
 import { DestinationListUseCase } from "@/domain/order/application/use-cases/destination-list.usecase";
 import { Roles } from "@/infra/auth/roles-decorator";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
@@ -18,8 +19,6 @@ import {
   DestinationListQuerySchema,
   destinationListQuerySchema,
 } from "@/infra/http/schemas/destination-list.schema";
-
-export const DESTINATIONS_PER_PAGE = 20;
 
 @Controller("/destinations")
 @ApiTags("Destinations")
@@ -51,7 +50,7 @@ export class DestinationListController {
           items: { type: "object" },
         },
         page: { type: "number", example: 1 },
-        perPage: { type: "number", example: DESTINATIONS_PER_PAGE },
+        perPage: { type: "number", example: DEFAULT_PER_PAGE },
       },
     },
   })
@@ -77,7 +76,7 @@ export class DestinationListController {
     return {
       destinations: result.value.destinations.map(DestinationPresenter.toHTTP),
       page: query.page,
-      perPage: DESTINATIONS_PER_PAGE,
+      perPage: DEFAULT_PER_PAGE,
     };
   }
 }

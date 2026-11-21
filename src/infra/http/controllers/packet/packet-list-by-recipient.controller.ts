@@ -1,18 +1,17 @@
 import { BadRequestException, Controller, Get, Query } from "@nestjs/common";
 import {
+  ApiBadRequestResponse,
   ApiBearerAuth,
   ApiForbiddenResponse,
+  ApiOkResponse,
   ApiOperation,
   ApiQuery,
-  ApiResponse,
   ApiTags,
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
-import {
-  PacketListByRecipientUseCase,
-  PACKETS_PER_PAGE,
-} from "@/domain/order/application/use-cases/packet-list-by-recipient.usecase";
+import { DEFAULT_PER_PAGE } from "@/core/repositories/pagination-params";
+import { PacketListByRecipientUseCase } from "@/domain/order/application/use-cases/packet-list-by-recipient.usecase";
 import { CurrentUser } from "@/infra/auth/current-user-decorator";
 import { UserPayload } from "@/infra/auth/jwt.strategy";
 import { Roles } from "@/infra/auth/roles-decorator";
@@ -32,17 +31,32 @@ export class PacketListByRecipientController {
   @Get()
   @Roles("RECIPIENT")
   @ApiOperation({
-    summary: "List user's parcels",
+    summary: "List recipient's packets",
     description:
-      "Returns a paginated list of parcels belonging to the authenticated recipient.",
+      "Returns a paginated list of packets belonging to the authenticated recipient. Requires RECIPIENT role.",
   })
   @ApiQuery({
     name: "page",
     required: false,
     type: Number,
-    description: "Page number (defaults to 1)",
+    description: "Page number for pagination (minimum 1, defaults to 1).",
+    example: 1,
   })
-  @ApiResponse({ status: 200, description: "Parcels retrieved successfully." })
+  @ApiOkResponse({
+    description: "Paginated list of packets returned successfully.",
+    schema: {
+      type: "object",
+      properties: {
+        packets: {
+          type: "array",
+          items: { type: "object" },
+        },
+        page: { type: "number", example: 1 },
+        perPage: { type: "number", example: DEFAULT_PER_PAGE },
+      },
+    },
+  })
+  @ApiBadRequestResponse({ description: "Invalid query parameters." })
   @ApiUnauthorizedResponse({ description: "Authentication is required." })
   @ApiForbiddenResponse({ description: "Requires RECIPIENT role." })
   async handle(
@@ -64,7 +78,7 @@ export class PacketListByRecipientController {
     return {
       packets: packets.map(PacketPresenter.toHTTP),
       page: query.page,
-      perPage: PACKETS_PER_PAGE,
+      perPage: DEFAULT_PER_PAGE,
     };
   }
 }
