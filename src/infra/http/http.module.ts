@@ -4,6 +4,7 @@ import { DestinationCreateUseCase } from "@/domain/order/application/use-cases/d
 import { DestinationDeleteUseCase } from "@/domain/order/application/use-cases/destination-delete.usecase";
 import { DestinationEditUseCase } from "@/domain/order/application/use-cases/destination-edit.usecase";
 import { DestinationGetUseCase } from "@/domain/order/application/use-cases/destination-get.usecase";
+import { DestinationListUseCase } from "@/domain/order/application/use-cases/destination-list.usecase";
 import { PacketListByRecipientUseCase } from "@/domain/order/application/use-cases/packet-list-by-recipient.usecase";
 import { UserAuthenticateUseCase } from "@/domain/user/application/use-cases/user-authenticate.usecase";
 import { UserChangePasswordUseCase } from "@/domain/user/application/use-cases/user-change-password.usecase.ts";
@@ -22,6 +23,7 @@ import { DestinationCreateController } from "./controllers/destination/destinati
 import { DestinationDeleteController } from "./controllers/destination/destination-delete.controller";
 import { DestinationEditController } from "./controllers/destination/destination-edit.controller";
 import { DestinationGetController } from "./controllers/destination/destination-get.controller";
+import { DestinationListController } from "./controllers/destination/destination-list.controller";
 import { PacketListByRecipientController } from "./controllers/packet/packet-list-by-recipient.controller";
 import { ProfileChangePasswordController } from "./controllers/profile/profile-change-password.controller";
 import { ProfileDeleteController } from "./controllers/profile/profile-delete.controller";
@@ -54,6 +56,7 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     DestinationGetController,
     DestinationDeleteController,
     DestinationEditController,
+    DestinationListController,
   ],
   providers: [
     UserRegisterUseCase,
@@ -69,6 +72,7 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     DestinationGetUseCase,
     DestinationDeleteUseCase,
     DestinationEditUseCase,
+    DestinationListUseCase,
   ],
 })
 export class HttpModule {}
