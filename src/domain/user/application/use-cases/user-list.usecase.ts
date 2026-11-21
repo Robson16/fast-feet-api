@@ -4,8 +4,6 @@ import { Either, right } from "@/core/either";
 import { UsersRepository } from "@/domain/user/application/repositories/users-repository";
 import { User } from "@/domain/user/enterprise/entities/user";
 
-export const USERS_PER_PAGE = 20;
-
 interface UserListUseCaseRequest {
   page: number;
 }

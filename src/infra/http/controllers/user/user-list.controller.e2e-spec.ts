@@ -37,13 +37,14 @@ describe("GET /users (E2E)", () => {
     const admin = await userFactory.makePrismaUser({
       role: Role.create("ADMIN"),
     });
-    await Promise.all(
-      Array.from({ length: 20 }, () => userFactory.makePrismaUser()),
-    );
     const accessToken = jwt.sign({
       sub: admin.id.toString(),
       role: admin.role.value,
     });
+
+    await Promise.all(
+      Array.from({ length: 20 }, () => userFactory.makePrismaUser()),
+    );
 
     const response = await request(app.getHttpServer())
       .get("/users?page=1")

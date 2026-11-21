@@ -10,10 +10,7 @@ import {
   ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
 
-import {
-  UserListUseCase,
-  USERS_PER_PAGE,
-} from "@/domain/user/application/use-cases/user-list.usecase";
+import { UserListUseCase } from "@/domain/user/application/use-cases/user-list.usecase";
 import { Roles } from "@/infra/auth/roles-decorator";
 import { UserListResponseDto } from "@/infra/http/dtos/user-response.dto";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
@@ -21,7 +18,9 @@ import { UserPresenter } from "@/infra/http/presenters/user-presenter";
 import {
   UserListQuerySchema,
   userListQuerySchema,
-} from "@/infra/http/schemas/user-list-query.schema";
+} from "@/infra/http/schemas/user-list.schema";
+
+export const USERS_PER_PAGE = 20;
 
 @Controller("/users")
 @ApiTags("Users")

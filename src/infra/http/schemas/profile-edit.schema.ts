@@ -1,14 +1,14 @@
 import type { ApiBodyOptions } from "@nestjs/swagger";
 import { z } from "zod";
 
-export const editProfileBodySchema = z.object({
+export const profileEditBodySchema = z.object({
   name: z.string().optional(),
   email: z.string().email().optional(),
 });
 
-export type EditProfileBodySchema = z.infer<typeof editProfileBodySchema>;
+export type ProfileEditBodySchema = z.infer<typeof profileEditBodySchema>;
 
-export const editProfileApiBody: ApiBodyOptions = {
+export const profileEditApiBody: ApiBodyOptions = {
   schema: {
     type: "object",
     properties: {

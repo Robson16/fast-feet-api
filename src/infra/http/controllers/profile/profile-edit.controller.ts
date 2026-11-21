@@ -25,9 +25,9 @@ import { CurrentUser } from "@/infra/auth/current-user-decorator";
 import { UserPayload } from "@/infra/auth/jwt.strategy";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
 import {
-  editProfileApiBody,
-  EditProfileBodySchema,
-  editProfileBodySchema,
+  profileEditApiBody,
+  ProfileEditBodySchema,
+  profileEditBodySchema,
 } from "@/infra/http/schemas/profile-edit.schema";
 
 @Controller("/profile")
@@ -42,13 +42,13 @@ export class ProfileEditController {
     summary: "Edit own profile",
     description: "Updates the authenticated user's details.",
   })
-  @ApiBody(editProfileApiBody)
+  @ApiBody(profileEditApiBody)
   @ApiNoContentResponse({ description: "Profile updated successfully." })
   @ApiBadRequestResponse({ description: "Invalid data." })
   async handle(
     @CurrentUser() user: UserPayload,
-    @Body(new ZodValidationPipe(editProfileBodySchema))
-    body: EditProfileBodySchema,
+    @Body(new ZodValidationPipe(profileEditBodySchema))
+    body: ProfileEditBodySchema,
   ) {
     const { name, email } = body;
 

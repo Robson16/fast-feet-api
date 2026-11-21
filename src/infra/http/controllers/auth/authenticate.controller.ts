@@ -22,10 +22,10 @@ import { Public } from "@/infra/auth/public";
 import { AuthenticateResponseDto } from "@/infra/http/dtos/authenticate-response.dto";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
 import {
-  userAuthenticateApiBody,
-  UserAuthenticateBodySchema,
-  userAuthenticateBodySchema,
-} from "@/infra/http/schemas/authenticate-request.schema";
+  authenticateApiBody,
+  AuthenticateBodySchema,
+  authenticateBodySchema,
+} from "@/infra/http/schemas/authenticate.schema";
 
 @Controller("/auth")
 @ApiTags("Authentication")
@@ -40,15 +40,15 @@ export class UserAuthenticateController {
     description:
       "Authenticates a user with CPF and password, returning a JWT token.",
   })
-  @ApiBody(userAuthenticateApiBody)
+  @ApiBody(authenticateApiBody)
   @ApiOkResponse({
     description: "Authentication successful.",
     type: AuthenticateResponseDto,
   })
   @ApiUnauthorizedResponse({ description: "Wrong credentials." })
   @ApiBadRequestResponse({ description: "Invalid input data." })
-  @UsePipes(new ZodValidationPipe(userAuthenticateBodySchema))
-  async handle(@Body() body: UserAuthenticateBodySchema) {
+  @UsePipes(new ZodValidationPipe(authenticateBodySchema))
+  async handle(@Body() body: AuthenticateBodySchema) {
     const { cpf, password } = body;
 
     const result = await this.userAuthenticate.execute({

@@ -3,7 +3,7 @@ import { z } from "zod";
 
 import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
 
-export const editUserBodySchema = z.object({
+export const userEditBodySchema = z.object({
   name: z.string().optional(),
   cpf: z.string().optional(),
   email: z.string().email().optional(),
@@ -13,9 +13,9 @@ export const editUserBodySchema = z.object({
     .optional(),
 });
 
-export type EditUserBodySchema = z.infer<typeof editUserBodySchema>;
+export type UserEditBodySchema = z.infer<typeof userEditBodySchema>;
 
-export const editUserApiBody: ApiBodyOptions = {
+export const userEditApiBody: ApiBodyOptions = {
   schema: {
     type: "object",
     properties: {

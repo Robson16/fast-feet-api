@@ -28,9 +28,9 @@ import { UserEditUseCase } from "@/domain/user/application/use-cases/user-edit.u
 import { Roles } from "@/infra/auth/roles-decorator";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
 import {
-  editUserApiBody,
-  EditUserBodySchema,
-  editUserBodySchema,
+  userEditApiBody,
+  UserEditBodySchema,
+  userEditBodySchema,
 } from "@/infra/http/schemas/user-edit.schema";
 
 @Controller("/users/:id")
@@ -46,14 +46,14 @@ export class UserEditController {
     summary: "Edit a user",
     description: "Updates user details and role. Requires ADMIN role.",
   })
-  @ApiBody(editUserApiBody)
+  @ApiBody(userEditApiBody)
   @ApiNoContentResponse({ description: "User updated successfully." })
   @ApiBadRequestResponse({ description: "Invalid data or CPF." })
   @ApiNotFoundResponse({ description: "User not found." })
   @ApiConflictResponse({ description: "CPF or email is already in use." })
   async handle(
     @Param("id", new ParseUUIDPipe({ version: "4" })) id: string,
-    @Body(new ZodValidationPipe(editUserBodySchema)) body: EditUserBodySchema,
+    @Body(new ZodValidationPipe(userEditBodySchema)) body: UserEditBodySchema,
   ) {
     const { name, cpf, email, role } = body;
 

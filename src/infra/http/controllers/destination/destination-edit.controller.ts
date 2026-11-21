@@ -26,9 +26,9 @@ import { DestinationEditUseCase } from "@/domain/order/application/use-cases/des
 import { Roles } from "@/infra/auth/roles-decorator";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
 import {
-  DestinationEditSchema,
-  destinationEditSchema,
-  editDestinationApiBody,
+  destinationEditApiBody,
+  DestinationEditBodySchema,
+  destinationEditBodySchema,
 } from "@/infra/http/schemas/destination-edit.schema";
 
 @Controller("/destinations/:id")
@@ -45,7 +45,7 @@ export class DestinationEditController {
     description: "Updates destination details. Requires ADMIN role.",
   })
   @ApiParam({ name: "id", description: "Destination UUID", format: "uuid" })
-  @ApiBody(editDestinationApiBody)
+  @ApiBody(destinationEditApiBody)
   @ApiNoContentResponse({ description: "Destination updated successfully." })
   @ApiBadRequestResponse({ description: "Invalid data or UUID format." })
   @ApiUnauthorizedResponse({ description: "Authentication is required." })
@@ -53,8 +53,8 @@ export class DestinationEditController {
   @ApiNotFoundResponse({ description: "Destination not found." })
   async handle(
     @Param("id", new ParseUUIDPipe({ version: "4" })) id: string,
-    @Body(new ZodValidationPipe(destinationEditSchema))
-    body: DestinationEditSchema,
+    @Body(new ZodValidationPipe(destinationEditBodySchema))
+    body: DestinationEditBodySchema,
   ) {
     const {
       title,

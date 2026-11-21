@@ -1,16 +1,14 @@
 import type { ApiBodyOptions } from "@nestjs/swagger";
 import { z } from "zod";
 
-export const userAuthenticateBodySchema = z.object({
+export const authenticateBodySchema = z.object({
   cpf: z.string(),
   password: z.string(),
 });
 
-export type UserAuthenticateBodySchema = z.infer<
-  typeof userAuthenticateBodySchema
->;
+export type AuthenticateBodySchema = z.infer<typeof authenticateBodySchema>;
 
-export const userAuthenticateApiBody: ApiBodyOptions = {
+export const authenticateApiBody: ApiBodyOptions = {
   schema: {
     type: "object",
     required: ["cpf", "password"],

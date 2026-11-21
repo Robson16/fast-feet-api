@@ -22,8 +22,8 @@ import { DestinationCreateUseCase } from "@/domain/order/application/use-cases/d
 import { Roles } from "@/infra/auth/roles-decorator";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
 import {
-  DestinationCreateSchema,
-  destinationCreateSchema,
+  DestinationCreateBodySchema,
+  destinationCreateBodySchema,
 } from "@/infra/http/schemas/destination-create.schema";
 
 @Controller("/destinations")
@@ -49,8 +49,8 @@ export class DestinationCreateController {
   @ApiForbiddenResponse({ description: "Requires ADMIN role." })
   @ApiNotFoundResponse({ description: "Recipient not found." })
   async handle(
-    @Body(new ZodValidationPipe(destinationCreateSchema))
-    body: DestinationCreateSchema,
+    @Body(new ZodValidationPipe(destinationCreateBodySchema))
+    body: DestinationCreateBodySchema,
   ) {
     const result = await this.destinationCreate.execute(body);
 

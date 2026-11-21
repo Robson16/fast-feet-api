@@ -1,7 +1,7 @@
 import type { ApiBodyOptions } from "@nestjs/swagger";
 import { z } from "zod";
 
-export const destinationEditSchema = z.object({
+export const destinationEditBodySchema = z.object({
   title: z.string().min(1, "Title is required").optional(),
   addressStreet: z.string().min(1, "Street is required").optional(),
   addressNumber: z.string().min(1, "Number is required").optional(),
@@ -18,9 +18,11 @@ export const destinationEditSchema = z.object({
   longitude: z.number().min(-180).max(180).optional(),
 });
 
-export type DestinationEditSchema = z.infer<typeof destinationEditSchema>;
+export type DestinationEditBodySchema = z.infer<
+  typeof destinationEditBodySchema
+>;
 
-export const editDestinationApiBody: ApiBodyOptions = {
+export const destinationEditApiBody: ApiBodyOptions = {
   schema: {
     type: "object",
     properties: {

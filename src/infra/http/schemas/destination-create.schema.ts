@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const destinationCreateSchema = z.object({
+export const destinationCreateBodySchema = z.object({
   recipientId: z.string().uuid(),
   title: z.string().min(1, "Title is required"),
   addressStreet: z.string().min(1, "Street is required"),
@@ -15,4 +15,6 @@ export const destinationCreateSchema = z.object({
   longitude: z.number().min(-180).max(180),
 });
 
-export type DestinationCreateSchema = z.infer<typeof destinationCreateSchema>;
+export type DestinationCreateBodySchema = z.infer<
+  typeof destinationCreateBodySchema
+>;
