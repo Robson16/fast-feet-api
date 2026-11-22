@@ -5,6 +5,8 @@ import { DestinationDeleteUseCase } from "@/domain/order/application/use-cases/d
 import { DestinationEditUseCase } from "@/domain/order/application/use-cases/destination-edit.usecase";
 import { DestinationGetUseCase } from "@/domain/order/application/use-cases/destination-get.usecase";
 import { DestinationListUseCase } from "@/domain/order/application/use-cases/destination-list.usecase";
+import { PacketCreateUseCase } from "@/domain/order/application/use-cases/packet-create.usecase";
+import { PacketDeleteUseCase } from "@/domain/order/application/use-cases/packet-delete.usecase";
 import { PacketListByDelivererUseCase } from "@/domain/order/application/use-cases/packet-list-by-deliverer.usecase";
 import { PacketListByRecipientUseCase } from "@/domain/order/application/use-cases/packet-list-by-recipient.usecase";
 import { UserAuthenticateUseCase } from "@/domain/user/application/use-cases/user-authenticate.usecase";
@@ -25,6 +27,8 @@ import { DestinationDeleteController } from "./controllers/destination/destinati
 import { DestinationEditController } from "./controllers/destination/destination-edit.controller";
 import { DestinationGetController } from "./controllers/destination/destination-get.controller";
 import { DestinationListController } from "./controllers/destination/destination-list.controller";
+import { PacketCreateController } from "./controllers/packet/packet-create.controller";
+import { PacketDeleteController } from "./controllers/packet/packet-delete.controller";
 import { PacketListByDelivererController } from "./controllers/packet/packet-list-by-deliverer.controller";
 import { PacketListByRecipientController } from "./controllers/packet/packet-list-by-recipient.controller";
 import { ProfileChangePasswordController } from "./controllers/profile/profile-change-password.controller";
@@ -53,8 +57,10 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     UserResetPasswordController,
     ProfileDeleteController,
     UserDeleteController,
+    PacketCreateController,
     PacketListByRecipientController,
     PacketListByDelivererController,
+    PacketDeleteController,
     DestinationCreateController,
     DestinationGetController,
     DestinationDeleteController,
@@ -70,8 +76,10 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     UserChangePasswordUseCase,
     UserResetPasswordUseCase,
     UserDeleteUseCase,
+    PacketCreateUseCase,
     PacketListByRecipientUseCase,
     PacketListByDelivererUseCase,
+    PacketDeleteUseCase,
     DestinationCreateUseCase,
     DestinationGetUseCase,
     DestinationDeleteUseCase,

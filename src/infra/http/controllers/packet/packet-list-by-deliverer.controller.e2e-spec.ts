@@ -65,7 +65,6 @@ describe("Packet List By Deliverer Controller (E2E)", () => {
       createdAt: new Date(2026, 0, 20),
     });
 
-    // Pacote de outro entregador (não deve aparecer)
     const otherDeliverer = await userFactory.makePrismaUser({
       role: Role.create("DELIVERER"),
     });
@@ -74,7 +73,6 @@ describe("Packet List By Deliverer Controller (E2E)", () => {
       delivererId: otherDeliverer.id,
     });
 
-    // Pacote sem entregador atribuído (não deve aparecer)
     await packetFactory.makePrismaPacket({
       destinationId: destination.id,
     });
