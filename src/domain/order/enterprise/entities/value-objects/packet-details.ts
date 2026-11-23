@@ -1,8 +1,10 @@
-import { Entity } from "@/core/entities/entity";
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
+import { ValueObject } from "@/core/entities/value-object";
 
 export interface PacketDetailsProps {
   packetId: UniqueEntityID;
+  recipientId: UniqueEntityID;
+  delivererId?: UniqueEntityID | null;
   destinationId: UniqueEntityID;
   recipient: string;
   addressStreet: string;
@@ -20,13 +22,21 @@ export interface PacketDetailsProps {
   updatedAt?: Date | null;
 }
 
-export class PacketDetails extends Entity<PacketDetailsProps> {
+export class PacketDetails extends ValueObject<PacketDetailsProps> {
   get packetId() {
     return this.props.packetId;
   }
 
   get destinationId() {
     return this.props.destinationId;
+  }
+
+  get recipientId() {
+    return this.props.recipientId;
+  }
+
+  get delivererId() {
+    return this.props.delivererId;
   }
 
   get recipient() {

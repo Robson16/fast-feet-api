@@ -7,6 +7,7 @@ import { DestinationGetUseCase } from "@/domain/order/application/use-cases/dest
 import { DestinationListUseCase } from "@/domain/order/application/use-cases/destination-list.usecase";
 import { PacketCreateUseCase } from "@/domain/order/application/use-cases/packet-create.usecase";
 import { PacketDeleteUseCase } from "@/domain/order/application/use-cases/packet-delete.usecase";
+import { PacketGetUseCase } from "@/domain/order/application/use-cases/packet-get.usecase";
 import { PacketListByDelivererUseCase } from "@/domain/order/application/use-cases/packet-list-by-deliverer.usecase";
 import { PacketListByRecipientUseCase } from "@/domain/order/application/use-cases/packet-list-by-recipient.usecase";
 import { UserAuthenticateUseCase } from "@/domain/user/application/use-cases/user-authenticate.usecase";
@@ -29,6 +30,7 @@ import { DestinationGetController } from "./controllers/destination/destination-
 import { DestinationListController } from "./controllers/destination/destination-list.controller";
 import { PacketCreateController } from "./controllers/packet/packet-create.controller";
 import { PacketDeleteController } from "./controllers/packet/packet-delete.controller";
+import { PacketGetController } from "./controllers/packet/packet-get.controller";
 import { PacketListByDelivererController } from "./controllers/packet/packet-list-by-deliverer.controller";
 import { PacketListByRecipientController } from "./controllers/packet/packet-list-by-recipient.controller";
 import { ProfileChangePasswordController } from "./controllers/profile/profile-change-password.controller";
@@ -58,6 +60,7 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     ProfileDeleteController,
     UserDeleteController,
     PacketCreateController,
+    PacketGetController,
     PacketListByRecipientController,
     PacketListByDelivererController,
     PacketDeleteController,
@@ -77,6 +80,7 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     UserResetPasswordUseCase,
     UserDeleteUseCase,
     PacketCreateUseCase,
+    PacketGetUseCase,
     PacketListByRecipientUseCase,
     PacketListByDelivererUseCase,
     PacketDeleteUseCase,

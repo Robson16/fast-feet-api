@@ -183,12 +183,12 @@ Objetivo: expor o ciclo de vida do pacote com transicoes validas, isolamento ent
 
 Arquivos existentes: `src/domain/order/application/use-cases/packet-create.usecase.ts`, `packet-get.usecase.ts`, `packet-delete.usecase.ts`, `src/infra/http/presenters/packet-presenter.ts`, `src/infra/http/http.module.ts`. Criar `src/infra/http/controllers/packet/packet-create.controller.ts`, `packet-get.controller.ts`, `packet-delete.controller.ts`, schemas em `src/infra/http/schemas/` e respectivos `*.e2e-spec.ts`.
 
-- [ ] Criar `POST /packets` para ADMIN, validando UUID e existencia de `destinationId`; o status inicial deve ser `AWAITING_WITHDRAWAL` e nao deve ser escolhido pelo cliente.
-- [ ] Criar `GET /packets/:id`; ADMIN pode consultar qualquer pacote, RECIPIENT so pode consultar pacote ligado ao seu destino, e DELIVERER so pacote atribuido a ele.
-- [ ] Criar `DELETE /packets/:id` para ADMIN; retornar `404` se ausente e mapear conflito de relacao sem expor erro interno do Prisma.
-- [ ] Registrar casos de uso/controllers em `src/infra/http/http.module.ts` e aplicar presenter para formatar IDs/status.
-- [ ] Documentar contrato, papeis, codigos HTTP e erros no Swagger.
-- [ ] Criar E2E para sucesso, destino invalido, pacote inexistente, papel proibido e consulta cruzada entre destinatarios/entregadores.
+- [x] Criar `POST /packets` para ADMIN, validando UUID e existencia de `destinationId`; o status inicial deve ser `AWAITING_WITHDRAWAL` e nao deve ser escolhido pelo cliente.
+- [x] Criar `GET /packets/:id`; ADMIN pode consultar qualquer pacote, RECIPIENT so pode consultar pacote ligado ao seu destino, e DELIVERER so pacote atribuido a ele.
+- [x] Criar `DELETE /packets/:id` para ADMIN; retornar `404` se ausente e mapear conflito de relacao sem expor erro interno do Prisma.
+- [x] Registrar casos de uso/controllers em `src/infra/http/http.module.ts` e aplicar presenter para formatar IDs/status.
+- [x] Documentar contrato, papeis, codigos HTTP e erros no Swagger.
+- [x] Criar E2E para sucesso, destino invalido, pacote inexistente, papel proibido e consulta cruzada entre destinatarios/entregadores.
 
 Critério de aceite: criar/consultar/excluir e possivel por HTTP com autorizacao por papel e propriedade; nenhuma resposta vaza relacoes ou erros internos.
 

@@ -78,6 +78,8 @@ export class InMemoryPacketsRepository implements PacketsRepository {
     return PacketDetails.create({
       packetId: packet.id,
       destinationId: packet.destinationId,
+      recipientId: destination.recipientId,
+      delivererId: packet.delivererId ?? null,
       recipient: recipient.name,
       addressStreet: destination.addressStreet,
       addressNumber: destination.addressNumber,

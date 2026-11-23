@@ -4,19 +4,19 @@ import { ExtractJwt, Strategy } from "passport-jwt";
 import { z } from "zod";
 
 import { UsersRepository } from "@/domain/user/application/repositories/users-repository";
-import { Role } from "@/domain/user/enterprise/entities/value-objects/role";
+import { RoleType } from "@/domain/user/enterprise/entities/value-objects/role";
 import { EnvService } from "@/infra/env/env.service";
 
 const tokenPayloadSchema = z.object({
   sub: z.string().uuid(),
   exp: z.number().int().positive(),
-  role: z
-    .string()
-    .refine(Role.validate, { message: "Invalid Role" })
-    .default("DELIVERER"),
+  role: z.enum(["ADMIN", "DELIVERER", "RECIPIENT"]).default("DELIVERER"),
 });
 
-export type UserPayload = z.infer<typeof tokenPayloadSchema>;
+export type UserPayload = {
+  sub: string;
+  role: RoleType;
+};
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -33,7 +33,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: UserPayload) {
+  async validate(payload: unknown): Promise<UserPayload> {
     const parsedPayload = tokenPayloadSchema.safeParse(payload);
 
     if (!parsedPayload.success) {

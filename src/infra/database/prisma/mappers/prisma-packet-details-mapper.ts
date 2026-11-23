@@ -18,6 +18,8 @@ export class PrismaPacketDetailsMapper {
     return PacketDetails.create({
       packetId: new UniqueEntityID(raw.id),
       destinationId: new UniqueEntityID(raw.destinationId),
+      recipientId: new UniqueEntityID(raw.destination.recipientId),
+      delivererId: raw.delivererId ? new UniqueEntityID(raw.delivererId) : null,
       recipient: raw.destination.recipient.name,
       addressStreet: raw.destination.addressStreet,
       addressNumber: raw.destination.addressNumber,
