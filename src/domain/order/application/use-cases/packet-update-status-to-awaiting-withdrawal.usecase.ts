@@ -30,11 +30,12 @@ export class PacketUpdateStatusToAwaitingWithdrawalUseCase {
       return left(new ResourceNotFoundError("Packet not found."));
     }
 
-    if (
-      packet.status === "AWAITING_WITHDRAWAL" &&
-      packet.delivererId === undefined
-    ) {
-      return left(new NotAllowedError("Packet already awaiting withdrawal"));
+    if (packet.status === "AWAITING_WITHDRAWAL") {
+      return left(new NotAllowedError("Packet already awaiting withdrawal."));
+    }
+
+    if (packet.status === "DELIVERED") {
+      return left(new NotAllowedError("Packet already delivered."));
     }
 
     packet.delivererId = undefined;

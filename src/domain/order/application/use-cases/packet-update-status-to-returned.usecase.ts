@@ -11,7 +11,7 @@ interface PacketUpdateStatusToReturnedUseCaseRequest {
 }
 
 type PacketUpdateStatusToReturnedUseCaseResponse = Either<
-  ResourceNotFoundError,
+  ResourceNotFoundError | NotAllowedError,
   {
     packet: Packet;
   }
@@ -30,8 +30,15 @@ export class PacketUpdateStatusToReturnedUseCase {
       return left(new ResourceNotFoundError("Packet not found."));
     }
 
-    if (packet.status === "RETURNED" && packet.delivererId === undefined) {
+    if (packet.status === "RETURNED") {
       return left(new NotAllowedError("Packet already returned."));
+    }
+
+    if (
+      packet.status === "AWAITING_WITHDRAWAL" &&
+      packet.delivererId === undefined
+    ) {
+      return left(new NotAllowedError("Packet still awaiting withdrawal."));
     }
 
     packet.delivererId = undefined;

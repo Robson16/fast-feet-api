@@ -3,6 +3,7 @@ import { InMemoryDestinationsRepository } from "test/repositories/in-memory-dest
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
+import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 import { NotAllowedError } from "@/core/errors/not-allowed-error";
 import { ResourceNotFoundError } from "@/core/errors/resource-not-found-error";
 
@@ -26,6 +27,7 @@ describe("Return Packet", () => {
 
   it("should be able to return a packet", async () => {
     const packet = packetMaker({
+      delivererId: new UniqueEntityID(),
       status: "WITHDRAWN",
     });
 
@@ -55,6 +57,22 @@ describe("Return Packet", () => {
     const packet = packetMaker({
       delivererId: undefined,
       status: "RETURNED",
+    });
+
+    await inMemoryPacketsRepository.create(packet);
+
+    const result = await sut.execute({
+      packetId: packet.id.toString(),
+    });
+
+    expect(result.isLeft()).toBe(true);
+    expect(result.value).toBeInstanceOf(NotAllowedError);
+  });
+
+  it("should not be able to return a packet that is still awaiting withdrawal", async () => {
+    const packet = packetMaker({
+      delivererId: undefined,
+      status: "AWAITING_WITHDRAWAL",
     });
 
     await inMemoryPacketsRepository.create(packet);
