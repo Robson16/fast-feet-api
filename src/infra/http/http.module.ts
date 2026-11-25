@@ -10,6 +10,7 @@ import { PacketDeleteUseCase } from "@/domain/order/application/use-cases/packet
 import { PacketGetUseCase } from "@/domain/order/application/use-cases/packet-get.usecase";
 import { PacketListByDelivererUseCase } from "@/domain/order/application/use-cases/packet-list-by-deliverer.usecase";
 import { PacketListByRecipientUseCase } from "@/domain/order/application/use-cases/packet-list-by-recipient.usecase";
+import { PacketUpdateStatusToWithdrawnUseCase } from "@/domain/order/application/use-cases/packet-update-status-to-withdrawn.usecase";
 import { UserAuthenticateUseCase } from "@/domain/user/application/use-cases/user-authenticate.usecase";
 import { UserChangePasswordUseCase } from "@/domain/user/application/use-cases/user-change-password.usecase.ts";
 import { UserDeleteUseCase } from "@/domain/user/application/use-cases/user-delete.usecase";
@@ -33,6 +34,7 @@ import { PacketDeleteController } from "./controllers/packet/packet-delete.contr
 import { PacketGetController } from "./controllers/packet/packet-get.controller";
 import { PacketListByDelivererController } from "./controllers/packet/packet-list-by-deliverer.controller";
 import { PacketListByRecipientController } from "./controllers/packet/packet-list-by-recipient.controller";
+import { PacketWithdrawalController } from "./controllers/packet/packet-withdrawal.controller";
 import { ProfileChangePasswordController } from "./controllers/profile/profile-change-password.controller";
 import { ProfileDeleteController } from "./controllers/profile/profile-delete.controller";
 import { ProfileEditController } from "./controllers/profile/profile-edit.controller";
@@ -64,6 +66,7 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     PacketListByRecipientController,
     PacketListByDelivererController,
     PacketDeleteController,
+    PacketWithdrawalController,
     DestinationCreateController,
     DestinationGetController,
     DestinationDeleteController,
@@ -84,6 +87,7 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     PacketListByRecipientUseCase,
     PacketListByDelivererUseCase,
     PacketDeleteUseCase,
+    PacketUpdateStatusToWithdrawnUseCase,
     DestinationCreateUseCase,
     DestinationGetUseCase,
     DestinationDeleteUseCase,
