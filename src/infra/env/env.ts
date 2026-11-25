@@ -13,6 +13,11 @@ export const envSchema = z.object({
     .optional()
     .default(15 * 60),
   APP_ADMIN_PASSWORD: z.string(),
+  CLOUDFLARE_ACCOUNT_ID: z.string(),
+  AWS_BUCKET_NAME: z.string(),
+  AWS_ACCESS_KEY_ID: z.string(),
+  AWS_SECRET_ACCESS_KEY: z.string(),
+  AWS_ENDPOINT: z.string().url().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;

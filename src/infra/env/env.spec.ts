@@ -5,6 +5,10 @@ const requiredEnvironment = {
   JWT_PRIVATE_KEY: "private-key",
   JWT_PUBLIC_KEY: "public-key",
   APP_ADMIN_PASSWORD: "",
+  CLOUDFLARE_ACCOUNT_ID: "account-id",
+  AWS_BUCKET_NAME: "fast-feet-bucket",
+  AWS_ACCESS_KEY_ID: "test-access-key",
+  AWS_SECRET_ACCESS_KEY: "test-secret-key",
 };
 
 describe("environment schema", () => {
@@ -34,4 +38,16 @@ describe("environment schema", () => {
       ).toThrow();
     },
   );
+
+  it.each([
+    "CLOUDFLARE_ACCOUNT_ID",
+    "AWS_BUCKET_NAME",
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY",
+  ] as const)("rejects missing storage variable: %s", (missingKey) => {
+    const partialEnv = { ...requiredEnvironment };
+    delete partialEnv[missingKey];
+
+    expect(() => envSchema.parse(partialEnv)).toThrow();
+  });
 });

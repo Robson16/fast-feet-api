@@ -18,6 +18,10 @@ export interface PacketDetailsProps {
   latitude: number;
   longitude: number;
   status: string;
+  deliveryPhotoKey?: string;
+  deliveryPhotoMimeType?: string;
+  deliveryPhotoSize?: number;
+  deliveryPhotoUploadedAt?: Date;
   createdAt: Date;
   updatedAt?: Date | null;
 }
@@ -85,6 +89,22 @@ export class PacketDetails extends ValueObject<PacketDetailsProps> {
 
   get status() {
     return this.props.status;
+  }
+
+  get deliveryPhotoKey() {
+    return this.props.deliveryPhotoKey;
+  }
+
+  get deliveryPhotoMimeType() {
+    return this.props.deliveryPhotoMimeType;
+  }
+
+  get deliveryPhotoSize() {
+    return this.props.deliveryPhotoSize;
+  }
+
+  get deliveryPhotoUploadedAt() {
+    return this.props.deliveryPhotoUploadedAt;
   }
 
   get createdAt() {

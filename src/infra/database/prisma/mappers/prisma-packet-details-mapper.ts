@@ -32,6 +32,10 @@ export class PrismaPacketDetailsMapper {
       latitude: Number(raw.destination.latitude),
       longitude: Number(raw.destination.longitude),
       status: raw.status,
+      deliveryPhotoKey: raw.deliveryPhotoKey ?? undefined,
+      deliveryPhotoMimeType: raw.deliveryPhotoMimeType ?? undefined,
+      deliveryPhotoSize: raw.deliveryPhotoSize ?? undefined,
+      deliveryPhotoUploadedAt: raw.deliveryPhotoUploadedAt ?? undefined,
       createdAt: raw.createdAt,
       updatedAt: raw.updatedAt,
     });

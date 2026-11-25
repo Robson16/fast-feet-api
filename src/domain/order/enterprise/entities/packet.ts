@@ -9,6 +9,10 @@ export interface PacketProps {
   destinationId: UniqueEntityID;
   delivererId?: UniqueEntityID;
   status: PacketStatus;
+  deliveryPhotoKey?: string;
+  deliveryPhotoMimeType?: string;
+  deliveryPhotoSize?: number;
+  deliveryPhotoUploadedAt?: Date;
   createdAt: Date;
   updatedAt?: Date | null;
 }
@@ -34,6 +38,46 @@ export class Packet extends Entity<PacketProps> {
 
   set status(status: PacketStatus) {
     this.props.status = status;
+
+    this.touch();
+  }
+
+  get deliveryPhotoKey() {
+    return this.props.deliveryPhotoKey;
+  }
+
+  set deliveryPhotoKey(deliveryPhotoKey: string | undefined) {
+    this.props.deliveryPhotoKey = deliveryPhotoKey;
+
+    this.touch();
+  }
+
+  get deliveryPhotoMimeType() {
+    return this.props.deliveryPhotoMimeType;
+  }
+
+  set deliveryPhotoMimeType(deliveryPhotoMimeType: string | undefined) {
+    this.props.deliveryPhotoMimeType = deliveryPhotoMimeType;
+
+    this.touch();
+  }
+
+  get deliveryPhotoSize() {
+    return this.props.deliveryPhotoSize;
+  }
+
+  set deliveryPhotoSize(deliveryPhotoSize: number | undefined) {
+    this.props.deliveryPhotoSize = deliveryPhotoSize;
+
+    this.touch();
+  }
+
+  get deliveryPhotoUploadedAt() {
+    return this.props.deliveryPhotoUploadedAt;
+  }
+
+  set deliveryPhotoUploadedAt(deliveryPhotoUploadedAt: Date | undefined) {
+    this.props.deliveryPhotoUploadedAt = deliveryPhotoUploadedAt;
 
     this.touch();
   }

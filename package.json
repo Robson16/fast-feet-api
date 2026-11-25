@@ -36,10 +36,13 @@
     "test:e2e": "vitest run --config ./vitest.config.e2e.mts",
     "test:e2e:watch": "vitest --config ./vitest.config.e2e.mts",
     "release": "commit-and-tag-version",
+    "postinstall": "prisma generate",
     "upgrade:check": "ncu -i",
     "upgrade:force": "ncu -u && npm install --legacy-peer-deps"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "3.1177.0",
+    "@aws-sdk/s3-request-presigner": "3.1177.0",
     "@nestjs/common": "^12.5.1",
     "@nestjs/config": "^12.1.1",
     "@nestjs/core": "^12.5.1",

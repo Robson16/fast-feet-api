@@ -31,12 +31,16 @@ enum PacketStatus {
 }
 
 model Packet {
-  id            String       @id @default(uuid())
-  status        PacketStatus @default(AWAITING_WITHDRAWAL)
-  delivererId   String?      @map("deliverer_id")
-  destinationId String       @map("destination_id")
-  createdAt     DateTime     @default(now()) @map("created_at")
-  updatedAt     DateTime?    @updatedAt @map("updated_at")
+  id                      String       @id @default(uuid())
+  status                  PacketStatus @default(AWAITING_WITHDRAWAL)
+  delivererId             String?      @map("deliverer_id")
+  destinationId           String       @map("destination_id")
+  deliveryPhotoKey        String?      @map("delivery_photo_key")
+  deliveryPhotoMimeType   String?      @map("delivery_photo_mime_type")
+  deliveryPhotoSize       Int?         @map("delivery_photo_size")
+  deliveryPhotoUploadedAt DateTime?    @map("delivery_photo_uploaded_at")
+  createdAt               DateTime     @default(now()) @map("created_at")
+  updatedAt               DateTime?    @updatedAt @map("updated_at")
 
   deliverer   User?       @relation(fields: [delivererId], references: [id])
   destination Destination @relation(fields: [destinationId], references: [id])
