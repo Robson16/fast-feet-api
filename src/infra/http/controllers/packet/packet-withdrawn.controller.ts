@@ -34,7 +34,7 @@ import { PacketPresenter } from "@/infra/http/presenters/packet-presenter";
 @Controller("/packets/:id/withdrawal")
 @ApiTags("Packets")
 @ApiBearerAuth()
-export class PacketWithdrawalController {
+export class PacketWithdrawnController {
   constructor(
     private packetUpdateStatusToWithdrawn: PacketUpdateStatusToWithdrawnUseCase,
   ) {}

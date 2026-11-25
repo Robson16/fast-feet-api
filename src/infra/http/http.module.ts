@@ -10,6 +10,8 @@ import { PacketDeleteUseCase } from "@/domain/order/application/use-cases/packet
 import { PacketGetUseCase } from "@/domain/order/application/use-cases/packet-get.usecase";
 import { PacketListByDelivererUseCase } from "@/domain/order/application/use-cases/packet-list-by-deliverer.usecase";
 import { PacketListByRecipientUseCase } from "@/domain/order/application/use-cases/packet-list-by-recipient.usecase";
+import { PacketUpdateStatusToAwaitingWithdrawalUseCase } from "@/domain/order/application/use-cases/packet-update-status-to-awaiting-withdrawal.usecase";
+import { PacketUpdateStatusToReturnedUseCase } from "@/domain/order/application/use-cases/packet-update-status-to-returned.usecase";
 import { PacketUpdateStatusToWithdrawnUseCase } from "@/domain/order/application/use-cases/packet-update-status-to-withdrawn.usecase";
 import { UserAuthenticateUseCase } from "@/domain/user/application/use-cases/user-authenticate.usecase";
 import { UserChangePasswordUseCase } from "@/domain/user/application/use-cases/user-change-password.usecase.ts";
@@ -29,12 +31,14 @@ import { DestinationDeleteController } from "./controllers/destination/destinati
 import { DestinationEditController } from "./controllers/destination/destination-edit.controller";
 import { DestinationGetController } from "./controllers/destination/destination-get.controller";
 import { DestinationListController } from "./controllers/destination/destination-list.controller";
+import { PacketAwaitingWithdrawalController } from "./controllers/packet/packet-awaiting-withdrawal.controller";
 import { PacketCreateController } from "./controllers/packet/packet-create.controller";
 import { PacketDeleteController } from "./controllers/packet/packet-delete.controller";
 import { PacketGetController } from "./controllers/packet/packet-get.controller";
 import { PacketListByDelivererController } from "./controllers/packet/packet-list-by-deliverer.controller";
 import { PacketListByRecipientController } from "./controllers/packet/packet-list-by-recipient.controller";
-import { PacketWithdrawalController } from "./controllers/packet/packet-withdrawal.controller";
+import { PacketReturnedController } from "./controllers/packet/packet-returned.controller";
+import { PacketWithdrawnController } from "./controllers/packet/packet-withdrawn.controller";
 import { ProfileChangePasswordController } from "./controllers/profile/profile-change-password.controller";
 import { ProfileDeleteController } from "./controllers/profile/profile-delete.controller";
 import { ProfileEditController } from "./controllers/profile/profile-edit.controller";
@@ -66,7 +70,9 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     PacketListByRecipientController,
     PacketListByDelivererController,
     PacketDeleteController,
-    PacketWithdrawalController,
+    PacketWithdrawnController,
+    PacketReturnedController,
+    PacketAwaitingWithdrawalController,
     DestinationCreateController,
     DestinationGetController,
     DestinationDeleteController,
@@ -88,6 +94,8 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     PacketListByDelivererUseCase,
     PacketDeleteUseCase,
     PacketUpdateStatusToWithdrawnUseCase,
+    PacketUpdateStatusToReturnedUseCase,
+    PacketUpdateStatusToAwaitingWithdrawalUseCase,
     DestinationCreateUseCase,
     DestinationGetUseCase,
     DestinationDeleteUseCase,

@@ -200,8 +200,8 @@ Arquivos existentes: `src/domain/order/application/use-cases/packet-update-statu
 
 - [ ] Usar esta matriz de autorizacao: `DELIVERER` pode retirar pacote em espera e entregar somente pacote retirado por ele; somente `ADMIN` pode marcar retorno e reabrir pacote para `AWAITING_WITHDRAWAL`.
 - [ ] Criar `POST /packets/:id/withdrawal`, `POST /packets/:id/delivered`, `POST /packets/:id/returned` e `POST /packets/:id/awaiting-withdrawal`; acoes de entregador devem obter o ID exclusivamente do JWT.
-- [ ] Revalidar papel do usuario no caso de uso de retirada; nao basta que exista um usuario com aquele ID.
-- [ ] Em retorno e reabertura, aplicar validacao de estado anterior e impedir transicoes repetidas/ilegais; manter remocao do `delivererId` quando o pacote volta a ficar sem atribuicao.
+- [x] Revalidar papel do usuario no caso de uso de retirada; nao basta que exista um usuario com aquele ID.
+- [x] Em retorno e reabertura, aplicar validacao de estado anterior e impedir transicoes repetidas/ilegais; manter remocao do `delivererId` quando o pacote volta a ficar sem atribuicao.
 - [ ] Fazer a entrega exigir o comprovante da Story 3.4 antes de persistir `DELIVERED`.
 - [ ] Registrar todos os casos de uso/controllers no modulo HTTP; mapear `ResourceNotFoundError`, pacote indisponivel e estado invalido para `404`, `409` ou `403` conforme causa.
 - [ ] Adicionar E2E para as quatro transicoes: sucesso, pacote inexistente, pacote indisponivel, papel proibido, entregador incorreto, estado invalido, repeticao e ausencia de foto.
