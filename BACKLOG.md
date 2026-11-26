@@ -198,13 +198,13 @@ Critério de aceite: criar/consultar/excluir e possivel por HTTP com autorizacao
 
 Arquivos existentes: `src/domain/order/application/use-cases/packet-update-status-to-awaiting-withdrawal.usecase.ts`, `packet-update-status-to-withdrawn.usecase.ts`, `packet-update-status-to-returned.usecase.ts`, `packet-update-status-to-delivered.usecase.ts` e specs correspondentes. Criar controllers/schemas/E2E em `src/infra/http/controllers/packet/` e `src/infra/http/schemas/`.
 
-- [ ] Usar esta matriz de autorizacao: `DELIVERER` pode retirar pacote em espera e entregar somente pacote retirado por ele; somente `ADMIN` pode marcar retorno e reabrir pacote para `AWAITING_WITHDRAWAL`.
-- [ ] Criar `POST /packets/:id/withdrawal`, `POST /packets/:id/delivered`, `POST /packets/:id/returned` e `POST /packets/:id/awaiting-withdrawal`; acoes de entregador devem obter o ID exclusivamente do JWT.
+- [x] Usar esta matriz de autorizacao: `DELIVERER` pode retirar pacote em espera e entregar somente pacote retirado por ele; somente `ADMIN` pode marcar retorno e reabrir pacote para `AWAITING_WITHDRAWAL`.
+- [x] Criar `POST /packets/:id/withdrawal`, `POST /packets/:id/delivered`, `POST /packets/:id/returned` e `POST /packets/:id/awaiting-withdrawal`; acoes de entregador devem obter o ID exclusivamente do JWT.
 - [x] Revalidar papel do usuario no caso de uso de retirada; nao basta que exista um usuario com aquele ID.
 - [x] Em retorno e reabertura, aplicar validacao de estado anterior e impedir transicoes repetidas/ilegais; manter remocao do `delivererId` quando o pacote volta a ficar sem atribuicao.
-- [ ] Fazer a entrega exigir o comprovante da Story 3.4 antes de persistir `DELIVERED`.
-- [ ] Registrar todos os casos de uso/controllers no modulo HTTP; mapear `ResourceNotFoundError`, pacote indisponivel e estado invalido para `404`, `409` ou `403` conforme causa.
-- [ ] Adicionar E2E para as quatro transicoes: sucesso, pacote inexistente, pacote indisponivel, papel proibido, entregador incorreto, estado invalido, repeticao e ausencia de foto.
+- [x] Fazer a entrega exigir o comprovante da Story 3.4 antes de persistir `DELIVERED`.
+- [x] Registrar todos os casos de uso/controllers no modulo HTTP; mapear `ResourceNotFoundError`, pacote indisponivel e estado invalido para `404`, `409` ou `403` conforme causa.
+- [x] Adicionar E2E para as quatro transicoes: sucesso, pacote inexistente, pacote indisponivel, papel proibido, entregador incorreto, estado invalido, repeticao e ausencia de foto.
 
 Critério de aceite: somente transicoes da matriz sao persistidas; identidade do entregador nao vem do request; notificacoes/foto sao tratadas pelas stories proprias antes de concluir as transicoes dependentes.
 
@@ -229,12 +229,12 @@ Critério de aceite: resultados e contagem da pagina refletem todos os filtros; 
 
 Arquivos a criar/alterar: `prisma/schema.prisma`, nova migration em `prisma/migrations/`, `src/domain/order/enterprise/entities/packet.ts` ou entidade de comprovante, mapper Prisma de pacote, caso de uso de entrega, modulo de storage em `src/infra/`, schema de upload e controller de entrega.
 
-- [ ] Armazenar a imagem em bucket privado compativel com S3; nao gravar binario no PostgreSQL nem aceitar URL publica arbitraria. Configurar bucket/credenciais por variaveis de ambiente documentadas em `.env.example`.
-- [ ] Persistir no banco apenas a chave do objeto e metadados necessarios (tipo MIME, tamanho, data); adicionar migration e atualizar mapper.
-- [ ] Definir upload como multipart com limite de tamanho explicito e aceitar somente formatos de imagem permitidos, validando conteudo real alem da extensao/MIME declarado.
-- [ ] Gerar acesso de leitura temporario/autorizado; nao retornar credenciais nem URL permanente publica.
-- [ ] Alterar a transicao para `DELIVERED` para exigir upload valido antes da gravacao do status; remover objeto se a transacao nao for concluida ou documentar estrategia de compensacao.
-- [ ] Testar upload valido, formato/tamanho invalido, comprovante ausente, falha no storage, falha no banco e acesso ao comprovante por usuario sem autorizacao.
+- [x] Armazenar a imagem em bucket privado compativel com S3; nao gravar binario no PostgreSQL nem aceitar URL publica arbitraria. Configurar bucket/credenciais por variaveis de ambiente documentadas em `.env.example`.
+- [x] Persistir no banco apenas a chave do objeto e metadados necessarios (tipo MIME, tamanho, data); adicionar migration e atualizar mapper.
+- [x] Definir upload como multipart com limite de tamanho explicito e aceitar somente formatos de imagem permitidos, validando conteudo real alem da extensao/MIME declarado.
+- [x] Gerar acesso de leitura temporario/autorizado; nao retornar credenciais nem URL permanente publica.
+- [x] Alterar a transicao para `DELIVERED` para exigir upload valido antes da gravacao do status; remover objeto se a transacao nao for concluida ou documentar estrategia de compensacao.
+- [x] Testar upload valido, formato/tamanho invalido, comprovante ausente, falha no storage, falha no banco e acesso ao comprovante por usuario sem autorizacao.
 
 Critério de aceite: nao existe pacote `DELIVERED` sem comprovante persistido; leitura do comprovante e privada e os testes cobrem falha parcial entre storage e banco.
 
