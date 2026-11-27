@@ -5,19 +5,26 @@ import {
 } from "@/domain/order/enterprise/entities/packet";
 import { PacketDetails } from "@/domain/order/enterprise/entities/value-objects/packet-details";
 
-export interface PacketsFilters {
+export interface FindManyPacketsFilters {
+  status?: PacketStatus;
+  delivererId?: string;
+  recipientId?: string;
   state?: string;
   city?: string;
   neighborhood?: string;
 }
 
-export interface FindManyNearbyByStatusAndDelivererIdParams {
+export type PacketAddressFilters = Pick<
+  FindManyPacketsFilters,
+  "state" | "city" | "neighborhood"
+>;
+
+export interface FindManyNearbyPacketsParams extends PaginationParams {
   status: PacketStatus;
   delivererId: string;
   distance: number;
   latitude: number;
   longitude: number;
-  pagination: PaginationParams;
 }
 
 export abstract class PacketsRepository {
@@ -25,30 +32,13 @@ export abstract class PacketsRepository {
   abstract findDetailsById(id: string): Promise<PacketDetails | null>;
   abstract findAwaitingWithdrawalById(id: string): Promise<Packet | null>;
 
-  abstract findManyByDelivererId(
-    delivererId: string,
+  abstract findMany(
     pagination: PaginationParams,
+    filters?: FindManyPacketsFilters,
   ): Promise<Packet[]>;
 
-  abstract findManyByStatus(
-    status: PacketStatus,
-    pagination: PaginationParams,
-  ): Promise<Packet[]>;
-
-  abstract findManyByStatusAndDelivererId(
-    status: PacketStatus,
-    delivererId: string,
-    pagination: PaginationParams,
-    filters?: PacketsFilters,
-  ): Promise<Packet[]>;
-
-  abstract findManyNearbyByStatusAndDelivererId(
-    params: FindManyNearbyByStatusAndDelivererIdParams,
-  ): Promise<Packet[]>;
-
-  abstract findManyByRecipientId(
-    recipientId: string,
-    pagination: PaginationParams,
+  abstract findManyNearby(
+    params: FindManyNearbyPacketsParams,
   ): Promise<Packet[]>;
 
   abstract create(packet: Packet): Promise<void>;

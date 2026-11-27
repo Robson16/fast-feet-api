@@ -103,9 +103,7 @@ describe("Fetch Packets Withdrawn by Deliverer", () => {
     const result = await sut.execute({
       delivererId: delivererId.toString(),
       page: 1,
-      filters: {
-        neighborhood: destination1.addressNeighborhood,
-      },
+      neighborhood: destination1.addressNeighborhood,
     });
 
     expect(result.isRight()).toBe(true);

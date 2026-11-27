@@ -1,14 +1,14 @@
-import { PaginationParams } from "@/core/repositories/pagination-params";
+import {
+  DEFAULT_PER_PAGE,
+  PaginationParams,
+} from "@/core/repositories/pagination-params";
 import { getDistanceBetweenCoordinates } from "@/core/utils/get-distance-between-coordinates";
 import {
-  FindManyNearbyByStatusAndDelivererIdParams,
-  PacketsFilters,
+  FindManyNearbyPacketsParams,
+  FindManyPacketsFilters,
   PacketsRepository,
 } from "@/domain/order/application/repositories/packets-repository";
-import {
-  Packet,
-  PacketStatus,
-} from "@/domain/order/enterprise/entities/packet";
+import { Packet } from "@/domain/order/enterprise/entities/packet";
 import { PacketDetails } from "@/domain/order/enterprise/entities/value-objects/packet-details";
 
 import { InMemoryDestinationsRepository } from "./in-memory-destinations-repository";
@@ -38,18 +38,74 @@ export class InMemoryPacketsRepository implements PacketsRepository {
     });
   }
 
-  async findById(id: string) {
-    const packet = this.items.find((item) => item.id.toString() === id);
+  private paginatePackets(packets: Packet[], page: number): Packet[] {
+    const startIndex = (page - 1) * DEFAULT_PER_PAGE;
 
-    if (!packet) {
-      return null;
+    return this.sortPackets(packets).slice(
+      startIndex,
+      startIndex + DEFAULT_PER_PAGE,
+    );
+  }
+
+  private async filterByDestination(
+    packets: Packet[],
+    filters?: FindManyPacketsFilters,
+  ): Promise<Packet[]> {
+    const hasDestinationFilter =
+      filters?.recipientId ||
+      filters?.neighborhood ||
+      filters?.city ||
+      filters?.state;
+
+    if (!hasDestinationFilter) {
+      return packets;
     }
 
-    return packet;
+    const normalizedNeighborhood = filters.neighborhood?.toLowerCase();
+    const normalizedCity = filters.city?.toLowerCase();
+    const normalizedState = filters.state?.toLowerCase();
+
+    const packetsWithDestinations = await Promise.all(
+      packets.map(async (packet) => ({
+        packet,
+        destination: await this.destinationsRepository.findById(
+          packet.destinationId.toString(),
+        ),
+      })),
+    );
+
+    return packetsWithDestinations
+      .filter(({ destination }) => {
+        if (!destination) {
+          return false;
+        }
+
+        const matchRecipient =
+          !filters.recipientId ||
+          destination.recipientId.toString() === filters.recipientId;
+        const matchNeighborhood =
+          !normalizedNeighborhood ||
+          destination.addressNeighborhood
+            .toLowerCase()
+            .includes(normalizedNeighborhood);
+        const matchCity =
+          !normalizedCity ||
+          destination.addressCity.toLowerCase().includes(normalizedCity);
+        const matchState =
+          !normalizedState ||
+          destination.addressState.toLowerCase().includes(normalizedState);
+
+        return matchRecipient && matchNeighborhood && matchCity && matchState;
+      })
+      .map(({ packet }) => packet);
+  }
+
+  async findById(id: string) {
+    return this.items.find((item) => item.id.toString() === id) ?? null;
   }
 
   async findDetailsById(id: string) {
-    const packet = this.items.find((item) => item.id.toString() === id);
+    const packet = await this.findById(id);
 
     if (!packet) {
       return null;
@@ -102,95 +158,41 @@ export class InMemoryPacketsRepository implements PacketsRepository {
   }
 
   async findAwaitingWithdrawalById(id: string) {
-    const packet = this.items.find(
-      (item) =>
-        item.id.toString() === id && item.status === "AWAITING_WITHDRAWAL",
+    return (
+      this.items.find(
+        (item) =>
+          item.id.toString() === id && item.status === "AWAITING_WITHDRAWAL",
+      ) ?? null
+    );
+  }
+
+  async findMany(
+    { page }: PaginationParams,
+    filters?: FindManyPacketsFilters,
+  ): Promise<Packet[]> {
+    const matchedPackets = this.items.filter((item) => {
+      const matchStatus = !filters?.status || item.status === filters.status;
+      const matchDeliverer =
+        !filters?.delivererId ||
+        item.delivererId?.toString() === filters.delivererId;
+
+      return matchStatus && matchDeliverer;
+    });
+
+    const filteredPackets = await this.filterByDestination(
+      matchedPackets,
+      filters,
     );
 
-    if (!packet) {
-      return null;
-    }
-
-    return packet;
+    return this.paginatePackets(filteredPackets, page);
   }
 
-  async findManyByStatus(status: PacketStatus, { page }: PaginationParams) {
-    const startIndex = (page - 1) * 20;
-
-    const packets = this.items.filter((item) => item.status === status);
-
-    return this.sortPackets(packets).slice(startIndex, startIndex + 20);
-  }
-
-  async findManyByDelivererId(
-    delivererId: string,
-    { page }: PaginationParams,
-  ): Promise<Packet[]> {
-    const startIndex = (page - 1) * 20;
-
-    const packets = this.items.filter((item) => {
-      return item.delivererId?.toString() === delivererId;
-    });
-
-    return this.sortPackets(packets).slice(startIndex, startIndex + 20);
-  }
-
-  async findManyByStatusAndDelivererId(
-    status: PacketStatus,
-    delivererId: string,
-    { page }: PaginationParams,
-    filters?: PacketsFilters,
-  ) {
-    const startIndex = (page - 1) * 20;
-
-    const packets = this.items.filter((item) => {
-      const matchStatus = item.status === status;
-      const matchDelivererId = item.delivererId?.toString() === delivererId;
-
-      return matchStatus && matchDelivererId;
-    });
-
-    if (filters && (filters.neighborhood || filters.city || filters.state)) {
-      const filteredPackets = await Promise.all(
-        packets.map(async (packet) => {
-          const destination = await this.destinationsRepository.findById(
-            packet.destinationId.toString(),
-          );
-
-          return { packet, destination };
-        }),
-      );
-
-      const matchDestinations = filteredPackets
-        .filter(({ destination }) =>
-          destination
-            ? (!filters.neighborhood ||
-                destination.addressNeighborhood === filters.neighborhood) &&
-              (!filters.city || destination.addressCity === filters.city) &&
-              (!filters.state || destination.addressState === filters.state)
-            : false,
-        )
-        .map(({ packet }) => packet);
-
-      return this.sortPackets(matchDestinations).slice(
-        startIndex,
-        startIndex + 20,
-      );
-    }
-
-    return this.sortPackets(packets).slice(startIndex, startIndex + 20);
-  }
-
-  async findManyNearbyByStatusAndDelivererId(
-    params: FindManyNearbyByStatusAndDelivererIdParams,
-  ): Promise<Packet[]> {
-    const packets = this.items.filter((item) => {
-      const matchStatus = item.status === params.status;
-      const matchDelivererId =
-        item.delivererId?.toString() === params.delivererId;
-
-      return matchStatus && matchDelivererId;
-    });
+  async findManyNearby(params: FindManyNearbyPacketsParams): Promise<Packet[]> {
+    const packets = this.items.filter(
+      (item) =>
+        item.status === params.status &&
+        item.delivererId?.toString() === params.delivererId,
+    );
 
     const filteredPackets = await Promise.all(
       packets.map(async (packet) => {
@@ -203,21 +205,11 @@ export class InMemoryPacketsRepository implements PacketsRepository {
         }
 
         const distance = getDistanceBetweenCoordinates(
-          {
-            latitude: params.latitude,
-            longitude: params.longitude,
-          },
-          {
-            latitude: destination.latitude,
-            longitude: destination.longitude,
-          },
+          { latitude: params.latitude, longitude: params.longitude },
+          { latitude: destination.latitude, longitude: destination.longitude },
         );
 
-        if (distance <= params.distance) {
-          return packet;
-        }
-
-        return null; // Explicitly returns null if the packet is not within distance
+        return distance <= params.distance ? packet : null;
       }),
     );
 
@@ -225,36 +217,7 @@ export class InMemoryPacketsRepository implements PacketsRepository {
       (packet): packet is Packet => packet !== null,
     );
 
-    const startIndex = (params.pagination.page - 1) * 20;
-
-    return this.sortPackets(validPackets).slice(startIndex, startIndex + 20);
-  }
-
-  async findManyByRecipientId(
-    recipientId: string,
-    { page }: PaginationParams,
-  ): Promise<Packet[]> {
-    const startIndex = (page - 1) * 20;
-
-    const filteredPackets = await Promise.all(
-      this.items.map(async (packet) => {
-        const destination = await this.destinationsRepository.findById(
-          packet.destinationId.toString(),
-        );
-
-        if (destination && destination.recipientId.toString() === recipientId) {
-          return packet;
-        }
-
-        return null;
-      }),
-    );
-
-    const validPackets = filteredPackets.filter(
-      (packet): packet is Packet => packet !== null,
-    );
-
-    return this.sortPackets(validPackets).slice(startIndex, startIndex + 20);
+    return this.paginatePackets(validPackets, params.page);
   }
 
   async create(packet: Packet) {
@@ -262,7 +225,7 @@ export class InMemoryPacketsRepository implements PacketsRepository {
   }
 
   async save(packet: Packet) {
-    const itemIndex = this.items.findIndex((item) => item.id === packet.id);
+    const itemIndex = this.items.findIndex((item) => item.id.equals(packet.id));
 
     if (itemIndex !== -1) {
       this.items[itemIndex] = packet;
@@ -270,7 +233,7 @@ export class InMemoryPacketsRepository implements PacketsRepository {
   }
 
   async delete(packet: Packet) {
-    const itemIndex = this.items.findIndex((item) => item.id === packet.id);
+    const itemIndex = this.items.findIndex((item) => item.id.equals(packet.id));
 
     if (itemIndex !== -1) {
       this.items.splice(itemIndex, 1);

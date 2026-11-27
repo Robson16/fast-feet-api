@@ -1,45 +1,40 @@
 import { Injectable } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
 
-import { PaginationParams } from "@/core/repositories/pagination-params";
+import {
+  DEFAULT_PER_PAGE,
+  PaginationParams,
+} from "@/core/repositories/pagination-params";
 import { getDistanceBetweenCoordinates } from "@/core/utils/get-distance-between-coordinates";
 import {
-  FindManyNearbyByStatusAndDelivererIdParams,
-  PacketsFilters,
+  FindManyNearbyPacketsParams,
+  FindManyPacketsFilters,
   PacketsRepository,
 } from "@/domain/order/application/repositories/packets-repository";
-import {
-  Packet,
-  PacketStatus,
-} from "@/domain/order/enterprise/entities/packet";
+import { Packet } from "@/domain/order/enterprise/entities/packet";
 import { PacketDetails } from "@/domain/order/enterprise/entities/value-objects/packet-details";
 import { PrismaPacketDetailsMapper } from "@/infra/database/prisma/mappers/prisma-packet-details-mapper";
 import { PrismaPacketMapper } from "@/infra/database/prisma/mappers/prisma-packet-mapper";
 import { PrismaService } from "@/infra/database/prisma/prisma.service";
+
+const DEFAULT_ORDER_BY: Prisma.PacketOrderByWithRelationInput[] = [
+  { createdAt: "desc" },
+  { id: "asc" },
+];
 
 @Injectable()
 export class PrismaPacketsRepository implements PacketsRepository {
   constructor(private prisma: PrismaService) {}
 
   async findById(id: string): Promise<Packet | null> {
-    const packet = await this.prisma.packet.findUnique({
-      where: {
-        id,
-      },
-    });
+    const packet = await this.prisma.packet.findUnique({ where: { id } });
 
-    if (!packet) {
-      return null;
-    }
-
-    return PrismaPacketMapper.toDomain(packet);
+    return packet ? PrismaPacketMapper.toDomain(packet) : null;
   }
 
   async findDetailsById(id: string): Promise<PacketDetails | null> {
     const packet = await this.prisma.packet.findUnique({
-      where: {
-        id,
-      },
+      where: { id },
       include: {
         destination: {
           include: {
@@ -49,11 +44,7 @@ export class PrismaPacketsRepository implements PacketsRepository {
       },
     });
 
-    if (!packet) {
-      return null;
-    }
-
-    return PrismaPacketDetailsMapper.toDomain(packet);
+    return packet ? PrismaPacketDetailsMapper.toDomain(packet) : null;
   }
 
   async findAwaitingWithdrawalById(id: string): Promise<Packet | null> {
@@ -64,90 +55,54 @@ export class PrismaPacketsRepository implements PacketsRepository {
       },
     });
 
-    if (!packet) {
-      return null;
-    }
-
-    return PrismaPacketMapper.toDomain(packet);
+    return packet ? PrismaPacketMapper.toDomain(packet) : null;
   }
 
-  async findManyByDelivererId(
-    delivererId: string,
+  async findMany(
     { page }: PaginationParams,
+    filters?: FindManyPacketsFilters,
   ): Promise<Packet[]> {
-    const packets = await this.prisma.packet.findMany({
-      where: { delivererId },
-      skip: (page - 1) * 20,
-      take: 20,
-      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
-    });
-
-    return packets.map(PrismaPacketMapper.toDomain);
-  }
-
-  async findManyByStatus(
-    status: PacketStatus,
-    { page }: PaginationParams,
-  ): Promise<Packet[]> {
-    const packets = await this.prisma.packet.findMany({
-      where: { status },
-      skip: (page - 1) * 20,
-      take: 20,
-      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
-    });
-
-    return packets.map(PrismaPacketMapper.toDomain);
-  }
-
-  async findManyByStatusAndDelivererId(
-    status: PacketStatus,
-    delivererId: string,
-    { page }: PaginationParams,
-    filters?: PacketsFilters,
-  ): Promise<Packet[]> {
-    const where: Prisma.PacketWhereInput = {
-      status,
-      delivererId,
+    const destinationFilter: Prisma.DestinationWhereInput = {
+      ...(filters?.recipientId && { recipientId: filters.recipientId }),
+      ...(filters?.neighborhood && {
+        addressNeighborhood: {
+          contains: filters.neighborhood,
+          mode: "insensitive",
+        },
+      }),
+      ...(filters?.city && {
+        addressCity: {
+          contains: filters.city,
+          mode: "insensitive",
+        },
+      }),
+      ...(filters?.state && {
+        addressState: {
+          contains: filters.state,
+          mode: "insensitive",
+        },
+      }),
     };
 
-    if (filters) {
-      if (filters.state || filters.neighborhood || filters.city) {
-        where.destination = {
-          ...(filters.neighborhood && {
-            addressNeighborhood: {
-              contains: filters.neighborhood,
-              mode: "insensitive",
-            },
-          }),
-          ...(filters.city && {
-            addressCity: {
-              contains: filters.city,
-              mode: "insensitive",
-            },
-          }),
-          ...(filters.state && {
-            addressState: {
-              contains: filters.state,
-              mode: "insensitive",
-            },
-          }),
-        };
-      }
-    }
+    const where: Prisma.PacketWhereInput = {
+      ...(filters?.status && { status: filters.status }),
+      ...(filters?.delivererId && { delivererId: filters.delivererId }),
+      ...(Object.keys(destinationFilter).length > 0 && {
+        destination: destinationFilter,
+      }),
+    };
 
     const packets = await this.prisma.packet.findMany({
       where,
-      skip: (page - 1) * 20,
-      take: 20,
-      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+      skip: (page - 1) * DEFAULT_PER_PAGE,
+      take: DEFAULT_PER_PAGE,
+      orderBy: DEFAULT_ORDER_BY,
     });
 
     return packets.map(PrismaPacketMapper.toDomain);
   }
 
-  async findManyNearbyByStatusAndDelivererId(
-    params: FindManyNearbyByStatusAndDelivererIdParams,
-  ): Promise<Packet[]> {
+  async findManyNearby(params: FindManyNearbyPacketsParams): Promise<Packet[]> {
     const packets = await this.prisma.packet.findMany({
       where: {
         status: params.status,
@@ -156,7 +111,7 @@ export class PrismaPacketsRepository implements PacketsRepository {
       include: {
         destination: true,
       },
-      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
+      orderBy: DEFAULT_ORDER_BY,
     });
 
     const nearbyPackets = packets.filter((packet) => {
@@ -174,37 +129,16 @@ export class PrismaPacketsRepository implements PacketsRepository {
       return distance <= params.distance;
     });
 
-    const paginatedPackets = nearbyPackets.slice(
-      (params.pagination.page - 1) * 20,
-      params.pagination.page * 20,
-    );
+    const startIndex = (params.page - 1) * DEFAULT_PER_PAGE;
 
-    return paginatedPackets.map(PrismaPacketMapper.toDomain);
-  }
-
-  async findManyByRecipientId(
-    recipientId: string,
-    { page }: PaginationParams,
-  ): Promise<Packet[]> {
-    const packets = await this.prisma.packet.findMany({
-      where: {
-        destination: {
-          recipientId,
-        },
-      },
-      skip: (page - 1) * 20,
-      take: 20,
-      orderBy: [{ createdAt: "desc" }, { id: "asc" }],
-    });
-
-    return packets.map(PrismaPacketMapper.toDomain);
+    return nearbyPackets
+      .slice(startIndex, startIndex + DEFAULT_PER_PAGE)
+      .map(PrismaPacketMapper.toDomain);
   }
 
   async create(packet: Packet): Promise<void> {
-    const data = PrismaPacketMapper.toPrisma(packet);
-
     await this.prisma.packet.create({
-      data,
+      data: PrismaPacketMapper.toPrisma(packet),
     });
   }
 
@@ -212,20 +146,14 @@ export class PrismaPacketsRepository implements PacketsRepository {
     const data = PrismaPacketMapper.toPrisma(packet);
 
     await this.prisma.packet.update({
-      where: {
-        id: data.id,
-      },
+      where: { id: data.id },
       data,
     });
   }
 
   async delete(packet: Packet): Promise<void> {
-    const data = PrismaPacketMapper.toPrisma(packet);
-
     await this.prisma.packet.delete({
-      where: {
-        id: data.id,
-      },
+      where: { id: packet.id.toString() },
     });
   }
 }

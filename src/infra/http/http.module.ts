@@ -58,35 +58,52 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
 @Module({
   imports: [DatabaseModule, CryptographyModule, StorageModule],
   controllers: [
+    // Accounts & Authentication
     AccountRegisterController,
-    UserCreateController,
     UserAuthenticateController,
+
+    // Profile (authenticated user self-management)
     UserGetProfileController,
-    UserGetController,
-    UserListController,
     ProfileEditController,
-    UserEditController,
     ProfileChangePasswordController,
-    UserResetPasswordController,
     ProfileDeleteController,
+
+    // Users - Static routes (register before :id routes)
+    UserCreateController,
+    UserListController,
+
+    // Users - Parameterized routes (/users/:id)
+    UserGetController,
+    UserEditController,
+    UserResetPasswordController,
     UserDeleteController,
+
+    // Packets - Static routes (MUST be registered before /packets/:id routes)
+    // Add /packets/awaiting, /packets/returned, /deliverer/packets/nearby, and /admin/packets here
     PacketCreateController,
-    PacketGetController,
     PacketListByRecipientController,
     PacketListByDelivererController,
+
+    // Packets - Parameterized routes (/packets/:id and sub-routes)
+    PacketGetController,
     PacketDeleteController,
     PacketWithdrawnController,
     PacketReturnedController,
     PacketAwaitingWithdrawalController,
     PacketDeliveredController,
     PacketGetDeliveryPhotoController,
+
+    // Destinations - Static routes (register before :id routes)
     DestinationCreateController,
-    DestinationGetController,
-    DestinationDeleteController,
-    DestinationEditController,
     DestinationListController,
+
+    // Destinations - Parameterized routes (/destinations/:id)
+    DestinationGetController,
+    DestinationEditController,
+    DestinationDeleteController,
   ],
   providers: [
+    // Users & Authentication
     UserRegisterUseCase,
     UserAuthenticateUseCase,
     UserGetUseCase,
@@ -95,6 +112,8 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     UserChangePasswordUseCase,
     UserResetPasswordUseCase,
     UserDeleteUseCase,
+
+    // Packets
     PacketCreateUseCase,
     PacketGetUseCase,
     PacketListByRecipientUseCase,
@@ -105,6 +124,8 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     PacketUpdateStatusToAwaitingWithdrawalUseCase,
     PacketUpdateStatusToDeliveredUseCase,
     PacketGetDeliveryPhotoUseCase,
+
+    // Destinations
     DestinationCreateUseCase,
     DestinationGetUseCase,
     DestinationDeleteUseCase,

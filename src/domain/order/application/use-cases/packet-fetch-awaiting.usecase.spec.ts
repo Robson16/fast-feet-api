@@ -1,3 +1,4 @@
+import { destinationMaker } from "test/factories/destination/destination-maker";
 import { packetMaker } from "test/factories/packet/packet-maker";
 import { InMemoryDestinationsRepository } from "test/repositories/in-memory-destinations-repository";
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
@@ -55,6 +56,45 @@ describe("Fetch Packets Awaiting Withdrawal", () => {
       expect.objectContaining({ id: packet3.id }),
       expect.objectContaining({ id: packet4.id }),
     ]);
+  });
+
+  it("should be able to filter awaiting packets by state, city, and neighborhood", async () => {
+    const destination1 = destinationMaker({
+      addressState: "SP",
+      addressCity: "Jundiaí",
+      addressNeighborhood: "Centro",
+    });
+    const destination2 = destinationMaker({
+      addressState: "RJ",
+      addressCity: "Rio de Janeiro",
+      addressNeighborhood: "Copacabana",
+    });
+
+    await inMemoryDestinationsRepository.create(destination1);
+    await inMemoryDestinationsRepository.create(destination2);
+
+    const packet1 = packetMaker({
+      destinationId: destination1.id,
+      status: "AWAITING_WITHDRAWAL",
+    });
+    const packet2 = packetMaker({
+      destinationId: destination2.id,
+      status: "AWAITING_WITHDRAWAL",
+    });
+
+    await inMemoryPacketsRepository.create(packet1);
+    await inMemoryPacketsRepository.create(packet2);
+
+    const result = await sut.execute({
+      page: 1,
+      state: "sp",
+      city: "jundiaí",
+      neighborhood: "centro",
+    });
+
+    expect(result.isRight()).toBe(true);
+    expect(result.value?.packets).toHaveLength(1);
+    expect(result.value?.packets[0].id).toEqual(packet1.id);
   });
 
   it("should be able to fetch paginated packets", async () => {

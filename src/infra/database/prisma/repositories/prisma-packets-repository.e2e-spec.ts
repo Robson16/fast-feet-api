@@ -59,6 +59,33 @@ describe("PrismaPacketsRepository (E2E)", () => {
     expect(awaitingPacket?.status).toBe("AWAITING_WITHDRAWAL");
   });
 
+  test("lists all packets without filters", async () => {
+    const recipient = await userFactory.makePrismaUser({
+      role: Role.create("RECIPIENT"),
+    });
+    const destination = await destinationFactory.makePrismaDestination({
+      recipientId: recipient.id,
+    });
+    const packet1 = packetMaker({
+      destinationId: destination.id,
+      status: "AWAITING_WITHDRAWAL",
+    });
+    const packet2 = packetMaker({
+      destinationId: destination.id,
+      status: "DELIVERED",
+    });
+
+    await packetsRepository.create(packet1);
+    await packetsRepository.create(packet2);
+
+    const packets = await packetsRepository.findMany({ page: 1 });
+
+    expect(packets).toHaveLength(2);
+    expect(packets.map((packet) => packet.id.toString())).toEqual(
+      expect.arrayContaining([packet1.id.toString(), packet2.id.toString()]),
+    );
+  });
+
   test("filters by state when city and neighborhood are omitted", async () => {
     const recipient = await userFactory.makePrismaUser({
       role: Role.create("RECIPIENT"),
@@ -88,11 +115,13 @@ describe("PrismaPacketsRepository (E2E)", () => {
     await packetsRepository.create(matchingPacket);
     await packetsRepository.create(nonMatchingPacket);
 
-    const packets = await packetsRepository.findManyByStatusAndDelivererId(
-      "AWAITING_WITHDRAWAL",
-      deliverer.id.toString(),
+    const packets = await packetsRepository.findMany(
       { page: 1 },
-      { state: "state-a" },
+      {
+        status: "AWAITING_WITHDRAWAL",
+        delivererId: deliverer.id.toString(),
+        state: "state-a",
+      },
     );
 
     expect(packets.map((packet) => packet.id.toString())).toEqual([
@@ -175,15 +204,14 @@ describe("PrismaPacketsRepository (E2E)", () => {
     await packetsRepository.create(nearbyPacket);
     await packetsRepository.create(farPacket);
 
-    const packets =
-      await packetsRepository.findManyNearbyByStatusAndDelivererId({
-        delivererId: deliverer.id.toString(),
-        status: "WITHDRAWN",
-        latitude: -23.186,
-        longitude: -46.898,
-        distance: 5000, // 5 km expressed in meters
-        pagination: { page: 1 },
-      });
+    const packets = await packetsRepository.findManyNearby({
+      delivererId: deliverer.id.toString(),
+      status: "WITHDRAWN",
+      latitude: -23.186,
+      longitude: -46.898,
+      distance: 5000, // 5 km expressed in meters
+      page: 1,
+    });
 
     expect(packets).toHaveLength(1);
     expect(packets[0].id.toString()).toBe(nearbyPacket.id.toString());
@@ -213,13 +241,13 @@ describe("PrismaPacketsRepository (E2E)", () => {
       packetMaker({ destinationId: otherDestination.id }),
     );
 
-    const page1 = await packetsRepository.findManyByRecipientId(
-      recipient.id.toString(),
+    const page1 = await packetsRepository.findMany(
       { page: 1 },
+      { recipientId: recipient.id.toString() },
     );
-    const page2 = await packetsRepository.findManyByRecipientId(
-      recipient.id.toString(),
+    const page2 = await packetsRepository.findMany(
       { page: 2 },
+      { recipientId: recipient.id.toString() },
     );
 
     expect(page1).toHaveLength(20);
@@ -256,11 +284,9 @@ describe("PrismaPacketsRepository (E2E)", () => {
     await packetsRepository.create(packet1);
     await packetsRepository.create(packet2);
 
-    const packets = await packetsRepository.findManyByDelivererId(
-      deliverer.id.toString(),
-      {
-        page: 1,
-      },
+    const packets = await packetsRepository.findMany(
+      { page: 1 },
+      { delivererId: deliverer.id.toString() },
     );
 
     expect(packets).toEqual(
@@ -291,9 +317,10 @@ describe("PrismaPacketsRepository (E2E)", () => {
     await packetsRepository.create(returnedPacket);
     await packetsRepository.create(deliveredPacket);
 
-    const packets = await packetsRepository.findManyByStatus("RETURNED", {
-      page: 1,
-    });
+    const packets = await packetsRepository.findMany(
+      { page: 1 },
+      { status: "RETURNED" },
+    );
 
     expect(packets).toEqual(
       expect.arrayContaining([
@@ -370,10 +397,12 @@ describe("PrismaPacketsRepository (E2E)", () => {
       );
     }
 
-    const page2 = await packetsRepository.findManyByStatusAndDelivererId(
-      "DELIVERED",
-      deliverer.id.toString(),
+    const page2 = await packetsRepository.findMany(
       { page: 2 },
+      {
+        status: "DELIVERED",
+        delivererId: deliverer.id.toString(),
+      },
     );
 
     expect(page2).toHaveLength(0);
@@ -443,22 +472,25 @@ describe("PrismaPacketsRepository (E2E)", () => {
     await packetsRepository.create(packetInCityA);
     await packetsRepository.create(packetInCityB);
 
-    const cityResult = await packetsRepository.findManyByStatusAndDelivererId(
-      "AWAITING_WITHDRAWAL",
-      deliverer.id.toString(),
+    const cityResult = await packetsRepository.findMany(
       { page: 1 },
-      { city: "example city a" },
+      {
+        status: "AWAITING_WITHDRAWAL",
+        delivererId: deliverer.id.toString(),
+        city: "example city a",
+      },
     );
     expect(cityResult).toHaveLength(1);
     expect(cityResult[0].id.toString()).toBe(packetInCityA.id.toString());
 
-    const neighborhoodResult =
-      await packetsRepository.findManyByStatusAndDelivererId(
-        "AWAITING_WITHDRAWAL",
-        deliverer.id.toString(),
-        { page: 1 },
-        { neighborhood: "central district" },
-      );
+    const neighborhoodResult = await packetsRepository.findMany(
+      { page: 1 },
+      {
+        status: "AWAITING_WITHDRAWAL",
+        delivererId: deliverer.id.toString(),
+        neighborhood: "central district",
+      },
+    );
     expect(neighborhoodResult).toHaveLength(1);
     expect(neighborhoodResult[0].id.toString()).toBe(
       packetInCityB.id.toString(),
@@ -493,7 +525,7 @@ describe("PrismaPacketsRepository (E2E)", () => {
     ).toBeNull();
   });
 
-  test("isolates correctly by status and deliverer, and paginates findManyByStatus", async () => {
+  test("isolates correctly by status and deliverer, and paginates findMany by status", async () => {
     const recipient = await userFactory.makePrismaUser({
       role: Role.create("RECIPIENT"),
     });
@@ -529,27 +561,31 @@ describe("PrismaPacketsRepository (E2E)", () => {
       }),
     );
 
-    const result = await packetsRepository.findManyByStatusAndDelivererId(
-      "WITHDRAWN",
-      deliverer1.id.toString(),
+    const result = await packetsRepository.findMany(
       { page: 1 },
+      {
+        status: "WITHDRAWN",
+        delivererId: deliverer1.id.toString(),
+      },
     );
     expect(result).toHaveLength(1);
     expect(result[0].delivererId?.toString()).toBe(deliverer1.id.toString());
     expect(result[0].status).toBe("WITHDRAWN");
 
-    // Set up and verify findManyByStatus pagination.
+    // Set up and verify findMany pagination by status.
     for (let i = 0; i < 21; i++) {
       await packetsRepository.create(
         packetMaker({ destinationId: destination.id, status: "RETURNED" }),
       );
     }
-    const page1 = await packetsRepository.findManyByStatus("RETURNED", {
-      page: 1,
-    });
-    const page2 = await packetsRepository.findManyByStatus("RETURNED", {
-      page: 2,
-    });
+    const page1 = await packetsRepository.findMany(
+      { page: 1 },
+      { status: "RETURNED" },
+    );
+    const page2 = await packetsRepository.findMany(
+      { page: 2 },
+      { status: "RETURNED" },
+    );
     expect(page1).toHaveLength(20);
     expect(page2).toHaveLength(1);
   });

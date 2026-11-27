@@ -1,16 +1,16 @@
 import { Injectable } from "@nestjs/common";
 
 import { Either, right } from "@/core/either";
+import { PaginationParams } from "@/core/repositories/pagination-params";
 import {
-  PacketsFilters,
+  PacketAddressFilters,
   PacketsRepository,
 } from "@/domain/order/application/repositories/packets-repository";
 import { Packet } from "@/domain/order/enterprise/entities/packet";
 
-interface PacketFetchDeliveredByDelivererUseCaseRequest {
+interface PacketFetchDeliveredByDelivererUseCaseRequest
+  extends PaginationParams, PacketAddressFilters {
   delivererId: string;
-  page: number;
-  filters?: PacketsFilters;
 }
 
 type PacketFetchDeliveredByDelivererUseCaseResponse = Either<
@@ -27,13 +27,13 @@ export class PacketFetchDeliveredByDelivererUseCase {
   async execute({
     delivererId,
     page,
-    filters,
+    state,
+    city,
+    neighborhood,
   }: PacketFetchDeliveredByDelivererUseCaseRequest): Promise<PacketFetchDeliveredByDelivererUseCaseResponse> {
-    const packets = await this.packetsRepository.findManyByStatusAndDelivererId(
-      "DELIVERED",
-      delivererId,
+    const packets = await this.packetsRepository.findMany(
       { page },
-      filters,
+      { status: "DELIVERED", delivererId, state, city, neighborhood },
     );
 
     return right({

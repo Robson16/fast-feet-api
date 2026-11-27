@@ -30,6 +30,7 @@ export default tseslint.config(
 
       "no-new": "off",
       "no-useless-constructor": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
       "@typescript-eslint/no-useless-constructor": "off",
 
       "@typescript-eslint/interface-name-prefix": "off",
