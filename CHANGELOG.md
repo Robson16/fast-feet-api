@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.1.0](https://github.com/Robson16/fast-feet-api/compare/v1.0.0...v1.1.0) (2026-11-28)
+
+### Features
+
+* add profile deletion coverage ([211c498](https://github.com/Robson16/fast-feet-api/commit/211c498181aff67eda948b40bee0490be1c6ed31))
+* add user authentication via session. ([eef37a2](https://github.com/Robson16/fast-feet-api/commit/eef37a2e4e8b1c21336b62c6a2197c3fa8979b1b))
+* **auth:** enforce JWT expiry and identity revalidation ([c9a79fc](https://github.com/Robson16/fast-feet-api/commit/c9a79fc5e97d81b16ca1f28f64a21a17af1f4f0a))
+* create destination route for admins ([8e288c3](https://github.com/Robson16/fast-feet-api/commit/8e288c3a8bebf26a6cd8e12d19a9f65700620edf))
+* **destination:** implement GET /destinations endpoint with E2E tests ([239313a](https://github.com/Robson16/fast-feet-api/commit/239313ab315e8e3204d41f873bcb08f3dfbadfd1))
+* expose profile and admin user management routes ([a2a595f](https://github.com/Robson16/fast-feet-api/commit/a2a595f910f0593ded06ade867f42749485f1428))
+* **http:** add delivery photo upload and presigned URL endpoints ([373f862](https://github.com/Robson16/fast-feet-api/commit/373f862220256ede05173040e63e4f7ecd6c7dc7))
+* implement destination deletion endpoint ([e9fcc1b](https://github.com/Robson16/fast-feet-api/commit/e9fcc1ba71630c3f4d371ecfe80f26e3317c2cf5))
+* implement destination edit endpoint and e2e tests ([25d5901](https://github.com/Robson16/fast-feet-api/commit/25d5901ece505a8d87c9647ed82bb9a698e2f4c3))
+* implement destination list use case and enforce deterministic tests ([c584210](https://github.com/Robson16/fast-feet-api/commit/c58421037f9565bcf762e9ce28032a6f20455cdc))
+* implement destination retrieval and enhance error mapping ([9bd407b](https://github.com/Robson16/fast-feet-api/commit/9bd407b4550e47636043a48dc1ce88411f7ff3a5))
+* implement Prisma repositories for Destinations and Packets ([e0c0c5c](https://github.com/Robson16/fast-feet-api/commit/e0c0c5c6381ebdbf5d976942b15e4babd5d807b6))
+* implement profile and admin password update endpoints ([78a23fa](https://github.com/Robson16/fast-feet-api/commit/78a23fa53106bfc95dc7a6809c27ed8bba680e90))
+* list recipient's own packets (Story 1.6) ([6b2311a](https://github.com/Robson16/fast-feet-api/commit/6b2311a5c268da2567dae2ec8dd8135a4394de9a))
+* **order:** add returned and admin packet listing use cases ([552b2f8](https://github.com/Robson16/fast-feet-api/commit/552b2f8c763a80aedda465bcbeda7008e7452fa7))
+* **order:** standardize packet listing to list and add Story 3.3 HTTP endpoints ([2d58210](https://github.com/Robson16/fast-feet-api/commit/2d5821059b2643b7b8e24d35e01aa19ffbbfb6d5))
+* organize user controllers and add CRUD and E2E tests ([54869f1](https://github.com/Robson16/fast-feet-api/commit/54869f1d7c8b5abb7e798d39f38e7bb76278b4c8))
+* **packet:** add delivery photo storage, validation, and use cases ([0fee11d](https://github.com/Robson16/fast-feet-api/commit/0fee11d3c4eaf8fe2e3b2b115602d0216702659f))
+* **packet:** enforce role and state transition rules in status update use cases ([10750d9](https://github.com/Robson16/fast-feet-api/commit/10750d983494f57f478627e65d0fd8af7e46f8af))
+* **packet:** implement GET /deliverer/packets and standardize pagination ([7f0a6b5](https://github.com/Robson16/fast-feet-api/commit/7f0a6b5721cf7da15dcd6aae7d1be78ffba3676a))
+* **packet:** implement GET /packets/:id with role-based ownership rules ([a8459d1](https://github.com/Robson16/fast-feet-api/commit/a8459d191e5ab960613966edca8a6ebcaa11a09a))
+* **packet:** implement POST /packets and DELETE /packets/:id endpoints ([ecc809b](https://github.com/Robson16/fast-feet-api/commit/ecc809b8633cfdfc33eb7453fafe6afe77ae200c))
+* **packet:** implement POST /packets/:id/withdrawal endpoint ([c1fad56](https://github.com/Robson16/fast-feet-api/commit/c1fad569f543549306246869a30305222117a551))
+* **packet:** implement returned and awaiting-withdrawal endpoints ([2236e55](https://github.com/Robson16/fast-feet-api/commit/2236e5542aaeff554c5a0845f1673557488569b1))
+* **user:** add admin-only user creation and bootstrap seed ([e61c0ed](https://github.com/Robson16/fast-feet-api/commit/e61c0ed8f79adba46a736371c6be2b3d8ef68c9a))
+* **users:** enforce six-character password minimum ([3205510](https://github.com/Robson16/fast-feet-api/commit/32055103f21abffb1a46bb752f36d2504450b9e7))
+* **users:** validate UUID route parameters ([42dac53](https://github.com/Robson16/fast-feet-api/commit/42dac53b2a2ada78b10adb3b64cd76e1b4bcbcb1))
+
+### Bug Fixes
+
+* address pagination flakiness, destination validations, and swagger docs ([2a2c855](https://github.com/Robson16/fast-feet-api/commit/2a2c855f8bfe9527c1635381f27a8139364c9182))
+* **auth:** secure public registration and isolate E2E tests ([5760d40](https://github.com/Robson16/fast-feet-api/commit/5760d40bbf9718c480ed8c858b6bb58fc6e43af9))
+* complete user management errors and docs ([febe00c](https://github.com/Robson16/fast-feet-api/commit/febe00c8d9d58cffe9506467888316ebbbc486cf))
+* return 404 for missing destination recipient ([8870a32](https://github.com/Robson16/fast-feet-api/commit/8870a32d0c0a1ba87f91520981b1dc4a70646c1b))
+
 ## 1.0.0 (2026-10-20)
 
 ### Features
