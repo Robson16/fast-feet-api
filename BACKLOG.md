@@ -214,12 +214,12 @@ Critério de aceite: somente transicoes da matriz sao persistidas; identidade do
 
 Arquivos existentes: `src/domain/order/application/repositories/packets-repository.ts`, `src/domain/order/application/use-cases/packet-fetch-awaiting.usecase.ts`, `packet-fetch-delivered-by-deliverer.usecase.ts`, `packet-fetch-withdrawn-by-deliverer.usecase.ts`, `packet-fetch-nearby-by-deliverer.usecase.ts`, `packet-list-by-recipient.usecase.ts`, `src/infra/database/prisma/repositories/prisma-packets-repository.ts`. Criar controllers/query schemas/E2E em `src/infra/http/controllers/packet/` e `src/infra/http/schemas/`.
 
-- [ ] Preservar `GET /packets` para lista propria de RECIPIENT; criar `GET /packets/awaiting` para ADMIN/DELIVERER, `GET /deliverer/packets` para lista propria de DELIVERER e `GET /packets/returned` para ADMIN.
-- [ ] Para ADMIN, permitir busca operacional por `status` e `delivererId` em rota administrativa separada; para DELIVERER, sempre derivar `delivererId` do JWT e ignorar/rejeitar ID arbitrario.
-- [ ] Criar `PacketFetchReturnedUseCase` ou usar explicitamente a consulta generica por status, documentando uma unica fonte de comportamento para retornados.
-- [ ] Aceitar filtros `neighborhood`, `city`, `state`, `page`; aceitar `latitude`, `longitude` e `distance` somente na busca de proximidade. Validar valores e impedir combinacao ambigua de filtros.
-- [ ] Corrigir o filtro somente por `state` e alinhar normalizacao/case-insensitivity; manter todas as consultas paginadas em paginas de 20 com ordenacao estavel.
-- [ ] Registrar providers/controllers no modulo HTTP, documentar query params e adicionar testes de filtros isolados/combinados, bordas de paginacao, lista vazia e isolamento por entregador.
+- [x] Preservar `GET /packets` para lista propria de RECIPIENT; criar `GET /packets/awaiting` para ADMIN/DELIVERER, `GET /deliverer/packets` para lista propria de DELIVERER e `GET /packets/returned` para ADMIN.
+- [x] Para ADMIN, permitir busca operacional por `status` e `delivererId` em rota administrativa separada; para DELIVERER, sempre derivar `delivererId` do JWT e ignorar/rejeitar ID arbitrario.
+- [x] Criar `PacketFetchReturnedUseCase` ou usar explicitamente a consulta generica por status, documentando uma unica fonte de comportamento para retornados.
+- [x] Aceitar filtros `neighborhood`, `city`, `state`, `page`; aceitar `latitude`, `longitude` e `distance` somente na busca de proximidade. Validar valores e impedir combinacao ambigua de filtros.
+- [x] Corrigir o filtro somente por `state` e alinhar normalizacao/case-insensitivity; manter todas as consultas paginadas em paginas de 20 com ordenacao estavel.
+- [x] Registrar providers/controllers no modulo HTTP, documentar query params e adicionar testes de filtros isolados/combinados, bordas de paginacao, lista vazia e isolamento por entregador.
 
 Critério de aceite: resultados e contagem da pagina refletem todos os filtros; entregador nunca consulta pacotes atribuidos a outro; ADMIN pode consultar status/entregador conforme contrato.
 
