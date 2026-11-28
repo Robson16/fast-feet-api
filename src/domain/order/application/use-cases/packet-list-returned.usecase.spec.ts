@@ -4,12 +4,12 @@ import { InMemoryDestinationsRepository } from "test/repositories/in-memory-dest
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
-import { PacketFetchReturnedUseCase } from "./packet-fetch-returned.usecase";
+import { PacketListReturnedUseCase } from "./packet-list-returned.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
-let sut: PacketFetchReturnedUseCase;
+let sut: PacketListReturnedUseCase;
 
 describe("Fetch Returned Packets", () => {
   beforeEach(() => {
@@ -19,7 +19,7 @@ describe("Fetch Returned Packets", () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );
-    sut = new PacketFetchReturnedUseCase(inMemoryPacketsRepository);
+    sut = new PacketListReturnedUseCase(inMemoryPacketsRepository);
   });
 
   it("should be able to fetch recent returned packets ordered by createdAt desc", async () => {

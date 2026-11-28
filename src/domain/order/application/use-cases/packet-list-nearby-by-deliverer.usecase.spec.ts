@@ -5,12 +5,12 @@ import { InMemoryDestinationsRepository } from "test/repositories/in-memory-dest
 import { InMemoryPacketsRepository } from "test/repositories/in-memory-packets-repository";
 import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repository";
 
-import { PacketFetchNearbyByDelivererUseCase } from "./packet-fetch-nearby-by-deliverer.usecase";
+import { PacketListNearbyByDelivererUseCase } from "./packet-list-nearby-by-deliverer.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
-let sut: PacketFetchNearbyByDelivererUseCase;
+let sut: PacketListNearbyByDelivererUseCase;
 
 describe("Fetch Packets Nearby By Deliverer Use Case", () => {
   beforeEach(() => {
@@ -20,7 +20,7 @@ describe("Fetch Packets Nearby By Deliverer Use Case", () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );
-    sut = new PacketFetchNearbyByDelivererUseCase(inMemoryPacketsRepository);
+    sut = new PacketListNearbyByDelivererUseCase(inMemoryPacketsRepository);
   });
 
   it("should be able to fetch recent packets nearby by deliverer id", async () => {

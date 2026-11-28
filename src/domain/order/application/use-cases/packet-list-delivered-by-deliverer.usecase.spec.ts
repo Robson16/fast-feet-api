@@ -6,12 +6,12 @@ import { InMemoryUsersRepository } from "test/repositories/in-memory-users-repos
 
 import { UniqueEntityID } from "@/core/entities/unique-entity-id";
 
-import { PacketFetchDeliveredByDelivererUseCase } from "./packet-fetch-delivered-by-deliverer.usecase";
+import { PacketListDeliveredByDelivererUseCase } from "./packet-list-delivered-by-deliverer.usecase";
 
 let inMemoryUsersRepository: InMemoryUsersRepository;
 let inMemoryDestinationsRepository: InMemoryDestinationsRepository;
 let inMemoryPacketsRepository: InMemoryPacketsRepository;
-let sut: PacketFetchDeliveredByDelivererUseCase; // Subject Under Test
+let sut: PacketListDeliveredByDelivererUseCase; // Subject Under Test
 
 describe("Fetch Packets Delivered by Deliverer", () => {
   beforeEach(() => {
@@ -21,7 +21,7 @@ describe("Fetch Packets Delivered by Deliverer", () => {
       inMemoryUsersRepository,
       inMemoryDestinationsRepository,
     );
-    sut = new PacketFetchDeliveredByDelivererUseCase(inMemoryPacketsRepository);
+    sut = new PacketListDeliveredByDelivererUseCase(inMemoryPacketsRepository);
   });
 
   it("should be able to fetch packets delivered by deliverer", async () => {

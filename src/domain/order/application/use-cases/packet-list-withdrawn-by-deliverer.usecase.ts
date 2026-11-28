@@ -8,10 +8,12 @@ import {
 } from "@/domain/order/application/repositories/packets-repository";
 import { Packet } from "@/domain/order/enterprise/entities/packet";
 
-interface PacketFetchAwaitingUseCaseRequest
-  extends PaginationParams, PacketAddressFilters {}
+interface PacketListWithdrawnByDelivererUseCaseRequest
+  extends PaginationParams, PacketAddressFilters {
+  delivererId: string;
+}
 
-type PacketFetchAwaitingUseCaseResponse = Either<
+type PacketListWithdrawnByDelivererUseCaseResponse = Either<
   null,
   {
     packets: Packet[];
@@ -19,18 +21,19 @@ type PacketFetchAwaitingUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class PacketFetchAwaitingUseCase {
+export class PacketListWithdrawnByDelivererUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
+    delivererId,
     page,
     state,
     city,
     neighborhood,
-  }: PacketFetchAwaitingUseCaseRequest): Promise<PacketFetchAwaitingUseCaseResponse> {
+  }: PacketListWithdrawnByDelivererUseCaseRequest): Promise<PacketListWithdrawnByDelivererUseCaseResponse> {
     const packets = await this.packetsRepository.findMany(
       { page },
-      { status: "AWAITING_WITHDRAWAL", state, city, neighborhood },
+      { status: "WITHDRAWN", delivererId, state, city, neighborhood },
     );
 
     return right({

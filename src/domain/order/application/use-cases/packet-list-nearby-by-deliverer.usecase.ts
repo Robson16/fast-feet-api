@@ -5,14 +5,14 @@ import { PaginationParams } from "@/core/repositories/pagination-params";
 import { PacketsRepository } from "@/domain/order/application/repositories/packets-repository";
 import { Packet } from "@/domain/order/enterprise/entities/packet";
 
-interface PacketFetchNearbyByDelivererUseCaseRequest extends PaginationParams {
+interface PacketListNearbyByDelivererUseCaseRequest extends PaginationParams {
   delivererId: string;
   distance: number;
   latitude: number;
   longitude: number;
 }
 
-type PacketFetchNearbyByDelivererUseCaseResponse = Either<
+type PacketListNearbyByDelivererUseCaseResponse = Either<
   null,
   {
     packets: Packet[];
@@ -20,7 +20,7 @@ type PacketFetchNearbyByDelivererUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class PacketFetchNearbyByDelivererUseCase {
+export class PacketListNearbyByDelivererUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
@@ -29,7 +29,7 @@ export class PacketFetchNearbyByDelivererUseCase {
     latitude,
     longitude,
     page,
-  }: PacketFetchNearbyByDelivererUseCaseRequest): Promise<PacketFetchNearbyByDelivererUseCaseResponse> {
+  }: PacketListNearbyByDelivererUseCaseRequest): Promise<PacketListNearbyByDelivererUseCaseResponse> {
     const packets = await this.packetsRepository.findManyNearby({
       delivererId,
       status: "WITHDRAWN",

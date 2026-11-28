@@ -9,8 +9,12 @@ import { PacketCreateUseCase } from "@/domain/order/application/use-cases/packet
 import { PacketDeleteUseCase } from "@/domain/order/application/use-cases/packet-delete.usecase";
 import { PacketGetUseCase } from "@/domain/order/application/use-cases/packet-get.usecase";
 import { PacketGetDeliveryPhotoUseCase } from "@/domain/order/application/use-cases/packet-get-delivery-photo.usecase";
+import { PacketListAdminUseCase } from "@/domain/order/application/use-cases/packet-list-admin.usecase";
+import { PacketListAwaitingUseCase } from "@/domain/order/application/use-cases/packet-list-awaiting.usecase";
 import { PacketListByDelivererUseCase } from "@/domain/order/application/use-cases/packet-list-by-deliverer.usecase";
 import { PacketListByRecipientUseCase } from "@/domain/order/application/use-cases/packet-list-by-recipient.usecase";
+import { PacketListNearbyByDelivererUseCase } from "@/domain/order/application/use-cases/packet-list-nearby-by-deliverer.usecase";
+import { PacketListReturnedUseCase } from "@/domain/order/application/use-cases/packet-list-returned.usecase";
 import { PacketUpdateStatusToAwaitingWithdrawalUseCase } from "@/domain/order/application/use-cases/packet-update-status-to-awaiting-withdrawal.usecase";
 import { PacketUpdateStatusToDeliveredUseCase } from "@/domain/order/application/use-cases/packet-update-status-to-delivered.usecase";
 import { PacketUpdateStatusToReturnedUseCase } from "@/domain/order/application/use-cases/packet-update-status-to-returned.usecase";
@@ -40,8 +44,12 @@ import { PacketDeleteController } from "./controllers/packet/packet-delete.contr
 import { PacketDeliveredController } from "./controllers/packet/packet-delivered.controller";
 import { PacketGetController } from "./controllers/packet/packet-get.controller";
 import { PacketGetDeliveryPhotoController } from "./controllers/packet/packet-get-delivery-photo.controller";
+import { PacketListAdminController } from "./controllers/packet/packet-list-admin.controller";
+import { PacketListAwaitingController } from "./controllers/packet/packet-list-awaiting.controller";
 import { PacketListByDelivererController } from "./controllers/packet/packet-list-by-deliverer.controller";
 import { PacketListByRecipientController } from "./controllers/packet/packet-list-by-recipient.controller";
+import { PacketListNearbyController } from "./controllers/packet/packet-list-nearby.controller";
+import { PacketListReturnedController } from "./controllers/packet/packet-list-returned.controller";
 import { PacketReturnedController } from "./controllers/packet/packet-returned.controller";
 import { PacketWithdrawnController } from "./controllers/packet/packet-withdrawn.controller";
 import { ProfileChangePasswordController } from "./controllers/profile/profile-change-password.controller";
@@ -83,6 +91,10 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     PacketCreateController,
     PacketListByRecipientController,
     PacketListByDelivererController,
+    PacketListAwaitingController,
+    PacketListReturnedController,
+    PacketListNearbyController,
+    PacketListAdminController,
 
     // Packets - Parameterized routes (/packets/:id and sub-routes)
     PacketGetController,
@@ -118,6 +130,10 @@ import { UserResetPasswordController } from "./controllers/user/user-reset-passw
     PacketGetUseCase,
     PacketListByRecipientUseCase,
     PacketListByDelivererUseCase,
+    PacketListReturnedUseCase,
+    PacketListAwaitingUseCase,
+    PacketListNearbyByDelivererUseCase,
+    PacketListAdminUseCase,
     PacketDeleteUseCase,
     PacketUpdateStatusToWithdrawnUseCase,
     PacketUpdateStatusToReturnedUseCase,

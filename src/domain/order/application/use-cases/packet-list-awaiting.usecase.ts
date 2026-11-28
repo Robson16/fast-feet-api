@@ -8,10 +8,10 @@ import {
 } from "@/domain/order/application/repositories/packets-repository";
 import { Packet } from "@/domain/order/enterprise/entities/packet";
 
-interface PacketFetchReturnedUseCaseRequest
+interface PacketListAwaitingUseCaseRequest
   extends PaginationParams, PacketAddressFilters {}
 
-type PacketFetchReturnedUseCaseResponse = Either<
+type PacketListAwaitingUseCaseResponse = Either<
   null,
   {
     packets: Packet[];
@@ -19,7 +19,7 @@ type PacketFetchReturnedUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class PacketFetchReturnedUseCase {
+export class PacketListAwaitingUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
@@ -27,10 +27,10 @@ export class PacketFetchReturnedUseCase {
     state,
     city,
     neighborhood,
-  }: PacketFetchReturnedUseCaseRequest): Promise<PacketFetchReturnedUseCaseResponse> {
+  }: PacketListAwaitingUseCaseRequest): Promise<PacketListAwaitingUseCaseResponse> {
     const packets = await this.packetsRepository.findMany(
       { page },
-      { status: "RETURNED", state, city, neighborhood },
+      { status: "AWAITING_WITHDRAWAL", state, city, neighborhood },
     );
 
     return right({

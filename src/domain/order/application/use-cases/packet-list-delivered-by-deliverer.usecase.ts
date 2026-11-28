@@ -8,12 +8,12 @@ import {
 } from "@/domain/order/application/repositories/packets-repository";
 import { Packet } from "@/domain/order/enterprise/entities/packet";
 
-interface PacketFetchDeliveredByDelivererUseCaseRequest
+interface PacketListDeliveredByDelivererUseCaseRequest
   extends PaginationParams, PacketAddressFilters {
   delivererId: string;
 }
 
-type PacketFetchDeliveredByDelivererUseCaseResponse = Either<
+type PacketListDeliveredByDelivererUseCaseResponse = Either<
   null,
   {
     packets: Packet[];
@@ -21,7 +21,7 @@ type PacketFetchDeliveredByDelivererUseCaseResponse = Either<
 >;
 
 @Injectable()
-export class PacketFetchDeliveredByDelivererUseCase {
+export class PacketListDeliveredByDelivererUseCase {
   constructor(private packetsRepository: PacketsRepository) {}
 
   async execute({
@@ -30,7 +30,7 @@ export class PacketFetchDeliveredByDelivererUseCase {
     state,
     city,
     neighborhood,
-  }: PacketFetchDeliveredByDelivererUseCaseRequest): Promise<PacketFetchDeliveredByDelivererUseCaseResponse> {
+  }: PacketListDeliveredByDelivererUseCaseRequest): Promise<PacketListDeliveredByDelivererUseCaseResponse> {
     const packets = await this.packetsRepository.findMany(
       { page },
       { status: "DELIVERED", delivererId, state, city, neighborhood },
